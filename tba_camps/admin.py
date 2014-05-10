@@ -1,3 +1,5 @@
+# -:- encoding: utf-8
+
 from django.contrib import admin
 from models import Semaine, Formule, Inscription
 
@@ -11,5 +13,8 @@ class FormuleAdmin(admin.ModelAdmin):
 admin.site.register(Formule, FormuleAdmin)
 
 class InscriptionAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'tel', 'formule', 'etat', 'date')
+    list_display  = ('__str__', 'tel', 'formule', 'etat', 'date')
+    list_editable = ('etat',)
+    list_filter   = ('date', 'etat', 'semaines')
+    search_fields = ('nom', 'prenom', 'email')
 admin.site.register(Inscription, InscriptionAdmin)
