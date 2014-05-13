@@ -15,16 +15,13 @@ class Semaine(models.Model):
                              (timedelta(6) + self.debut).strftime('%d %b %Y'))
 
     def inscrits(self):
-        #TODO
-        return 0
+        return self.inscription_set.filter(etat='V').count()
         
     def preinscrits(self):
-        #TODO
-        return 0
+        return self.inscription_set.filter(etat='P').count()
 
     def restantes(self):
-        #TODO
-        return self.places - self.preinscrits()
+        return self.places - self.inscription_set.filter(etat__in=['P','V']).count()
 
 
 class Formule(models.Model):
@@ -65,7 +62,8 @@ class Inscription(models.Model):
     etat = models.CharField("État de l'inscription", max_length=1, default='V',
                             choices=[('P', 'Pré-inscription'),
                                      ('V', 'Validé'),
-                                     ('A', 'Annulé')])
+                                     ('A', 'Annulé'),
+                                     ('I', 'Mail non valide')])
     licencie = models.BooleanField('Licencié dans un club')
     venu = models.BooleanField('Je suis déjà venu à Superdévoluy')
     taille = models.IntegerField('Taille (cm)', 

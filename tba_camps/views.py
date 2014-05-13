@@ -10,8 +10,13 @@ class InscriptionForm(django.forms.ModelForm):
     """
     Formulaire d'inscription.    
     """
+    semaines = django.forms.ModelMultipleChoiceField(
+        queryset=Semaine.objects.filter(afficher=True))
+
     class Meta:
         model = Inscription
+        fields = '__all__'
+        widgets = {}
 
     def send_emails(self):
         """
