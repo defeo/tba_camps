@@ -5,9 +5,10 @@
   <head>
     <meta charset="utf-8" />
     <title>{% block title %}Les camps de Basket TBA : 30 ans d'expérience au service du Basket{% endblock %}</title>
-    <meta name="description" content="Le premier camp de basket de SUPERDEVOLUY a vu le jour en 1984, c'est le plus grand camp de Basket de France avec 8 terrains de basket. Sa renommé et sa réputation, il les doit aux milliers de stagiaires qui ont participé aux camps TBA  et parmi eux certains sont devenus des stars comme Aymeric JEANNEAU, Eric MICOUD, Laure SAVASTA… et le futur grand Edwin JACKSON">    
+    <meta name="description" content="{% block description %}Le premier camp de basket de SUPERDEVOLUY a vu le jour en 1984, c'est le plus grand camp de Basket de France avec 8 terrains de basket. Sa renommé et sa réputation, il les doit aux milliers de stagiaires qui ont participé aux camps TBA  et parmi eux certains sont devenus des stars comme Aymeric JEANNEAU, Eric MICOUD, Laure SAVASTA… et le futur grand Edwin JACKSON{% endblock %}">    
     <link rel="stylesheet" type="text/css" href="{% static "css/styles.css" %}"  media="screen" />
     <link rel="stylesheet" type="text/css" href="{% static "css/print.css" %}" media="print" />
+    {% block extrahead %}{% endblock %}
   </head>
   <body>
     <div id="wrapper">
@@ -39,7 +40,7 @@
 	  <ul>
 	    <li><a href="/tba/presentation">Camps de Basket TBA</a></li>
             <li><a href="{% url 'pratique' %}">Dates, formules, prix et places disponibles</a></li>
-	    <li><a href="{% url 'inscription' %}">Inscriptions</a></li>
+	    <li><a href="{% url 'inscription_form' %}">Inscriptions</a></li>
 	    <li><a href="/tba/journee-type">Une journée type</a></li>
 	    <li><a href="/tba/location-parents">Location Parents</a></li>
             <li><a href="/tba/special-club">Spécial Club</a></li>

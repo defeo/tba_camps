@@ -5,7 +5,7 @@ from models import Semaine, Formule, Inscription
 
 class SemaineAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'commentaire', 'places', 'preinscrits',
-                    'inscrits', 'restantes', 'afficher')
+                    'inscrits', 'restantes', 'fermer')
 admin.site.register(Semaine, SemaineAdmin)
 
 class FormuleAdmin(admin.ModelAdmin):

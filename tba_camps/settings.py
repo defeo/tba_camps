@@ -36,6 +36,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'captcha',
     'tba_camps',
 )
 
@@ -85,4 +86,11 @@ USE_TZ = True
 STATIC_ROOT = 'staticfiles'
 STATIC_URL = '/static/'
 
+# Templates
 TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
+
+
+# Django-recaptcha
+RECAPTCHA_PUBLIC_KEY = 'dummy'
+RECAPTCHA_PRIVATE_KEY = 'dummy'
+

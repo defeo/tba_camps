@@ -2,12 +2,13 @@
 
 from django.db import models
 from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
+from django.core.urlresolvers import reverse
 
 class Semaine(models.Model):
     debut = models.DateField('Début de la semaine', unique=True)
     commentaire = models.CharField('Commentaire affiché', max_length=255, blank=True)
     places = models.IntegerField('Nombre de places', default=0)
-    afficher = models.BooleanField('Afficher la semaine dans le formulaire?', default=True)
+    fermer = models.BooleanField('Inscriptions fermées', default=False)
 
     def __unicode__(self):
         from datetime import timedelta
@@ -33,11 +34,18 @@ class Formule(models.Model):
 
     def __unicode__(self):
         return self.nom
+
+
+PREINSCRIPTION = 'P'
+VALID = 'V'
+CANCELED = 'A'
+INVALID = 'I'
     
 class Inscription(models.Model):
     nom = models.CharField(max_length=255)
     prenom = models.CharField(max_length=255)
-    sexe = models.CharField(max_length=255, choices=[('H', 'Homme'), ('F', 'Femme')])
+    # See http://stackoverflow.com/questions/3248887/
+    sexe = models.CharField(max_length=1, choices=[('H', 'Homme'), ('F', 'Femme')], default=0)
     naissance = models.DateField('Date de naissance')
     lieu = models.CharField('Lieu de naissance', max_length=255)
     adresse = models.TextField()
@@ -48,7 +56,7 @@ class Inscription(models.Model):
         RegexValidator(regex='^\+?\d{10,}$', message='Numéro invalide')])
     semaines = models.ManyToManyField(Semaine)
     formule = models.ForeignKey(Formule)
-    train = models.IntegerField(default=0)
+    train = models.IntegerField('Supplément train', default=0)
     assurance = models.IntegerField(default=0,
                                     choices=[(0, 'Sans assurance'), 
                                              (6, u'Avec assurance (6€)')])
@@ -60,12 +68,14 @@ class Inscription(models.Model):
                                      ('CV', 'Chèques vacances'),
                                      ('BC', 'Bons CAF')])
     etat = models.CharField("État de l'inscription", max_length=1, default='V',
-                            choices=[('P', 'Pré-inscription'),
-                                     ('V', 'Validé'),
-                                     ('A', 'Annulé'),
-                                     ('I', 'Mail non valide')])
-    licencie = models.BooleanField('Licencié dans un club')
-    venu = models.BooleanField('Je suis déjà venu à Superdévoluy')
+                            choices=[(PREINSCRIPTION, 'Pré-inscription'),
+                                     (VALID, 'Validé'),
+                                     (CANCELED, 'Annulé'),
+                                     (INVALID, 'Mail non valide')])
+    licencie = models.CharField('Licencié dans un club', max_length=1,
+                                choices=[('O', 'Oui'), ('N', 'Non')], default=0)
+    venu = models.CharField('Je suis déjà venu à Superdévoluy', max_length=1,
+                            choices=[('O', 'Oui'), ('N', 'Non')], default=0)
     taille = models.IntegerField('Taille (cm)', 
                                  validators=[MaxValueValidator(300),
                                              MinValueValidator(30)])
@@ -75,3 +85,6 @@ class Inscription(models.Model):
 
     def __unicode__(self):
         return '%s %s <%s>' % (self.nom, self.prenom, self.email)
+
+    def get_absolute_url(self):
+        return reverse('inscription_view', kwargs={ 'pk' : self.pk })

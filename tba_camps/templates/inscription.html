@@ -1,11 +1,104 @@
 {% extends "base.html" %}
+{% load static %}
+{% load forms %}
+
+{% block title %}S'inscrire aux camps de Basket TBA{% endblock %}
+
+{% block description %}Les formulaires pour s'inscrire en ligne aux
+camps de Basket TBA et qui permet la réservation définitive des
+réception par TBA du chèque d'acompte. Chèque qui doit parvenir à TBA
+dans un délai de 8 jours faute de quoi la réservation est
+automatiquement annulée.{% endblock %}
+
+{% block extrahead %}
+<link rel="stylesheet" href="http://yui.yahooapis.com/combo?pure/0.4.2/forms-min.css&pure/0.4.2/buttons-min.css">
+<style>
+  .pure-form-aligned  ul {
+    display: inline-block;
+    list-style-type: none;
+    vertical-align: text-top;
+  }
+  .pure-form-aligned .pure-control-group li label { width: auto; }
+  .error {
+    background-color: #fcc;
+  }
+  .required > label:after {
+    content: '*';
+  }
+  .fieldgroup {
+    border-radius: 5px;
+    border: solid thin #ddd;
+    padding: 1ex;
+    margin: 1ex 0;
+  }
+  #id_sexe li, #id_licencie li, #id_venu li { display: inline; }
+</style>
+{% endblock %}
 
 {% block content %}
 
-<form action="" method="post">
+<p style="text-align:center;color:#f00;font-weight:bold;font-size:30px">BULLETIN D'INSCRIPTION 2014</p>
+
+<p style="text-align:center;font-weight:bold;color:#00f">Votre
+      réservation ne sera définitive qu'à la réception de votre chèque
+      d'acompte.  Attention, ce chèque doit nous parvenir dans un
+      délai de 8 jours sinon votre réservation est automatiquement
+      annulée.</p>
+
+<p style="text-align:center;font-size:80%">Les champs marqués d'une étoile * sont obligatoires</p>
+
+<form action="" method="post" class="pure-form pure-form-aligned">
   {% csrf_token %}
-  {{ form.as_p }}
-  <input type="submit" value="S'inscrire" />
+
+  <div id="personal-data" class="fieldgroup">
+    <fieldset>
+      {{ form.nom | cgroup }}
+      {{ form.prenom | cgroup }}
+      {{ form.email | cgroup }}
+    </fieldset>
+
+    <fieldset>
+      {{ form.adresse | cgroup }}
+      {{ form.cp | cgroup }}
+      {{ form.ville | cgroup }}
+      {{ form.tel | cgroup }}
+    </fieldset>
+
+    <fieldset>
+      {{ form.naissance | cgroup }}
+      {{ form.lieu | cgroup }}
+      {{ form.sexe | cgroup }}
+      {{ form.taille | cgroup }}
+      {{ form.licencie | cgroup }}
+      {{ form.venu | cgroup }}
+    </fieldset>
+  </div>
+
+  <div id="inscription-data" class="fieldgroup">
+    <fieldset>
+      {{ form.semaines | cgroup }}
+      {{ form.formule | cgroup }}
+      {{ form.train | cgroup }}
+      {{ form.assurance | cgroup }}
+      {{ form.acompte | cgroup }}
+      {{ form.mode | cgroup }}
+    </fieldset>
+  </div>
+
+  <div id="parrain-data" class="fieldgroup">
+    <fieldset>
+      {{ form.nom_parrain | cgroup }}
+      {{ form.adr_parrain | cgroup }}
+    </fieldset>
+  </div>
+  
+  
+  <div id="parrain-data" class="fieldgroup {{ form.captcha.css_classes }}">
+    {{ form.captcha }}
+    {{ form.captcha.errors }}
+  </div>
+
+  <button type="submit" class="pure-button pure-button-primary">S'inscrire</button>
 </form>
 
 {% endblock %}
