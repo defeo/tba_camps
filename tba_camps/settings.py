@@ -80,6 +80,12 @@ USE_L10N = True
 
 USE_TZ = True
 
+try:
+    import locale
+    locale.setlocale(locale.LC_TIME, "fr_FR.utf8")
+except Error:
+    # TODO: log something
+    pass
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/

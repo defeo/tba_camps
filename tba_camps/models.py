@@ -12,7 +12,7 @@ class Semaine(models.Model):
 
     def __unicode__(self):
         from datetime import timedelta
-        return u'%s – %s' % (self.debut.strftime('%d %b'),
+        return '%s – %s' % (self.debut.strftime('%d %b'),
                              (timedelta(6) + self.debut).strftime('%d %b %Y'))
 
     def inscrits(self):
