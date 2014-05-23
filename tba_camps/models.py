@@ -12,8 +12,8 @@ class Semaine(models.Model):
 
     def __unicode__(self):
         from datetime import timedelta
-        return '%s – %s' % (self.debut.strftime('%d %b'),
-                             (timedelta(6) + self.debut).strftime('%d %b %Y'))
+        return u'%s – %s' % (self.debut.strftime('%d %b').decode('utf8'),
+                             (timedelta(6) + self.debut).strftime('%d %b %Y').decode('utf8'))
 
     def inscrits(self):
         return self.inscription_set.filter(etat='V').count()
@@ -51,6 +51,7 @@ class Inscription(models.Model):
     adresse = models.TextField()
     cp = models.CharField('Code postal', max_length=10)
     ville = models.CharField(max_length=255)
+    pays = models.CharField(max_length=255, default='France')
     email = models.EmailField('Adresse email', max_length=255, blank=True)
     tel = models.CharField('Téléphone', max_length=20, validators=[
         RegexValidator(regex='^\+?\d{10,}$', message='Numéro invalide')])
