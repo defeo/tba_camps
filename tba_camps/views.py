@@ -10,7 +10,6 @@ from models import Inscription, Formule, Hebergement, Semaine, PREINSCRIPTION, V
 from captcha.fields import ReCaptchaField
 import widgets as my_widgets
 from django.utils.translation import ugettext_lazy as _
-from django.db.models import Count
 
 class SemainesField(forms.ModelMultipleChoiceField):
     widget = widgets.CheckboxSelectMultiple
@@ -83,7 +82,6 @@ class InscriptionFormView(CreateView):
     def form_valid(self, form):
         form.send_emails()
         return super(InscriptionFormView, self).form_valid(form)
-
 
 class InscriptionView(DetailView):
     """

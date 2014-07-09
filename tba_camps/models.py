@@ -4,6 +4,9 @@ from django.db import models
 from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
 from django.core.urlresolvers import reverse
 from markupfield.fields import MarkupField
+from Crypto.Cipher import AES
+from django.conf import settings
+import base64
 
 class Semaine(models.Model):
     debut = models.DateField('Début de la semaine', unique=True)
@@ -101,12 +104,19 @@ class Inscription(models.Model):
     nom_parrain = models.CharField('NOM Prénom parrain', max_length=255, blank=True)
     adr_parrain = models.CharField('Adresse parrain', max_length=255, blank=True)
     date = models.DateTimeField('Date inscription', auto_now_add=True)
+    slug = models.SlugField(max_length=22, blank=True, editable=False)
 
     def __unicode__(self):
         return '%s %s <%s>' % (self.nom, self.prenom, self.email)
 
     def get_absolute_url(self):
-        return reverse('inscription_view', kwargs={ 'pk' : self.pk })
+        return reverse('inscription_view', kwargs={ 'slug' : self.slug })
 
     def prix(self):
         return self.formule.total() + self.train + self.assurance
+
+    def save(self):
+        super(Inscription, self).save()
+        cipher = AES.new(settings.SECRET_KEY[:16], AES.MODE_ECB)
+        self.slug = base64.b64encode(cipher.encrypt("{:0>16X}".format(self.pk)), '_-')[:-2]
+        super(Inscription, self).save()

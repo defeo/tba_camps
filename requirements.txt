@@ -9,6 +9,7 @@ django-recaptcha==1.0
 django-toolbelt==0.0.1
 gunicorn==18.0
 psycopg2==2.5.2
+pycrypto==2.6.1
 pystache==0.5.3
 static==1.0.2
 wsgiref==0.1.2
