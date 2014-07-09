@@ -11,7 +11,7 @@
         <p align="center">
 	  <span style="font-size:14px; font-weight:bold ">Semaine {{ forloop.counter }}: {{ s }}</span><br>
 	  <span style="font-size:10px; font-weight:bold ">{% if s.restantes > 0 and not s.fermer %}{{ s.restantes }}{% else %}pas de{% endif %} places disponibles</span><br>
-	  <span style="font-size:12px; font-weight:bold; color:#0000FF ">{{ s.commentaire }}</span>
+	  <span style="font-size:12px; font-weight:bold; color:#0000FF ">{{ s.commentaire | urlize }}</span>
 	</p>
 	{% endfor %}
 	
@@ -19,9 +19,10 @@
 	<table cellspacing="0" cellpadding="0" width="588" height="181" style="font-weight:bold">
 	{% for f in formules %}
 	<tr>
-	  <td ><p>{{ f.description }}</p></td>
-	  <td align="right"><p>{{ f.prix }}&euro;</p></td>
+	  <td >{{ f.nom }}</td>
+	  <td align="right">{{ f.prix }}&euro;</td>
 	</tr>
+	<tr><td colspan="2" style="font-weight:normal;padding-left:3ex"><p>{{ f.description }}</p></td></tr>
 	{% endfor %}
         </table>
 

@@ -6,9 +6,20 @@ from django.views.generic import DetailView
 from django.views.generic.edit import CreateView
 from django.views.generic.base import TemplateView
 from django.template import TemplateDoesNotExist
-from models import Inscription, Formule, Semaine, PREINSCRIPTION, VALID
+from models import Inscription, Formule, Hebergement, Semaine, PREINSCRIPTION, VALID
 from captcha.fields import ReCaptchaField
+import widgets as my_widgets
+from django.utils.translation import ugettext_lazy as _
+from django.db.models import Count
 
+class SemainesField(forms.ModelMultipleChoiceField):
+    widget = widgets.CheckboxSelectMultiple
+
+    def __init__(self, *args, **kwds):
+        super(SemainesField, self).__init__(queryset=Semaine.objects.filter(fermer=False))
+        self.choices = [(self.prepare_value(s), self.label_from_instance(s))
+                        for s in self.queryset
+                        if s.restantes() > 0]
 
 class InscriptionForm(forms.ModelForm):
     """
@@ -17,11 +28,15 @@ class InscriptionForm(forms.ModelForm):
     error_css_class = 'error'
     required_css_class = 'required'
 
-    semaines = forms.ModelMultipleChoiceField(
-        queryset=Semaine.objects.filter(fermer=False),
-        widget=widgets.CheckboxSelectMultiple())
+    semaines = SemainesField()
     email = forms.EmailField()
+    formule = my_widgets.FullModelField(queryset=Formule.objects.all(),
+                                        widget=my_widgets.FormuleWidget)
+    hebergement = my_widgets.FullModelField(queryset=Hebergement.objects.all(),
+                                            widget=my_widgets.HebergementWidget,
+                                            required=False)
     etat = forms.Field(required=False, widget=forms.HiddenInput)
+    acompte = forms.Field(required=False, widget=forms.HiddenInput)
     captcha = ReCaptchaField(attrs={'theme' : 'clean'})
 
     class Meta:
@@ -40,6 +55,17 @@ class InscriptionForm(forms.ModelForm):
         Ceci est une preinscription par defaut
         '''
         return PREINSCRIPTION
+
+    def clean(self):
+        cleaned_data = super(InscriptionForm, self).clean()
+        formule = cleaned_data.get('formule')
+        if formule:
+            hebergement = cleaned_data.get('hebergement')
+            if formule.affiche_hebergement and not hebergement:
+                self._errors['hebergement'] = self.error_class([_('This field is required.')])
+            if not formule.affiche_train:
+                cleaned_data['train'] = 0
+        return cleaned_data
 
     def send_emails(self):
         """

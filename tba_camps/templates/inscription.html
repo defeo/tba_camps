@@ -17,10 +17,20 @@ automatiquement annulée.{% endblock %}
     display: inline-block;
     list-style-type: none;
     vertical-align: text-top;
+    max-width: 400px;
   }
-  .pure-form-aligned .pure-control-group li label { width: auto; }
+  .pure-form-aligned .pure-control-group li label { 
+    width: auto;
+    text-align: left;
+  }
+  .pure-control-group li { border-radius: 4px }
+  .pure-control-group li:hover { background-color: rgba(255,255,255,0.5) }
   .error {
     background-color: #fcc;
+  }
+  .errorlist { 
+    color: #666;
+    font-weight: bold;
   }
   .required > label:after {
     content: '*';
@@ -32,6 +42,48 @@ automatiquement annulée.{% endblock %}
     margin: 1ex 0;
   }
   #id_sexe li, #id_licencie li, #id_venu li { display: inline; }
+
+  #id_formule { font-weight: bold }
+  #id_formule .prix { float: right }
+  #id_formule .description { 
+    display: block;
+    font-weight: normal;
+    padding-left: 4ex;
+  }
+
+  #id_formule label, #id_hebergement label { width: 100% }
+
+  #id_hebergement {
+    font-weight: bold;
+  }
+  #id_hebergement p { 
+    font-weight: normal;
+    margin: 0.1ex 0 0.5ex 2ex;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 2s;
+    -webkit-transition: max-height 2s;
+    -o-transition: max-height 2s;
+  }
+  #id_hebergement input:checked ~ p,
+  #id_hebergement li:hover p {
+    max-height: 100ex;
+  }
+
+  #pay-block { display: inline-block }
+  #cost-summary { 
+    display: inline-table;
+    vertical-align: middle;
+    border-collapse: collapse;
+    margin: 1em 0 0 4em;
+  }
+  #cost-summary tfoot { border-top : solid thin black }
+  #cost-summary td:nth-child(2) { 
+    width: 3em;
+    text-align: right;
+    padding: 0 1ex 0 6ex;
+  }
+  #cost-summary .total { font-weight: bold }
 </style>
 {% endblock %}
 
@@ -51,6 +103,8 @@ automatiquement annulée.{% endblock %}
   {% csrf_token %}
 
   <div id="personal-data" class="fieldgroup">
+    <h3>Données personnelles</h3>
+
     <fieldset>
       {{ form.nom | cgroup }}
       {{ form.prenom | cgroup }}
@@ -76,17 +130,38 @@ automatiquement annulée.{% endblock %}
   </div>
 
   <div id="inscription-data" class="fieldgroup">
+    <h3>Inscription (<a href="{% url 'pratique' %}">plus d'infos</a>)</h3>
+
     <fieldset>
       {{ form.semaines | cgroup }}
       {{ form.formule | cgroup }}
+      {{ form.hebergement | cgroup }}
       {{ form.train | cgroup }}
+
+      <div id="pay-block">
       {{ form.assurance | cgroup }}
-      {{ form.acompte | cgroup }}
       {{ form.mode | cgroup }}
+      </div>
+
+      <table id="cost-summary">
+	<tbody>
+	<tr class="prix"><td>Formule</td><td></td><td></td></tr>
+	<tr class="cotisation"><td>Cotisation TBA</td><td></td><td></td></tr>
+	<tr class="taxe"><td>Taxe menage</td><td></td><td></td></tr>
+	<tr class="train"><td>Supplément train</td><td></td><td></td></tr>
+	<tr class="assurance"><td>Assurance</td><td></td><td></td></tr>
+	</tbody>
+	<tfoot>
+	<tr class="total"><td>Total</td><td></td></tr>
+	<tr class="acompte"><td>Acompte</td><td></td></tr>
+	</tfoot>
+      </table>
     </fieldset>
   </div>
 
   <div id="parrain-data" class="fieldgroup">
+    <h3>Parrainage</h3>
+
     <fieldset>
       {{ form.nom_parrain | cgroup }}
       {{ form.adr_parrain | cgroup }}

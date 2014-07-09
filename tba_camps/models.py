@@ -3,6 +3,7 @@
 from django.db import models
 from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
 from django.core.urlresolvers import reverse
+from markupfield.fields import MarkupField
 
 class Semaine(models.Model):
     debut = models.DateField('Début de la semaine', unique=True)
@@ -25,15 +26,29 @@ class Semaine(models.Model):
         return self.places - self.inscription_set.filter(etat__in=['P','V']).count()
 
 
+class Hebergement(models.Model):
+    nom = models.CharField(max_length=255)
+    commentaire = MarkupField("Commentaire affiché à l'inscription", blank=True,
+                              default_markup_type='markdown')
+
+    def __unicode__(self):
+        return self.nom
+
 class Formule(models.Model):
     nom = models.CharField(max_length=255)
     description = models.TextField()
     prix = models.IntegerField()
     taxe = models.IntegerField('Taxe menage', default=0)
     cotisation = models.IntegerField('Cotisation TBA', default=15)
+    affiche_train = models.BooleanField("Afficher option Train à l'inscription", default=False)
+    affiche_hebergement = models.BooleanField("Afficher option Hébergement à l'inscription", 
+                                              default=False)
 
     def __unicode__(self):
         return self.nom
+
+    def total(self):
+        return self.prix + self.taxe + self.cotisation
 
 
 PREINSCRIPTION = 'P'
@@ -57,12 +72,15 @@ class Inscription(models.Model):
         RegexValidator(regex='^\+?\d{10,}$', message='Numéro invalide')])
     semaines = models.ManyToManyField(Semaine)
     formule = models.ForeignKey(Formule)
-    train = models.IntegerField('Supplément train', default=0)
+    train = models.IntegerField('Supplément aller-retour train depuis Paris',
+                                default=0, choices=[(0, "Pas de supplément"),
+                                                    (150, 'Tarif normal (150€)'),
+                                                    (75, 'Moins de 12 ans (75€)')])
+    hebergement = models.ForeignKey(Hebergement, null=True, blank=True)
     assurance = models.IntegerField(default=0,
                                     choices=[(0, 'Sans assurance'), 
                                              (6, u'Avec assurance (6€)')])
-    acompte = models.IntegerField(default=0)
-    mode = models.CharField('Mode de reglèment', max_length=2, blank=True,
+    mode = models.CharField('Mode de règlement', max_length=2, blank=True,
                             choices=[('C', 'Chèque'),
                                      ('E', 'Espèces'),
                                      ('VB', 'Virement bancaire'),
@@ -89,3 +107,6 @@ class Inscription(models.Model):
 
     def get_absolute_url(self):
         return reverse('inscription_view', kwargs={ 'pk' : self.pk })
+
+    def prix(self):
+        return self.formule.total() + self.train + self.assurance
