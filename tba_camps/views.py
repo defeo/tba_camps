@@ -44,6 +44,7 @@ class InscriptionForm(forms.ModelForm):
         widgets = {
             'sexe' : widgets.RadioSelect,
             'adresse' : widgets.Textarea(attrs={'rows' : 3}),
+            'naissance' : my_widgets.DatePicker,
             'assurance' : widgets.RadioSelect,
             'licencie' :  widgets.RadioSelect,
             'venu' :  widgets.RadioSelect,

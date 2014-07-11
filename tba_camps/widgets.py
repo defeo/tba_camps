@@ -91,3 +91,20 @@ class FullModelField(forms.ModelChoiceField):
 
     def label_from_instance(self, obj):
         return obj
+
+
+### Date Picker
+
+class DatePicker(forms.widgets.DateInput):
+    class Media:
+        css = { 'all' : ('css/jquery-ui.min.css',) }
+        js = ('//code.jquery.com/jquery-1.11.0.min.js', 
+              'js/jquery-ui.min.js',
+              'js/datepicker.js')
+
+    def __init__(self, *args, **kwds):
+        super(DatePicker, self).__init__(*args, **kwds)
+        if self.attrs.get('class') is None:
+            self.attrs['class'] = 'datepicker'
+        else:
+            self.attrs['class'] += ' datepicker'
