@@ -1,3 +1,5 @@
+# -:- encoding: utf-8
+
 from django.http import Http404
 from django import forms
 from django.forms import widgets
@@ -29,6 +31,8 @@ class InscriptionForm(forms.ModelForm):
 
     semaines = SemainesField()
     email = forms.EmailField()
+    email2 = forms.EmailField(label='Répéter email',
+                              widget=widgets.TextInput(attrs={'autocomplete' : 'off'}))
     formule = my_widgets.FullModelField(queryset=Formule.objects.all(),
                                         widget=my_widgets.FormuleWidget)
     hebergement = my_widgets.FullModelField(queryset=Hebergement.objects.all(),
@@ -59,12 +63,16 @@ class InscriptionForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super(InscriptionForm, self).clean()
         formule = cleaned_data.get('formule')
+        email = cleaned_data.get('email')
+        email2 = cleaned_data.get('email2')
         if formule:
             hebergement = cleaned_data.get('hebergement')
             if formule.affiche_hebergement and not hebergement:
                 self._errors['hebergement'] = self.error_class([_('This field is required.')])
             if not formule.affiche_train:
                 cleaned_data['train'] = 0
+        if email != email2:
+            self._errors['email2'] = self.error_class(['Emails differents.'])
         return cleaned_data
 
     def send_emails(self):
