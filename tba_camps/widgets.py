@@ -27,6 +27,8 @@ class FormuleChoiceInput(FullModelChoiceInput):
             self.attrs['data-train'] = '1'
         if self.choice_obj.affiche_hebergement:
             self.attrs['data-hebergement'] = '1'
+        if self.choice_obj.affiche_chambre:
+            self.attrs['data-chambre'] = '1'
         self.attrs['data-prix'] = self.choice_obj.prix
         self.attrs['data-cotisation'] = self.choice_obj.cotisation
         self.attrs['data-taxe'] = self.choice_obj.taxe

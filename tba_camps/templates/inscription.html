@@ -16,7 +16,7 @@ automatiquement annulée.{% endblock %}
   .pure-form-aligned  ul {
     display: inline-block;
     list-style-type: none;
-    vertical-align: text-top;
+    vertical-align: top;
     max-width: 400px;
   }
   .pure-form-aligned .pure-control-group li label { 
@@ -32,16 +32,14 @@ automatiquement annulée.{% endblock %}
     color: #666;
     font-weight: bold;
   }
-  .required > label:after {
-    content: '*';
-  }
   .fieldgroup {
     border-radius: 5px;
     border: solid thin #ddd;
     padding: 1ex;
     margin: 1ex 0;
   }
-  #id_sexe li, #id_licencie li, #id_venu li { display: inline; }
+  #id_sexe li, #id_licencie li, #id_venu li, 
+  #id_navette_a li, #id_navette_r li { display: inline; }
 
   #id_formule { font-weight: bold }
   #id_formule .prix { float: right }
@@ -137,7 +135,10 @@ automatiquement annulée.{% endblock %}
       {{ form.semaines | cgroup }}
       {{ form.formule | cgroup }}
       {{ form.hebergement | cgroup }}
+      {{ form.chambre | cgroup }}
       {{ form.train | cgroup }}
+      {{ form.navette_a | cgroup }}
+      {{ form.navette_r | cgroup }}
 
       <div id="pay-block">
       {{ form.assurance | cgroup }}
@@ -150,6 +151,7 @@ automatiquement annulée.{% endblock %}
 	<tr class="cotisation"><td>Cotisation TBA</td><td></td><td></td></tr>
 	<tr class="taxe"><td>Taxe menage</td><td></td><td></td></tr>
 	<tr class="train"><td>Supplément train</td><td></td><td></td></tr>
+	<tr class="navette"><td>Navette</td><td></td><td></td></tr>
 	<tr class="assurance"><td>Assurance</td><td></td><td></td></tr>
 	</tbody>
 	<tfoot>

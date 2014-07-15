@@ -43,9 +43,11 @@ class Formule(models.Model):
     prix = models.IntegerField()
     taxe = models.IntegerField('Taxe menage', default=0)
     cotisation = models.IntegerField('Cotisation TBA', default=15)
-    affiche_train = models.BooleanField("Afficher option Train à l'inscription", default=False)
-    affiche_hebergement = models.BooleanField("Afficher option Hébergement à l'inscription", 
+    affiche_train = models.BooleanField("Afficher option Train", default=False)
+    affiche_hebergement = models.BooleanField("Afficher option Hébergement", 
                                               default=False)
+    affiche_chambre = models.BooleanField("Afficher option 'En chambre avec'",
+                                          default=False)
 
     def __unicode__(self):
         return self.nom
@@ -70,7 +72,7 @@ class Inscription(models.Model):
     cp = models.CharField('Code postal', max_length=10)
     ville = models.CharField(max_length=255)
     pays = models.CharField(max_length=255, default='France')
-    email = models.EmailField('Adresse email', max_length=255, blank=True)
+    email = models.EmailField('Adresse email (des parents)', max_length=255, blank=True)
     tel = models.CharField('Téléphone', max_length=20, validators=[
         RegexValidator(regex='^\+?\d{10,}$', message='Numéro invalide')])
     semaines = models.ManyToManyField(Semaine)
@@ -80,8 +82,16 @@ class Inscription(models.Model):
                                                     (150, 'Tarif normal (150€)'),
                                                     (75, 'Moins de 12 ans (75€)')])
     hebergement = models.ForeignKey(Hebergement, null=True, blank=True)
+    chambre = models.CharField('En chambre avec', max_length=255,
+                               default='', blank=True)
+    navette_a = models.IntegerField('Navette aller', default=0,
+                                    choices=[(0, 'Non'),
+                                             (6, u'Oui (6€)')])
+    navette_r = models.IntegerField('Navette retour', default=0,
+                                    choices=[(0, 'Non'),
+                                             (6, u'Oui (6€)')])
     assurance = models.IntegerField(default=0,
-                                    choices=[(0, 'Sans assurance'), 
+                                    choices=[(0, 'Non'), 
                                              (6, u'Avec assurance (6€)')])
     mode = models.CharField('Mode de règlement', max_length=2, blank=True,
                             choices=[('C', 'Chèque'),

@@ -12,8 +12,8 @@ class SemaineAdmin(admin.ModelAdmin):
 admin.site.register(Semaine, SemaineAdmin)
 
 class FormuleAdmin(admin.ModelAdmin):
-    list_display = ('nom', 'description', 'prix', 'taxe', 'cotisation', 'affiche_train', 'affiche_hebergement')
-    list_editable = ('prix', 'taxe', 'cotisation', 'affiche_train', 'affiche_hebergement')
+    list_display = ('nom', 'description', 'prix', 'taxe', 'cotisation', 'affiche_train', 'affiche_hebergement', 'affiche_chambre')
+    list_editable = ('prix', 'taxe', 'cotisation', 'affiche_train', 'affiche_hebergement', 'affiche_chambre')
 admin.site.register(Formule, FormuleAdmin)
 
 class HebergementAdmin(admin.ModelAdmin):

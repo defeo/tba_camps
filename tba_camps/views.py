@@ -17,7 +17,8 @@ class SemainesField(forms.ModelMultipleChoiceField):
     widget = widgets.CheckboxSelectMultiple
 
     def __init__(self, *args, **kwds):
-        super(SemainesField, self).__init__(queryset=Semaine.objects.filter(fermer=False))
+        super(SemainesField, self).__init__(queryset=Semaine.objects.filter(fermer=False), 
+                                            *args, **kwds)
         self.choices = [(self.prepare_value(s), self.label_from_instance(s))
                         for s in self.queryset
                         if s.restantes() > 0]
@@ -29,7 +30,8 @@ class InscriptionForm(forms.ModelForm):
     error_css_class = 'error'
     required_css_class = 'required'
 
-    semaines = SemainesField()
+    semaines = SemainesField(
+        help_text=u'Vous pouvez vous inscrire à plusieurs semaines')
     email = forms.EmailField()
     email2 = forms.EmailField(label='Répéter email',
                               widget=widgets.TextInput(attrs={'autocomplete' : 'off'}))
@@ -49,6 +51,8 @@ class InscriptionForm(forms.ModelForm):
             'sexe' : widgets.RadioSelect,
             'adresse' : widgets.Textarea(attrs={'rows' : 3}),
             'naissance' : my_widgets.DatePicker,
+            'navette_a' : widgets.RadioSelect,
+            'navette_r' : widgets.RadioSelect,
             'assurance' : widgets.RadioSelect,
             'licencie' :  widgets.RadioSelect,
             'venu' :  widgets.RadioSelect,
