@@ -1,6 +1,6 @@
 from import_export import resources, fields, widgets
 from django_globals import globals
-from models import Inscription
+from models import Inscription, Semaine
 
 class FKeyWidget(widgets.ForeignKeyWidget):
     def __init__(self, model, field='pk', *args, **kwds):
@@ -12,12 +12,26 @@ class FKeyWidget(widgets.ForeignKeyWidget):
             return ""
         return getattr(value, self.field)
 
+class SemaineField(fields.Field):
+    def __init__(self, semaine, *args, **kwds):
+        super(SemaineField, self).__init__(*args, **kwds)
+        self.semaine = semaine
+
+    def get_value(self, obj):
+        return int(self.semaine in obj.semaines.get_queryset())
+
 class InscriptionResource(resources.ModelResource):
     lien = fields.Field()
 
+    def __new__(cls):
+        newclass = super(InscriptionResource, cls).__new__(cls)
+        for i, s in enumerate(Semaine.objects.all().order_by('debut')):
+            newclass.fields['S' + str(i+1)] = SemaineField(semaine=s, column_name=unicode(s))
+        return newclass
+
     class Meta:
         model = Inscription
-        exclude = ('id', 'slug')
+        exclude = ('id', 'slug', 'semaines')
         widgets = {
             'semaines' : { 'field' : 'debut' },
         }
