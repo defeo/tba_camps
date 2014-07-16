@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'captcha',
     'import_export',
     'django_globals',
+    'ordered_model',
     'tba_camps',
 )
 

@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 
 
 from django.db import models
+from ordered_model.models import OrderedModel
 from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
 from django.core.urlresolvers import reverse
 from markupfield.fields import MarkupField
@@ -29,15 +30,18 @@ class Semaine(models.Model):
         return self.places - self.inscription_set.filter(etat__in=['P','V']).count()
 
 
-class Hebergement(models.Model):
+class Hebergement(OrderedModel):
     nom = models.CharField(max_length=255)
     commentaire = MarkupField("Commentaire affiché à l'inscription", blank=True,
                               default_markup_type='markdown')
 
+    class Meta(OrderedModel.Meta):
+        pass
+
     def __unicode__(self):
         return self.nom
 
-class Formule(models.Model):
+class Formule(OrderedModel):
     nom = models.CharField(max_length=255)
     description = models.TextField()
     prix = models.IntegerField()
@@ -48,6 +52,9 @@ class Formule(models.Model):
                                               default=False)
     affiche_chambre = models.BooleanField("Afficher option 'En chambre avec'",
                                           default=False)
+
+    class Meta(OrderedModel.Meta):
+        pass
 
     def __unicode__(self):
         return self.nom
