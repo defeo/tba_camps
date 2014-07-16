@@ -104,3 +104,6 @@ TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
 RECAPTCHA_PUBLIC_KEY = 'dummy'
 RECAPTCHA_PRIVATE_KEY = 'dummy'
 
+# 
+import datetime
+ANNEE = datetime.datetime.now().year

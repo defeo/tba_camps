@@ -1,6 +1,8 @@
 from import_export import resources, fields, widgets
 from django_globals import globals
 from models import Inscription, Semaine
+import datetime
+from django.conf import settings
 
 class FKeyWidget(widgets.ForeignKeyWidget):
     def __init__(self, model, field='pk', *args, **kwds):
@@ -22,6 +24,8 @@ class SemaineField(fields.Field):
 
 class InscriptionResource(resources.ModelResource):
     lien = fields.Field()
+    age  = fields.Field()
+    mode = fields.Field(attribute='mode', column_name='paiement')
 
     def __new__(cls):
         newclass = super(InscriptionResource, cls).__new__(cls)
@@ -33,6 +37,8 @@ class InscriptionResource(resources.ModelResource):
         model = Inscription
         exclude = ('id', 'slug', 'semaines')
         widgets = {
+            'naissance' : { 'format' : '%x'},
+            'date' : { 'format' : '%x %X'},
             'semaines' : { 'field' : 'debut' },
         }
         
@@ -49,3 +55,7 @@ class InscriptionResource(resources.ModelResource):
     def dehydrate_lien(self, inscr):
         req = globals.request
         return req.build_absolute_uri(inscr.get_absolute_url())
+
+    def dehydrate_age(self, inscr):
+        "Age au mois de juin de l'annee en cours"
+        return (datetime.date(settings.ANNEE,6,1) - inscr.naissance).days // 365
