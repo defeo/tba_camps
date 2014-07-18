@@ -26,6 +26,7 @@ class InscriptionResource(resources.ModelResource):
     lien = fields.Field()
     age  = fields.Field()
     prix = fields.Field()
+    du   = fields.Field(column_name='Solde du')
 
     def __new__(cls):
         newclass = super(InscriptionResource, cls).__new__(cls)
@@ -40,8 +41,8 @@ class InscriptionResource(resources.ModelResource):
         exclude = ('id', 'slug', 'semaines')
         export_order = ['nom', 'prenom', 'email', 'tel', 'sexe', 'naissance', 'age', 'taille', 
                         'lieu', 'adresse', 'cp', 'ville', 'pays', 'licencie', 'venu',
-                        'formule', 'prix', 'acompte', 
-                        'etat', 'mode', 'train', 'navette_a', 'navette_r', 'assurance', 
+                        'formule', 'etat', 'train', 'navette_a', 'navette_r', 'assurance', 
+                        'prix', 'acompte', 'mode', 'du',
                         'hebergement', 'chambre', 'nom_parrain', 'adr_parrain', 'date',
                         'lien']
         widgets = {
@@ -52,13 +53,15 @@ class InscriptionResource(resources.ModelResource):
     @classmethod
     def widget_from_django_field(cls, f, default=widgets.Widget):
         result = resources.ModelResource.widget_from_django_field(f, default)
-        if f.name in ('mode', 'etat', 'navette_a', 'navette_r',
-                      'assurance', 'train', 'licencie', 'venu'):
+        if f.choices:
             result = functools.partial(ChoiceWidget, choices=f.choices)
         return result
 
     def dehydrate_prix(self, inscr):
         return inscr.prix()
+
+    def dehydrate_du(self, inscr):
+        return inscr.reste()
 
     def dehydrate_hebergement(self, inscr):
         if inscr.hebergement is None:
