@@ -25,7 +25,6 @@ class SemaineField(fields.Field):
 class InscriptionResource(resources.ModelResource):
     lien = fields.Field()
     age  = fields.Field()
-    mode = fields.Field(attribute='mode', column_name='paiement')
     prix = fields.Field()
 
     def __new__(cls):
