@@ -32,8 +32,7 @@ class InscriptionForm(forms.ModelForm):
 
     semaines = SemainesField(
         help_text=u'Vous pouvez vous inscrire à plusieurs semaines')
-    email = forms.EmailField()
-    email2 = forms.EmailField(label='Répéter email',
+    email2 = forms.EmailField(label=u'Répéter email',
                               widget=widgets.TextInput(attrs={'autocomplete' : 'off'}))
     formule = my_widgets.FullModelField(queryset=Formule.objects.all(),
                                         widget=my_widgets.FormuleWidget)
@@ -48,6 +47,7 @@ class InscriptionForm(forms.ModelForm):
         model = Inscription
         fields = '__all__'
         widgets = {
+            'email' : widgets.EmailInput,
             'sexe' : widgets.RadioSelect,
             'adresse' : widgets.Textarea(attrs={'rows' : 3}),
             'naissance' : my_widgets.DatePicker,
@@ -64,6 +64,9 @@ class InscriptionForm(forms.ModelForm):
         '''
         return PREINSCRIPTION
 
+    def clean_acompte(self):
+        return 0
+
     def clean(self):
         cleaned_data = super(InscriptionForm, self).clean()
         formule = cleaned_data.get('formule')
@@ -76,7 +79,7 @@ class InscriptionForm(forms.ModelForm):
             if not formule.affiche_train:
                 cleaned_data['train'] = 0
         if email != email2:
-            self._errors['email2'] = self.error_class(['Emails differents.'])
+            self._errors['email2'] = self.error_class([u'Emails différents.'])
         return cleaned_data
 
     def send_emails(self):

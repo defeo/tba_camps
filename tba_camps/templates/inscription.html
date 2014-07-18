@@ -27,8 +27,6 @@ automatiquement annulée.{% endblock %}
   .pure-control-group li:hover { background-color: rgba(255,255,255,0.5) }
   .error {
     background-color: #fcc;
-  }
-  .errorlist { 
     color: #666;
     font-weight: bold;
   }
@@ -50,6 +48,9 @@ automatiquement annulée.{% endblock %}
   }
 
   #id_formule label, #id_hebergement label { width: 100% }
+  #id_formule > li:hover { background-color: inherit }
+  #id_formule > li > ul { margin: 1ex 0 2ex 2ex }
+  #id_formule > li > div { font-size: larger; font-weight: normal }
 
   #id_hebergement {
     font-weight: bold;
@@ -96,6 +97,17 @@ automatiquement annulée.{% endblock %}
       annulée.</p>
 
 <p style="text-align:center;font-size:80%">Les champs marqués d'une étoile * sont obligatoires</p>
+
+{% if form.errors %}
+<div class="error">
+  <p>ERREUR&nbsp;: Veuillez corriger les erreurs ci-dessous.</p>
+  <ul style="margin: 2ex">
+    {% for e in form.non_field_errors %}
+    <li>{{ e }}</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
 
 <form action="" method="post" class="pure-form pure-form-aligned">
   {% csrf_token %}

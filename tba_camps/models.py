@@ -42,8 +42,9 @@ class Hebergement(OrderedModel):
         return self.nom
 
 class Formule(OrderedModel):
+    groupe = models.CharField(max_length=255, blank=True, default='')
     nom = models.CharField(max_length=255)
-    description = models.TextField()
+    description = models.TextField()    
     prix = models.IntegerField()
     taxe = models.IntegerField('Taxe menage', default=0)
     cotisation = models.IntegerField('Cotisation TBA', default=15)
@@ -65,8 +66,8 @@ class Formule(OrderedModel):
 
 PREINSCRIPTION = 'P'
 VALID = 'V'
+PAID = 'D'
 CANCELED = 'A'
-INVALID = 'I'
     
 class Inscription(models.Model):
     nom = models.CharField(max_length=255)
@@ -81,7 +82,7 @@ class Inscription(models.Model):
     pays = models.CharField(max_length=255, default='France')
     email = models.EmailField('Adresse email (des parents)', max_length=255, blank=True)
     tel = models.CharField('Téléphone', max_length=20, validators=[
-        RegexValidator(regex='^\+?\d{10,}$', message='Numéro invalide')])
+        RegexValidator(regex='^\+?[\d -\.]{10,}$', message='Numéro invalide')])
     semaines = models.ManyToManyField(Semaine)
     formule = models.ForeignKey(Formule)
     train = models.IntegerField('Supplément aller-retour train depuis Paris',
@@ -106,11 +107,12 @@ class Inscription(models.Model):
                                      ('VB', 'Virement bancaire'),
                                      ('CV', 'Chèques vacances'),
                                      ('BC', 'Bons CAF')])
-    etat = models.CharField("État de l'inscription", max_length=1, default='V',
+    etat = models.CharField("État de l'inscription", max_length=1, default=VALID,
                             choices=[(PREINSCRIPTION, 'Pré-inscription'),
                                      (VALID, 'Validé'),
-                                     (CANCELED, 'Annulé'),
-                                     (INVALID, 'Mail non valide')])
+                                     (PAID, 'Payé'),
+                                     (CANCELED, 'Annulé'),])
+    acompte = models.IntegerField(default=0)
     licencie = models.CharField('Licencié dans un club', max_length=1,
                                 choices=[('O', 'Oui'), ('N', 'Non')], default=0)
     venu = models.CharField('Je suis déjà venu à Superdévoluy', max_length=1,
@@ -130,10 +132,19 @@ class Inscription(models.Model):
         return reverse('inscription_view', kwargs={ 'slug' : self.slug })
 
     def prix(self):
-        return self.formule.total() + self.train + self.assurance
+        return (self.formule.total() + self.train + self.assurance
+                + self.navette_a + self.navette_r)
+
+    def reste(self):
+        return (self.etat != PAID) * (self.prix() - self.acompte)
+    reste.short_description = u'Solde dû'
 
     def save(self):
-        super(Inscription, self).save()
-        cipher = AES.new(settings.SECRET_KEY[:16], AES.MODE_ECB)
-        self.slug = base64.b64encode(cipher.encrypt("{:0>16X}".format(self.pk)), '_-')[:-2]
+        if self.pk is not None:
+            orig = self.__class__.objects.get(pk=self.pk)
+            if (self.acompte and not orig.acompte
+                and orig.etat == self.etat == PREINSCRIPTION):
+                self.etat = VALID
+            cipher = AES.new(settings.SECRET_KEY[:16], AES.MODE_ECB)
+            self.slug = base64.b64encode(cipher.encrypt("{:0>16X}".format(self.pk)), '_-')[:-2]
         super(Inscription, self).save()

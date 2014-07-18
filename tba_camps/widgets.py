@@ -48,6 +48,27 @@ class FormuleChoiceInput(FullModelChoiceInput):
 class FormuleRenderer(forms.widgets.ChoiceFieldRenderer):
     choice_input_class = FormuleChoiceInput
 
+    def render(self):
+        id_ = self.attrs.get('id', None)
+        start_tag = format_html('<ul id="{0}">', id_) if id_ else '<ul>'
+        output = [start_tag]
+        prev_group = ''
+        for i, choice in enumerate(self.choices):
+            group = choice[1].groupe
+            if group and group != prev_group:
+                if prev_group:
+                    output.append('</ul></li>')
+                prev_group = group
+                output.append(format_html('<li><div>{0}</div><ul>', group))
+            w = self.choice_input_class(self.name, self.value,
+                                        self.attrs.copy(), choice, i)
+            output.append(format_html(u'<li>{0}</li>', force_text(w)))
+        if prev_group:
+            output.append('</ul>')
+        output.append('</ul>')
+        return mark_safe(u'\n'.join(output))
+
+
 class FormuleWidget(forms.widgets.RendererMixin, forms.Select):
     renderer = FormuleRenderer
     
