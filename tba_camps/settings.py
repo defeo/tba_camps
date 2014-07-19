@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'import_export',
     'django_globals',
     'ordered_model',
+    'easy_pdf',
     'tba_camps',
 )
 
@@ -98,6 +99,14 @@ STATIC_URL = '/static/'
 
 # Templates
 TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
+TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
+                               "django.core.context_processors.debug",
+                               "django.core.context_processors.i18n",
+                               "django.core.context_processors.media",
+                               "django.core.context_processors.static",
+                               "django.core.context_processors.tz",
+                               "django.contrib.messages.context_processors.messages",
+                               "tba_camps.context_processor.cp")
 
 
 # Django-recaptcha
@@ -106,4 +115,6 @@ RECAPTCHA_PRIVATE_KEY = 'dummy'
 
 # 
 import datetime
+from django.utils.safestring import mark_safe
 ANNEE = datetime.datetime.now().year
+ADRESSE = mark_safe("Laure SENEGAL &mdash; Camps TBA &mdash; 11 rue du verger<br>21200 Sante Marie La Blanche")

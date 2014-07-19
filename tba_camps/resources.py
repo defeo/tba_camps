@@ -2,8 +2,6 @@ import functools
 from import_export import resources, fields, widgets
 from django_globals import globals
 from models import Inscription, Semaine
-import datetime
-from django.conf import settings
 
 class ChoiceWidget(widgets.Widget):
     def __init__(self, choices):
@@ -78,5 +76,5 @@ class InscriptionResource(resources.ModelResource):
         return req.build_absolute_uri(inscr.get_absolute_url())
 
     def dehydrate_age(self, inscr):
-        "Age au mois de juin de l'annee en cours"
-        return (datetime.date(settings.ANNEE,6,1) - inscr.naissance).days // 365
+        return inscr.age()
+        

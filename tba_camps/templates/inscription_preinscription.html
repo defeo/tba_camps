@@ -3,6 +3,18 @@
 
 {% block title %}Bulletin d'inscription{% endblock %}
 
+{% block extrahead %}
+<style>
+  ul {
+    margin-left: 2ex;
+  }
+  blockquote {
+    margin-left: 2ex;
+  }
+  p { margin: 0.3ex 0 }
+</style>
+{% endblock %}
+
 {% block content %}
 
 <h3>Merci de votre demande. Un mail de confirmation a été envoyé à
@@ -10,62 +22,37 @@
 
 
 <p>
-  Pour que votre dossier soit complet, veuillez joindre en même temps que votre règlement :
+  Pour compléter votre inscription vous devez imprimer et remplir les
+  pièces suivantes :
 </p>
 <ul>
-  <li>La feuille unique : Autorisation parentale, Assurance, Droit à
-    l'image que vous aurez remplie et signée</li>
-  <li>La fiche sanitaire de liaison</li>      
+  <li>La <a href="./pdf">fiche d'inscription et autorisation parentale</a>.</li>
+  <li>La fiche sanitaire de liaison (télécharger 
+    <a href="{% static "/pdf/Fiche-sanitaire-2014.doc" %}" target="_blank">ici en word</a>
+    et <a href="{% static "/pdf/Fiche-sanitaire-2014.pdf" %}" target="_blank">ici en pdf</a>).</li>
+</ul>
+<p>Que vous enverrez à l'adresse</p>
+<blockquote class="adress">{{ settings.ADRESSE }}</blockquote>
+<p>en y joingnant :</p>
+<ul>
+  <li>Votre règlement. Il peut être réglé avec 2 ou 3 chèques que nous
+    encaissons à un mois d'intervalle. TBA accepte les chèques
+    vacances ainsi que les bons-vacances de certaines C.A.F.</li>
   <li>Un certificat médical d'aptitude ou l'attestation de la
     licence FFBB que vous pouvez télécharger sur le
     site <a href="http://www.ffbb.com"
 	    target="_blank">www.ffbb.com</a> dans la rubrique RECHERCHER, ou
-    la photocopie de sa licence FFBB
+    la photocopie de sa licence FFBB.
   </li>
-
   <li>2 enveloppes timbrées à 1 € (avec votre nom et adresse)</li>
-  <li>Votre demande de location si vous venez en formule 2 « Hameau du Puy »</li>      
 </ul> 
 
-<p>Télécharger l'autorisation parentale, assurance, droit à l'image
-  <a href="{% static "/pdf/autorisation-parentale-2014.doc" %}"
-     target="_blank">ici en word</a> et <a href="{% static "/pdf/autorisation-parentale-2014.pdf" %}" target="_blank">ici en
-    pdf</a></p>
+{% if object.hebergement %}
+<p>Pour la réservation en <b>{{ object.hebergement }}</b></p>
+<ul><li>{{ object.hebergement.commentaire }}</li></ul>
+{% endif %}
 
-<p>Télécharger la fiche sanitaire de liaison <a href="{% static "/pdf/Fiche-sanitaire-2014.doc" %}" target="_blank">ici en word</a>
-  et <a href="{% static "/pdf/Fiche-sanitaire-2014.pdf" %}"
-	target="_blank">ici en pdf</a></p>
-
-<p>
-  Télécharger la fiche de réservation pour un logement SNOW &amp; SUN
-  Le Hameau du Puy <a href="{% static "/pdf/Fiche-de-reservation-Hameau-du-Puy-2014.doc" %}">Ici</a><p>
-
-  Pour tout logement chalet ou appartement réservé aux &quot;Hameau du
-  Puy&quot;, l'acompte versé doit être de l'ordre de 30%, chèque à
-  l'ordre de TBA.</b></p>
-<p>
-
-<p>
-  Pour un logement avec Hôtel Club Résidence « Les Chardonnelles »
-  ou les Chalets Margot, faire la réservation directement et pour
-  bénéficier de 10% de remise donner le code TBA2014 : mail :
-  {{ "info@chalets-margot.com" | urlize }} tél 0608589689  
-  <a target="_blank" href="{% static "pdf/2014-Chalets-Margot-tarifs.doc" %}">télécharger  ici</a>
-</p>
-
-<p align="center"><font color="#FF0000"><b>&nbsp;</b></font><font color="#ff0000"><strong>Adresse 
-      pour l'envoi du chèque</strong>&nbsp;<strong> et de l'autorisation parentale</strong>&nbsp;</font><font color="#FF0000"><b>:<br>
-      &nbsp;</b></font><b><span style="color: red; font-family: Arial,sans-serif; font-size: 10pt">Laure 
-      SENEGAL Camps TBA &nbsp;11 Rue du Verger&nbsp; 21200 Saint Marie La Blanche</span></b><font color="#FF0000"><b><br>
-      &nbsp;</b></font>
-  
-<p align="center"><font size="5">&nbsp;</font><b><font size="5"
-						       color="#0000FF">Télécharger
-      le </font></b><font size="5"><a target="_blank" href="{% static "pdf/Bulletin-inscription-2014.pdf" %}">bulletin d'inscription
-      2014</a></font><br>
-  <br>
-  <b>Vous le renvoyez par la poste avec l'autorisation parentale signée<br>
-    <font color="#FF0000">Dès réception de votre règlement vous recevrez par courrier postal le dossier de confirmation d'inscription.</font></b></p>
-
+<p>Dès réception de votre règlement nous vous enverrons le dossier de
+  confirmation d'inscription par courrier postal.</p>
 
 {% endblock %}

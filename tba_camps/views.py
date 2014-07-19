@@ -8,10 +8,12 @@ from django.views.generic import DetailView
 from django.views.generic.edit import CreateView
 from django.views.generic.base import TemplateView
 from django.template import TemplateDoesNotExist
-from models import Inscription, Formule, Hebergement, Semaine, PREINSCRIPTION, VALID
+from models import Inscription, Formule, Hebergement, Semaine, PREINSCRIPTION, VALID, PAID
 from captcha.fields import ReCaptchaField
 import widgets as my_widgets
 from django.utils.translation import ugettext_lazy as _
+from easy_pdf.views import PDFTemplateResponseMixin
+
 
 class SemainesField(forms.ModelMultipleChoiceField):
     widget = widgets.CheckboxSelectMultiple
@@ -108,10 +110,14 @@ class InscriptionView(DetailView):
     def get_template_names(self):
         if self.object.etat == PREINSCRIPTION:
             return 'inscription_preinscription.html'
-        elif self.object.etat == VALID:
+        elif self.object.etat in (VALID, PAID):
             return 'inscription_sommaire.html'
         else:
             return 'inscription_erreur.html'
+
+class InscriptionPDFView(PDFTemplateResponseMixin, DetailView):
+    template_name = "inscription-pdf.html"
+    model = Inscription
 
 
 def pratique(request):

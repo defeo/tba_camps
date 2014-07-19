@@ -8,6 +8,8 @@ from markupfield.fields import MarkupField
 from Crypto.Cipher import AES
 from django.conf import settings
 import base64
+from django.conf import settings
+import datetime
 
 class Semaine(models.Model):
     debut = models.DateField('Début de la semaine', unique=True)
@@ -18,7 +20,10 @@ class Semaine(models.Model):
     def __unicode__(self):
         from datetime import timedelta
         return u'%s – %s' % (self.debut.strftime('%d %b').decode('utf8'),
-                             (timedelta(6) + self.debut).strftime('%d %b %Y').decode('utf8'))
+                             self.fin().strftime('%d %b %Y').decode('utf8'))
+
+    def fin(self):
+        return datetime.timedelta(6) + self.debut
 
     def inscrits(self):
         return self.inscription_set.filter(etat='V').count()
@@ -60,8 +65,8 @@ class Formule(OrderedModel):
     def __unicode__(self):
         return self.nom
 
-    def total(self):
-        return self.prix + self.taxe + self.cotisation
+    def total(self, semaines):
+        return self.prix*semaines + self.taxe + self.cotisation
 
 
 PREINSCRIPTION = 'P'
@@ -131,9 +136,16 @@ class Inscription(models.Model):
     def get_absolute_url(self):
         return reverse('inscription_view', kwargs={ 'slug' : self.slug })
 
+    def age(self):
+        "Age au mois de juin de l'annee en cours"
+        return (datetime.date(settings.ANNEE,6,1) - self.naissance).days // 365
+
     def prix(self):
-        return (self.formule.total() + self.train + self.assurance
-                + self.navette_a + self.navette_r)
+        return (self.formule.total(self.semaines.count()) + self.train
+                + self.assurance + self.navette_a + self.navette_r)
+
+    def avance(self):
+        return self.prix() // 2
 
     def reste(self):
         return (self.etat != PAID) * (self.prix() - self.acompte)
