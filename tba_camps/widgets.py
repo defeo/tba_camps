@@ -143,6 +143,6 @@ class FileInput(forms.widgets.FileInput):
         s = {
             'input' : super(FileInput, self).render(name, value, attrs),
             'url'   : value.url if hasattr(value, 'url') else '',
-            'text'  : value.name.split('/')[-1] if hasattr(value, 'name') else '',
+            'text'  : (hasattr(value, 'name') and value.name and value.name.split('/')[-1]) or '',
         }
         return mark_safe(self.template % s)
