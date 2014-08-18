@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load forms %}
 
 {% block title %}Bulletin d'inscription{% endblock %}
 
@@ -9,43 +10,92 @@
     margin-left: 2ex;
   }
   blockquote {
-    margin-left: 2ex;
+    margin: 2ex;
+    font-size: 120%;
   }
   p { margin: 0.3ex 0 }
+  .messages { margin: 20px }
+  .messages li {
+    padding: 1ex;
+    list-style-type: none;
+    background-color: #dadaff;
+    border: solid thin #666;
+    border-radius: 4px;
+  }
+  .messages li.error {
+    background-color: #fcc;
+    color: #666;
+    font-weight: bold;
+  }
 </style>
 {% endblock %}
 
 {% block content %}
 
-<h3>Merci de votre demande. Un mail de confirmation a été envoyé à
-  l'adresse {{ object.email | urlize }}.</h3>
+<h3>{{ object.prenom }} {{ object.nom }}, nous vous remercions de
+votre demande d'inscription.</h3>
 
+{% if messages %}
+<ul class="messages">
+  {% for message in messages %}
+  <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+  {% endfor %}
+</ul>
+{% endif %}
 
 <p>
   Pour compléter votre inscription vous devez imprimer et remplir les
   pièces suivantes :
 </p>
 <ul>
-  <li>La <a href="./pdf">fiche d'inscription et autorisation parentale</a>.</li>
+  <li>La <a href="{% url 'inscription_pdf_view' object.slug %}">fiche d'inscription et autorisation parentale</a>.</li>
   <li>La fiche sanitaire de liaison (télécharger 
     <a href="{% static "/pdf/Fiche-sanitaire-2014.doc" %}" target="_blank">ici en word</a>
     et <a href="{% static "/pdf/Fiche-sanitaire-2014.pdf" %}" target="_blank">ici en pdf</a>).</li>
-</ul>
-<p>Que vous enverrez à l'adresse</p>
-<blockquote class="adress">{{ settings.ADRESSE }}</blockquote>
-<p>en y joingnant :</p>
-<ul>
-  <li>Votre règlement. Il peut être réglé avec 2 ou 3 chèques que nous
-    encaissons à un mois d'intervalle. TBA accepte les chèques
-    vacances ainsi que les bons-vacances de certaines C.A.F.</li>
-  <li>Un certificat médical d'aptitude ou l'attestation de la
+  <li>Un certificat médical d'aptitude, ou l'attestation de la
     licence FFBB que vous pouvez télécharger sur le
-    site <a href="http://www.ffbb.com"
+    site <a href="http://www.ffbb.com/jouer/trouver-un-licencie"
 	    target="_blank">www.ffbb.com</a> dans la rubrique RECHERCHER, ou
-    la photocopie de sa licence FFBB.
+    la photocopie de votre licence FFBB.
   </li>
-  <li>2 enveloppes timbrées à 1 € (avec votre nom et adresse)</li>
-</ul> 
+</ul>
+
+<form action="" method="post" class="pure-form pure-form-aligned"
+      enctype="multipart/form-data">
+  {% csrf_token %}
+
+  <div id="uploads" class="fieldgroup">
+    <h3>Merci de scanner et téléverser ces pièces à l'aide de ce formulaire
+      (maximum {{ settings.MAX_FILE_SIZE }}Mo)</h3>
+
+    {% for f in form %}
+    <div class="pure-control-group">
+      <label for="{{ f.name }}">{{ f.label }}</label>
+      {{ f }}
+    </div>
+    {% endfor %}
+
+    <button type="submit" class="pure-button pure-button-primary">Mettre à jour</button>
+  </div>
+</form>
+
+<div class="fieldgroup">
+<h3>Merci d'envoyer votre règlement par courrier à l'adresse</h3>
+
+<blockquote class="adress">{{ settings.ADRESSE }}</blockquote>
+
+<p>Il peut être réglé avec 2 ou 3 chèques que nous encaissons à un
+  mois d'intervalle. Veuillez noter au verso votre nom, prénom et
+  adresse email.</p>
+<p>TBA accepte les chèques vacances ainsi que les
+  bons-vacances de certaines C.A.F.</p>
+<p>Merci de joindre</p>
+<ul>
+<li> 2 enveloppes timbrées à 1 € (avec votre nom et
+  adresse),</li>
+<li>le cas échéant, la fiche d'inscription, la fiche sanitaire et le
+  certificat médical.</li>
+</ul>
 
 {% if object.hebergement %}
 <p>Pour la réservation en <b>{{ object.hebergement }}</b></p>
@@ -54,5 +104,8 @@
 
 <p>Dès réception de votre règlement nous vous enverrons le dossier de
   confirmation d'inscription par courrier postal.</p>
+
+</div>
+
 
 {% endblock %}

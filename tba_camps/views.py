@@ -1,19 +1,21 @@
 # -:- encoding: utf-8
 
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 from django import forms
-from django.forms import widgets
+from django.forms import widgets, ValidationError
 from django.shortcuts import render, redirect
 from django.views.generic import DetailView
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView, ModelFormMixin
 from django.views.generic.base import TemplateView
 from django.template import TemplateDoesNotExist
+from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
 from models import Inscription, Formule, Hebergement, Semaine, PREINSCRIPTION, VALID, PAID
 from captcha.fields import ReCaptchaField
 import widgets as my_widgets
 from django.utils.translation import ugettext_lazy as _
 from easy_pdf.views import PDFTemplateResponseMixin
-
+from django.conf import settings
 
 class SemainesField(forms.ModelMultipleChoiceField):
     widget = widgets.CheckboxSelectMultiple
@@ -77,11 +79,11 @@ class InscriptionForm(forms.ModelForm):
         if formule:
             hebergement = cleaned_data.get('hebergement')
             if formule.affiche_hebergement and not hebergement:
-                self._errors['hebergement'] = self.error_class([_('This field is required.')])
+                self.add_error('hebergement', self.error_class([_('This field is required.')]))
             if not formule.affiche_train:
                 cleaned_data['train'] = 0
         if email != email2:
-            self._errors['email2'] = self.error_class([u'Emails différents.'])
+            self.add_error('email2', self.error_class([u'Emails différents.']))
         return cleaned_data
 
     def send_emails(self):
@@ -90,12 +92,13 @@ class InscriptionForm(forms.ModelForm):
         """
         pass
 
-class InscriptionFormView(CreateView):
+class InscriptionFormView(SuccessMessageMixin, CreateView):
     """
     Presente le formulaire d'inscription
     """
     template_name = 'inscription.html'
     form_class = InscriptionForm
+    success_message = u"Un mail de confirmation a été envoyé à l'adresse %(email)s."
 
     def form_valid(self, form):
         form.send_emails()
@@ -106,14 +109,57 @@ class InscriptionView(DetailView):
     Montre une inscription
     """
     model = Inscription
+    template_name = 'inscription_erreur.html'
 
-    def get_template_names(self):
-        if self.object.etat == PREINSCRIPTION:
-            return 'inscription_preinscription.html'
-        elif self.object.etat in (VALID, PAID):
-            return 'inscription_sommaire.html'
-        else:
-            return 'inscription_erreur.html'
+    def dispatch(self, req, *args, **kwds):
+        etat = self.get_object().etat
+        if etat == PREINSCRIPTION:
+            return PreinscriptionView.as_view()(req, *args, **kwds)
+        elif etat in (VALID, PAID):
+            return ConfirmationView.as_view()(req, *args, **kwds)
+        return super(InscriptionView, self).dispatch(req, *args, **kwds)
+
+from models import upload_fields
+
+class UploadForm(forms.ModelForm):
+    class Meta:
+        model = Inscription
+        fields = upload_fields
+        widgets =  {f : my_widgets.FileInput for f in fields }
+
+    def clean(self, *args, **kwds):
+        cleaned_data = super(UploadForm, self).clean(*args, **kwds)
+        for f in self.changed_data:
+            if cleaned_data[f].size > settings.MAX_FILE_SIZE * 10**6:
+                raise ValidationError(u"Les pièces jointes ne doivent pas excéder %dMo." 
+                                      % settings.MAX_FILE_SIZE)
+        if not self.changed_data:
+            raise ValidationError('Veuillez télécharger au moins un fichier.')
+        return cleaned_data
+
+class PreinscriptionView(UpdateView):
+    """
+    Page de confirmation de préinscription, avec possibilité de upload.
+    """
+    model = Inscription
+    form_class = UploadForm
+    template_name = 'inscription_preinscription.html'
+
+    def form_valid(self, *args, **kwds):
+        messages.info(self.request,
+                      u"Merci, vos modifications ont été prises en considération.")
+        return super(PreinscriptionView, self).form_valid(*args, **kwds)
+
+    def form_invalid(self, form, *args, **kwds):
+        messages.error(self.request, form.non_field_errors()[0])
+        return HttpResponseRedirect(self.get_success_url())
+
+class ConfirmationView(DetailView):
+    """
+    Page de confirmation d'inscription
+    """
+    model = Inscription
+    template_name = 'inscription_sommaire.html'
 
 class InscriptionPDFView(PDFTemplateResponseMixin, DetailView):
     template_name = "inscription-pdf.html"

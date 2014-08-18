@@ -11,6 +11,7 @@ import base64
 from django.conf import settings
 import datetime
 
+
 class Semaine(models.Model):
     debut = models.DateField('Début de la semaine', unique=True)
     commentaire = models.CharField('Commentaire affiché', max_length=255, blank=True)
@@ -74,6 +75,19 @@ VALID = 'V'
 PAID = 'D'
 CANCELED = 'A'
     
+import django.db.models.fields.files as files
+
+class FieldFile(files.FieldFile):
+    def _get_url(self):
+        self._require_file()
+        return self.instance.get_absolute_url() + 'uploads/' + self.field.name
+    url = property(_get_url)
+    
+class FileField(files.FileField):
+    attr_class = FieldFile
+
+upload_fields = ('fiche_inscr', 'fiche_sanit', 'certificat') 
+
 class Inscription(models.Model):
     nom = models.CharField(max_length=255)
     prenom = models.CharField(max_length=255)
@@ -129,6 +143,9 @@ class Inscription(models.Model):
     adr_parrain = models.CharField('Adresse parrain', max_length=255, blank=True)
     date = models.DateTimeField('Date inscription', auto_now_add=True)
     slug = models.SlugField(max_length=22, blank=True, editable=False)
+    fiche_inscr = FileField("Fiche d'inscription", blank=True, null=True)
+    fiche_sanit = FileField('Fiche sanitaire', blank=True, null=True)
+    certificat = FileField('Certificat Médical', blank=True, null=True)
 
     def __unicode__(self):
         return '%s %s <%s>' % (self.nom, self.prenom, self.email)
@@ -151,12 +168,38 @@ class Inscription(models.Model):
         return (self.etat != PAID) * (self.prix() - self.acompte)
     reste.short_description = u'Solde dû'
 
-    def save(self):
+    def save(self, *args, **kwds):
         if self.pk is not None:
             orig = self.__class__.objects.get(pk=self.pk)
+            # Met à jour l'état si l'acompte a changé
             if (self.acompte and not orig.acompte
                 and orig.etat == self.etat == PREINSCRIPTION):
                 self.etat = VALID
-            cipher = AES.new(settings.SECRET_KEY[:16], AES.MODE_ECB)
-            self.slug = base64.b64encode(cipher.encrypt("{:0>16X}".format(self.pk)), '_-')[:-2]
-        super(Inscription, self).save()
+            # Efface les vieux fichiers
+            for f in upload_fields:
+                of, nf = getattr(orig, f), getattr(self, f)
+                if of != nf:
+                    of.delete(save=False)
+        else:
+            super(Inscription, self).save(*args, **kwds)
+        cipher = AES.new(settings.SECRET_KEY[:16], AES.MODE_ECB)
+        self.slug = base64.b64encode(cipher.encrypt("{:0>16X}".format(self.pk)), '_-')[:-2]
+        super(Inscription, self).save(*args, **kwds)
+
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
+
+@receiver(post_delete, sender=Inscription)
+def delete_files(sender, instance, **kwargs):
+    'Delete files after deleting Inscription instances'
+    for f in upload_fields:
+        ff = getattr(instance, f)
+        if ff:
+            ff.delete()
+
+from django_downloadview import ObjectDownloadView
+from django.conf.urls import url
+
+views = { f : ObjectDownloadView.as_view(model=Inscription, file_field=f)
+            for f in upload_fields }
+urls = [ url(r'^uploads/%s' % f, v) for f, v in views.items() ]

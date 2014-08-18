@@ -26,3 +26,6 @@ static3==0.5.1
 tablib==0.10.0
 wsgiref==0.1.2
 xhtml2pdf==0.0.6
+django-downloadview==1.6
+mock==1.0.1
+requests==2.3.0

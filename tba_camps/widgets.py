@@ -5,6 +5,7 @@ from django.forms.util import flatatt
 from django.utils.safestring import mark_safe
 from django import forms
 from django.utils.encoding import force_text
+from django.core.urlresolvers import reverse
 
 class FullModelChoiceInput(forms.widgets.ChoiceInput):
     input_type = 'radio'
@@ -131,3 +132,17 @@ class DatePicker(forms.widgets.DateInput):
             self.attrs['class'] = 'datepicker'
         else:
             self.attrs['class'] += ' datepicker'
+
+
+### Files
+
+class FileInput(forms.widgets.FileInput):
+    template = u'%(input)s <a href="%(url)s">%(text)s</a>'
+
+    def render(self, name, value, attrs=None):
+        s = {
+            'input' : super(FileInput, self).render(name, value, attrs),
+            'url'   : value.url if hasattr(value, 'url') else '',
+            'text'  : value.name.split('/')[-1] if hasattr(value, 'name') else '',
+        }
+        return mark_safe(self.template % s)

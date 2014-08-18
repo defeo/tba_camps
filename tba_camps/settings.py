@@ -97,6 +97,9 @@ except Error:
 STATIC_ROOT = 'staticfiles'
 STATIC_URL = '/static/'
 
+# Uploaded files
+MEDIA_ROOT = '/tmp/'
+
 # Templates
 TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
 TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
@@ -118,3 +121,4 @@ import datetime
 from django.utils.safestring import mark_safe
 ANNEE = datetime.datetime.now().year
 ADRESSE = mark_safe("Laure SENEGAL &mdash; Camps TBA &mdash; 11 rue du verger<br>21200 Sante Marie La Blanche")
+MAX_FILE_SIZE = 1

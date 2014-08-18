@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.views.generic import RedirectView
-import views
+import views, models
 from django.contrib import admin
 admin.autodiscover()
 
@@ -10,7 +10,8 @@ urlpatterns = patterns('',
     url(r'^inscription/$', views.InscriptionFormView.as_view(), name='inscription_form'),
     url(r'^inscription/(?P<slug>[\w-]{22})/', include(patterns('inscription.views',
         url(r'^$', views.InscriptionView.as_view(), name='inscription_view'),
-        url(r'^pdf/$', views.InscriptionPDFView.as_view(), name='inscription_pdf_view'),
+        url(r'^fiche/$', views.InscriptionPDFView.as_view(), name='inscription_pdf_view'),
+        *models.urls
     ))),
     url(r'^pratique/$', views.pratique, name='pratique'),
     url(r'^tba/$', views.static_page, kwargs={'page' : 'index'}, name='static_index'),
