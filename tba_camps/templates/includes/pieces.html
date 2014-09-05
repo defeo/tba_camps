@@ -1,0 +1,18 @@
+{% load static %}
+
+<p>
+  Pour compléter votre inscription vous devez imprimer et remplir les
+  pièces suivantes :
+</p>
+<ul>
+  <li>La <a href="{{ host }}{% url 'inscription_pdf_view' object.slug %}">fiche d'inscription et autorisation parentale</a>.</li>
+  <li>La fiche sanitaire de liaison (télécharger 
+    <a href="{{ host }}{% static "/pdf/Fiche-sanitaire-2014.doc" %}" target="_blank">ici en word</a>
+    et <a href="{{ host }}{% static "/pdf/Fiche-sanitaire-2014.pdf" %}" target="_blank">ici en pdf</a>).</li>
+  <li>Un certificat médical d'aptitude, ou l'attestation de la
+    licence FFBB que vous pouvez télécharger sur le
+    site <a href="http://www.ffbb.com/jouer/trouver-un-licencie"
+	    target="_blank">www.ffbb.com</a> dans la rubrique RECHERCHER, ou
+    la photocopie de votre licence FFBB.
+  </li>
+</ul>

@@ -1,0 +1,18 @@
+{% extends "admin/change_form.html" %}
+
+{% block extrahead %}{{ block.super }}
+<script>
+  function send_mail() {
+    if (window.confirm("ATTENTION ! Voulez-vous vraiment envoyer un nouvel email à l'utilisateur ?")) {
+      window.location = 'send_mail';
+    }
+  }
+</script>
+{% endblock %}
+
+{% block object-tools-items %}
+<li>
+  <a href="javascript:send_mail()">Renvoyer email</a>
+</li>
+{{ block.super }}
+{% endblock %}

@@ -16,6 +16,7 @@ import widgets as my_widgets
 from django.utils.translation import ugettext_lazy as _
 from easy_pdf.views import PDFTemplateResponseMixin
 from django.conf import settings
+import mails
 
 class SemainesField(forms.ModelMultipleChoiceField):
     widget = widgets.CheckboxSelectMultiple
@@ -86,11 +87,6 @@ class InscriptionForm(forms.ModelForm):
             self.add_error('email2', self.error_class([u'Emails différents.']))
         return cleaned_data
 
-    def send_emails(self):
-        """
-        Envoie les emails de confirmation.
-        """
-        pass
 
 class InscriptionFormView(SuccessMessageMixin, CreateView):
     """
@@ -101,8 +97,9 @@ class InscriptionFormView(SuccessMessageMixin, CreateView):
     success_message = u"Un mail de confirmation a été envoyé à l'adresse %(email)s."
 
     def form_valid(self, form):
-        form.send_emails()
-        return super(InscriptionFormView, self).form_valid(form)
+        res = super(InscriptionFormView, self).form_valid(form)
+        mails.preinscr(self.object)
+        return res
 
 class InscriptionView(DetailView):
     """
@@ -148,7 +145,9 @@ class PreinscriptionView(UpdateView):
     def form_valid(self, *args, **kwds):
         messages.info(self.request,
                       u"Merci, vos modifications ont été prises en considération.")
-        return super(PreinscriptionView, self).form_valid(*args, **kwds)
+        res = super(PreinscriptionView, self).form_valid(*args, **kwds)
+        mails.inscr_modif(self.object)
+        return res
 
     def form_invalid(self, form, *args, **kwds):
         messages.error(self.request, form.non_field_errors()[0])

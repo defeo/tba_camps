@@ -1,0 +1,25 @@
+<h3>Merci d'envoyer votre règlement par courrier à l'adresse</h3>
+
+<blockquote class="adress">{{ settings.ADRESSE }}</blockquote>
+
+<p>Il peut être réglé avec 2 ou 3 chèques que nous encaissons à un
+  mois d'intervalle. Veuillez noter au verso votre nom, prénom et
+  adresse email.</p>
+<p>TBA accepte les chèques vacances ainsi que les
+  bons-vacances de certaines C.A.F.</p>
+<p>Merci de joindre</p>
+<ul>
+<li> 2 enveloppes timbrées à 1 € (avec votre nom et
+  adresse),</li>
+<li>le cas échéant, la fiche d'inscription, la fiche sanitaire et le
+  certificat médical.</li>
+</ul>
+
+{% if object.hebergement %}
+<p>Pour la réservation en <b>{{ object.hebergement }}</b></p>
+<ul><li>{{ object.hebergement.commentaire }}</li></ul>
+{% endif %}
+
+<p>Dès réception de votre règlement nous vous enverrons le dossier de
+  confirmation d'inscription par courrier postal.</p>
+

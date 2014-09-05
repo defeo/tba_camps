@@ -1,7 +1,7 @@
 import functools
 from import_export import resources, fields, widgets
-from django_globals import globals
 from models import Inscription, Semaine
+from django.conf import settings
 
 class ChoiceWidget(widgets.Widget):
     def __init__(self, choices):
@@ -72,8 +72,7 @@ class InscriptionResource(resources.ModelResource):
         return inscr.formule.nom
 
     def dehydrate_lien(self, inscr):
-        req = globals.request
-        return req.build_absolute_uri(inscr.get_absolute_url())
+        return inscr.get_full_url()
 
     def dehydrate_age(self, inscr):
         return inscr.age()

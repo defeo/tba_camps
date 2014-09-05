@@ -1,0 +1,16 @@
+{% if obj.sexe == 'M' %}Cher{% else %}Chère{% endif %} {{ obj.nom }} {{ obj.prenom }},
+
+Nous avons le plaisir de vous confirmer que votre inscription au camp
+de Basket TBA pour les semaines
+
+{% for s in obj.semaines.iterator %}
+- {{ s }}
+{% endfor %}
+
+a été acceptée. Vous pouvez télécharger votre dossier de confirmation
+à l'adresse {{ obj.get_full_url }}.
+
+Sportivement,
+
+--
+Team Basket Association

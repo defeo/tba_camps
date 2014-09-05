@@ -1,0 +1,7 @@
+Bonjour,
+
+L'utilisateur {{ obj | safe }} vient de télécharger une nouvelle piece
+jointe.
+
+Vous pouvez consulter sa fiche à l'adresse
+{{ admin_url }}

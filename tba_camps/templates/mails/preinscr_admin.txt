@@ -1,0 +1,7 @@
+Bonjour,
+
+Nous venons de recevoir une nouvelle inscription de la part de 
+{{ obj | safe }}.
+
+Vous pouvez consulter la fiche à l'adresse
+{{ admin_url }}

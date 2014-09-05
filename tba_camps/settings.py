@@ -38,7 +38,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'captcha',
     'import_export',
-    'django_globals',
     'ordered_model',
     'easy_pdf',
     'tba_camps',
@@ -51,7 +50,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django_globals.middleware.Global',
 )
 
 ROOT_URLCONF = 'tba_camps.urls'
@@ -112,13 +110,19 @@ TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
                                "tba_camps.context_processor.cp")
 
 
+# Mail configuration
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
 # Django-recaptcha
 RECAPTCHA_PUBLIC_KEY = 'dummy'
 RECAPTCHA_PRIVATE_KEY = 'dummy'
 
-# 
+# Global conf
 import datetime
 from django.utils.safestring import mark_safe
 ANNEE = datetime.datetime.now().year
 ADRESSE = mark_safe("Laure SENEGAL &mdash; Camps TBA &mdash; 11 rue du verger<br>21200 Sante Marie La Blanche")
 MAX_FILE_SIZE = 1
+FROM_EMAIL = 'Camps de basket TBA <tba@camps-basket.com>'
+HOST = 'http://www.camps-basket.com'
