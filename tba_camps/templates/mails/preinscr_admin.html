@@ -4,3 +4,9 @@
 {{ obj }}.</p>
 
 <p>Vous pouvez consulter la fiche à l'adresse <a href="{{ admin_url }}">{{ admin_url }}</a>.</p>
+
+{% if obj.notes %}
+<p>L'utilisateur a saisi une requête particulière&nbsp;:
+<blockquote>{{ obj.notes }}</blockquote>
+</p>
+{% endif %}

@@ -388,3 +388,7 @@ color: #faf0e6;
     color: #666;
     font-weight: bold;
 }
+
+h1 small, h2 small, h3 small {
+    font-weight: normal;
+}

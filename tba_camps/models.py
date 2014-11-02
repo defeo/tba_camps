@@ -130,12 +130,7 @@ class Inscription(models.Model):
     assurance = models.IntegerField(default=0,
                                     choices=[(0, 'Non'), 
                                              (6, u'Avec assurance (6€)')])
-    mode = models.CharField('Mode de règlement', max_length=2, blank=True,
-                            choices=[('C', 'Chèque'),
-                                     ('E', 'Espèces'),
-                                     ('VB', 'Virement bancaire'),
-                                     ('CV', 'Chèques vacances'),
-                                     ('BC', 'Bons CAF')])
+    mode = models.CharField('Mode de règlement', max_length=1023, blank=True)
     etat = models.CharField("État de l'inscription", max_length=1, default=VALID,
                             choices=[(PREINSCRIPTION, 'Pré-inscription'),
                                      (VALID, 'Validé'),
@@ -156,6 +151,7 @@ class Inscription(models.Model):
     fiche_inscr = FileField("Fiche d'inscription", blank=True, null=True)
     fiche_sanit = FileField('Fiche sanitaire', blank=True, null=True)
     certificat = FileField('Certificat Médical', blank=True, null=True)
+    notes = models.TextField(default='', blank=True)
 
     def __unicode__(self):
         return '%s %s <%s>' % (self.nom, self.prenom, self.email)

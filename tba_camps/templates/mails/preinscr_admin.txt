@@ -5,3 +5,9 @@ Nous venons de recevoir une nouvelle inscription de la part de
 
 Vous pouvez consulter la fiche à l'adresse
 {{ admin_url }}
+
+{% if obj.notes %}
+L'utilisateur a saisi une requête particulière :
+
+{{ obj.notes }}
+{% endif %}

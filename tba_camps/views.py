@@ -36,7 +36,9 @@ class InscriptionForm(forms.ModelForm):
     required_css_class = 'required'
 
     semaines = SemainesField(
-        help_text=u'Vous pouvez vous inscrire à plusieurs semaines')
+        help_text=u'Vous pouvez vous inscrire à plusieurs semaines avec la même formule. ' +
+        u'Pour vous inscrire avec plusieurs formules différentes, merci de remplir autant ' +
+        u"de bulletins d'inscription.")
     email2 = forms.EmailField(label=u'Répéter email',
                               widget=widgets.TextInput(attrs={'autocomplete' : 'off'}))
     formule = my_widgets.FullModelField(queryset=Formule.objects.all(),
@@ -46,6 +48,9 @@ class InscriptionForm(forms.ModelForm):
                                             required=False)
     etat = forms.Field(required=False, widget=forms.HiddenInput)
     acompte = forms.Field(required=False, widget=forms.HiddenInput)
+    notes = forms.Field(required=False,
+        help_text=u"N'hésitez pas à nous signaler toute situation particulière.",
+        widget=widgets.Textarea(attrs={'rows' : 5}))
     captcha = ReCaptchaField(attrs={'theme' : 'clean'})
 
     class Meta:

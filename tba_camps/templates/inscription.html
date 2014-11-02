@@ -94,7 +94,7 @@ automatiquement annulée.{% endblock %}
   {% csrf_token %}
 
   <div id="personal-data" class="fieldgroup">
-    <h3>Données personnelles</h3>
+    <h3>Données personnelles <small>(du stagiaire)</small></h3>
 
     <fieldset>
       {{ form.nom | cgroup }}
@@ -122,7 +122,7 @@ automatiquement annulée.{% endblock %}
   </div>
 
   <div id="inscription-data" class="fieldgroup">
-    <h3>Inscription (<a href="{% url 'pratique' %}">plus d'infos</a>)</h3>
+    <h3>Inscription <small>(<a href="{% url 'pratique' %}">plus d'infos</a>)</small></h3>
 
     <fieldset>
       {{ form.semaines | cgroup }}
@@ -153,6 +153,12 @@ automatiquement annulée.{% endblock %}
 	</tfoot>
       </table>
     </fieldset>
+  </div>
+
+  <div id="notes-data" class="fieldgroup">
+    <h3>Commentaire</h3>
+    
+    {{ form.notes | cgroup }}
   </div>
 
   <div id="parrain-data" class="fieldgroup">
