@@ -64,13 +64,18 @@ automatiquement annulée.{% endblock %}
 
 {% block content %}
 
-<p style="text-align:center;color:#f00;font-weight:bold;font-size:30px">BULLETIN D'INSCRIPTION 2014</p>
+<p style="text-align:center;color:#f00;font-weight:bold;font-size:30px">BULLETIN D'INSCRIPTION {{ settings.ANNEE }}</p>
 
 <p style="text-align:center;font-weight:bold;color:#00f">Votre
       réservation ne sera définitive qu'à la réception de votre chèque
       d'acompte.  Attention, ce chèque doit nous parvenir dans un
       délai de 8 jours sinon votre réservation est automatiquement
       annulée.</p>
+
+<p style="text-align:center">
+  <a href="{% url 'inscription_reminder' %}">Vous êtes déjà inscrit et
+  vous souhaitez recevoir un email de confirmation, cliquez ici.</a>
+</p>
 
 <p style="text-align:center;font-size:80%">Les champs marqués d'une étoile * sont obligatoires</p>
 

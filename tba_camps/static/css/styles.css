@@ -375,3 +375,16 @@ color: #faf0e6;
     padding: 1ex;
     margin: 1ex 0;
 }
+.messages { margin: 20px }
+.messages li {
+    padding: 1ex;
+    list-style-type: none;
+    background-color: #dadaff;
+    border: solid thin #666;
+    border-radius: 4px;
+}
+.messages li.error {
+    background-color: #fcc;
+    color: #666;
+    font-weight: bold;
+}

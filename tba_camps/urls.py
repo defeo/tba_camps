@@ -13,6 +13,7 @@ urlpatterns = patterns('',
         url(r'^fiche/$', views.InscriptionPDFView.as_view(), name='inscription_pdf_view'),
         *models.urls
     ))),
+    url(r'^cherche/$', views.ReminderView.as_view(), name='inscription_reminder'),
     url(r'^pratique/$', views.pratique, name='pratique'),
     url(r'^tba/$', views.static_page, kwargs={'page' : 'index'}, name='static_index'),
     url(r'^tba/(?P<page>[a-z]+)/$', views.static_page, name='static_pages'),

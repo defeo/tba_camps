@@ -5,12 +5,12 @@ from django import forms
 from django.forms import widgets, ValidationError
 from django.shortcuts import render, redirect
 from django.views.generic import DetailView
-from django.views.generic.edit import CreateView, UpdateView, ModelFormMixin
+from django.views.generic.edit import CreateView, UpdateView, ModelFormMixin, FormView
 from django.views.generic.base import TemplateView
 from django.template import TemplateDoesNotExist
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
-from models import Inscription, Formule, Hebergement, Semaine, PREINSCRIPTION, VALID, PAID
+from models import Inscription, Formule, Hebergement, Semaine, PREINSCRIPTION, VALID, PAID, CANCELED
 from captcha.fields import ReCaptchaField
 import widgets as my_widgets
 from django.utils.translation import ugettext_lazy as _
@@ -164,6 +164,35 @@ class InscriptionPDFView(PDFTemplateResponseMixin, DetailView):
     template_name = "inscription-pdf.html"
     model = Inscription
 
+class ReminderForm(forms.Form):
+    email = forms.EmailField(label=u'Email')
+
+    def clean(self, *args, **kwds):
+        cleaned_data = super(ReminderForm, self).clean(*args, **kwds)
+        if 'email' in cleaned_data:
+            inscr = Inscription.objects.filter(email=cleaned_data['email']).exclude(etat=CANCELED)
+            if inscr:
+                cleaned_data['email'] = inscr
+                return cleaned_data
+        raise ValidationError('Invalid email')
+
+class ReminderView(FormView):
+    '''
+    La page pour chercher des inscriptions
+    '''
+    template_name = 'reminder.html'
+    success_url = '.'
+    form_class = ReminderForm
+
+    def form_valid(self, form, *args, **kwds):
+        res = super(ReminderView, self).form_valid(form, *args, **kwds)
+        inscr = form.cleaned_data['email']
+        for i in inscr:
+            i.send_mail()
+            messages.info(self.request,
+                          u"%s %s, un mail de rappel vient de vous être envoyé."
+                          % (i.prenom, i.nom))
+        return res
 
 def pratique(request):
     '''

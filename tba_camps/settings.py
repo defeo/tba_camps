@@ -122,7 +122,7 @@ RECAPTCHA_PRIVATE_KEY = 'dummy'
 import datetime
 from django.utils.safestring import mark_safe
 ANNEE = datetime.datetime.now().year
-ADRESSE = mark_safe("Laure SENEGAL &mdash; Camps TBA &mdash; 11 rue du verger<br>21200 Sante Marie La Blanche")
+ADRESSE = mark_safe("Laure SENEGAL &mdash; Camps TBA &mdash; 11 rue du verger<br>21200 Sainte Marie La Blanche")
 MAX_FILE_SIZE = 1
 FROM_EMAIL = 'Camps de basket TBA <tba@camps-basket.com>'
 HOST = 'http://www.camps-basket.com'
