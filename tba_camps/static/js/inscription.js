@@ -1,7 +1,7 @@
 $(function() {
     // Show/hide dependent fields
     $('#id_formule').on('change', 'input:checked', function() {
-	var $this = $(this)
+	var $this = $(this);
 	$('#id_hebergement').trigger($this.data('hebergement')
 				     ? 'show.formule'
 				     : 'hide.formule');
@@ -15,6 +15,17 @@ $(function() {
     $('#id_hebergement, #id_train, #id_chambre').parent()
 	.hide()
 	.on('show.formule hide.formule', function(e, speed) {
+	    $(this)[e.type]('slow');
+	});
+
+    $('#id_licencie').on('change', 'input:checked', function() {
+	$('#id_licence').trigger($(this).val() == 'O'
+				 ? 'show.licence'
+				 : 'hide.licence');
+    });
+    $('#id_licence').parent()
+	.hide()
+	.on('show.licence hide.licence', function(e, speed) {
 	    $(this)[e.type]('slow');
 	});
 
@@ -50,6 +61,7 @@ $(function() {
 	    sum.find('.acompte td:nth-child(2)').html(Math.floor(total / 2));
 	});
     
-    // Trigger events if a Formule is checked
+    // Trigger events if dependee fields are checked
     $('#id_formule input:checked').trigger('change');
+    $('#id_licencie input:checked').trigger('change');
 });

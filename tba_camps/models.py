@@ -137,8 +137,7 @@ class Inscription(models.Model):
                                      (PAID, 'Payé'),
                                      (CANCELED, 'Annulé'),])
     acompte = models.IntegerField(default=0)
-    licencie = models.CharField('Licencié dans un club', max_length=1,
-                                choices=[('O', 'Oui'), ('N', 'Non')], default=0)
+    licence = models.CharField('Numéro de licence', max_length=31, blank=True)
     venu = models.CharField('Je suis déjà venu à Superdévoluy', max_length=1,
                             choices=[('O', 'Oui'), ('N', 'Non')], default=0)
     taille = models.IntegerField('Taille (cm)', 

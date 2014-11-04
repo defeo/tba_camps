@@ -48,9 +48,9 @@ class InscriptionForm(forms.ModelForm):
                                             required=False)
     etat = forms.Field(required=False, widget=forms.HiddenInput)
     acompte = forms.Field(required=False, widget=forms.HiddenInput)
-    notes = forms.Field(required=False,
-        help_text=u"N'hésitez pas à nous signaler toute situation particulière.",
-        widget=widgets.Textarea(attrs={'rows' : 5}))
+    licencie = forms.ChoiceField(label=u'Licencié dans un club',
+                                 widget=widgets.RadioSelect,
+                                 choices=[('O','Oui'), ('N','Non')])
     captcha = ReCaptchaField(attrs={'theme' : 'clean'})
 
     class Meta:
@@ -66,6 +66,11 @@ class InscriptionForm(forms.ModelForm):
             'assurance' : widgets.RadioSelect,
             'licencie' :  widgets.RadioSelect,
             'venu' :  widgets.RadioSelect,
+            'notes': widgets.Textarea(attrs={'rows' : 5}),
+        }
+        help_texts = {
+            'licence': u'<a href="http://www.ffbb.com/jouer/recherche-avancee">Chercher sur ffbb.com</a>',
+            'notes': u"N'hésitez pas à nous signaler toute situation particulière.",
         }
 
     def clean_etat(self):
@@ -82,6 +87,8 @@ class InscriptionForm(forms.ModelForm):
         formule = cleaned_data.get('formule')
         email = cleaned_data.get('email')
         email2 = cleaned_data.get('email2')
+        if cleaned_data.get('licencie') == 'O' and not cleaned_data.get('licence'):
+            self.add_error('licence', self.error_class([_('This field is required.')]))
         if formule:
             hebergement = cleaned_data.get('hebergement')
             if formule.affiche_hebergement and not hebergement:
