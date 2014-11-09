@@ -93,6 +93,8 @@ class InscriptionForm(forms.ModelForm):
             hebergement = cleaned_data.get('hebergement')
             if formule.affiche_hebergement and not hebergement:
                 self.add_error('hebergement', self.error_class([_('This field is required.')]))
+            elif hebergement and not formule.affiche_hebergement:
+                cleaned_data['hebergement'] = None
             if not formule.affiche_train:
                 cleaned_data['train'] = 0
         if email != email2:
