@@ -1,4 +1,4 @@
-{% if obj.sexe == 'M' %}Cher{% else %}Chère{% endif %} {{ obj.nom }} {{ obj.prenom }},
+{% if obj.sexe == 'H' %}Cher{% else %}Chère{% endif %} {{ obj.nom }} {{ obj.prenom }},
 
 Nous avons le plaisir de vous confirmer que votre inscription au camp
 de Basket TBA pour les semaines

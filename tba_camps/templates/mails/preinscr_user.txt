@@ -1,4 +1,4 @@
-{% if obj.sexe == 'M' %}Cher{% else %}Chère{% endif %} {{ obj.nom }} {{ obj.prenom }},
+{% if obj.sexe == 'H' %}Cher{% else %}Chère{% endif %} {{ obj.nom }} {{ obj.prenom }},
 
 Merci de votre demande d'inscription. Afin de compléter votre demande,
 veuillez visiter la page {{ obj.get_full_url }} et suivre les
