@@ -37,15 +37,33 @@ votre demande d'inscription.</h3>
   {% csrf_token %}
 
   <div id="uploads" class="fieldgroup">
-    <h3>Merci de scanner et téléverser ces pièces à l'aide de ce formulaire
-      (maximum {{ settings.MAX_FILE_SIZE }}Mo)</h3>
+    <h3>Vous pouvez joindre ces pièces à votre règlement, ou les
+      scanner et nous les envoyer à l'aide de ce formulaire (maximum
+      {{ settings.MAX_FILE_SIZE }}Mo)</h3>
 
-    {% for f in form %}
     <div class="pure-control-group">
-      <label for="{{ f.name }}">{{ f.label }}</label>
-      {{ f }}
+      <label for="{{ form.fiche_inscr.name }}">{{ form.fiche_inscr.label }}</label>
+      {{ form.fiche_inscr }}
     </div>
-    {% endfor %}
+
+    <div class="pure-control-group">
+      <label for="{{ form.fiche_sanit.name }}">{{ form.fiche_sanit.label }}</label>
+      {{ form.fiche_sanit }}
+    </div>
+
+    {% if not object.licence %}
+    <div class="pure-control-group">
+      <label for="{{ form.certificat.name }}">{{ form.certificat.label }}</label>
+      {{ form.certificat }}
+    </div>
+    {% endif %}
+
+    {% if object.hebergement and object.hebergement.managed %}
+    <div class="pure-control-group">
+      <label for="{{ form.fiche_hotel.name }}">{{ form.fiche_hotel.label }}</label>
+      {{ form.fiche_hotel }}
+    </div>
+    {% endif %}
 
     <button type="submit" class="pure-button pure-button-primary">Mettre à jour</button>
   </div>

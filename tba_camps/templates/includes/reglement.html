@@ -15,7 +15,7 @@
   certificat médical.</li>
 </ul>
 
-{% if object.hebergement %}
+{% if object.hebergement and not object.hebergement.managed %}
 <p>Pour la réservation en <b>{{ object.hebergement }}</b></p>
 <ul><li>{{ object.hebergement.commentaire }}</li></ul>
 {% endif %}

@@ -30,9 +30,13 @@ class Semaine(models.Model):
 
     def __unicode__(self):
         from datetime import timedelta
-        return u'%s – %s' % (self.debut.strftime('%d %b').decode('utf8'),
-                             self.fin().strftime('%d %b %Y').decode('utf8'))
+        return u'S%d:  %s – %s' % (self.ord(),
+                                   self.debut.strftime('%d %b').decode('utf8'),
+                                   self.fin().strftime('%d %b %Y').decode('utf8'))
 
+    def ord(self):
+        return list(Semaine.objects.order_by('debut')).index(self)
+    
     def fin(self):
         return datetime.timedelta(6) + self.debut
 
@@ -50,7 +54,8 @@ class Hebergement(OrderedModel):
     nom = models.CharField(max_length=255)
     commentaire = MarkupField("Commentaire affiché à l'inscription", blank=True,
                               default_markup_type='markdown')
-
+    managed = models.BooleanField("Envoyer fiche d'inscription à TBA", default=False)
+    
     class Meta(OrderedModel.Meta):
         pass
 
@@ -96,7 +101,7 @@ class FieldFile(files.FieldFile):
 class FileField(files.FileField):
     attr_class = FieldFile
 
-upload_fields = ('fiche_inscr', 'fiche_sanit', 'certificat') 
+upload_fields = ('fiche_inscr', 'fiche_sanit', 'certificat', 'fiche_hotel') 
 
 class Inscription(models.Model):
     nom = models.CharField(max_length=255)
@@ -137,7 +142,6 @@ class Inscription(models.Model):
                                      (PAID, 'Payé'),
                                      (CANCELED, 'Annulé'),])
     acompte = models.IntegerField(default=0)
-    licence = models.CharField('Numéro de licence', max_length=31, blank=True)
     venu = models.CharField('Je suis déjà venu à Superdévoluy', max_length=1,
                             choices=[('O', 'Oui'), ('N', 'Non')], default=0)
     taille = models.IntegerField('Taille (cm)', 
@@ -148,8 +152,18 @@ class Inscription(models.Model):
     date = models.DateTimeField('Date inscription', auto_now_add=True)
     slug = models.SlugField(max_length=22, blank=True, editable=False)
     fiche_inscr = FileField("Fiche d'inscription", blank=True, null=True)
+    fiche_inscr_snail = models.BooleanField("Fiche d'inscription reçue",
+                                            default=False)
     fiche_sanit = FileField('Fiche sanitaire', blank=True, null=True)
-    certificat = FileField('Certificat Médical', blank=True, null=True)
+    fiche_sanit_snail = models.BooleanField('Fiche sanitaire reçue',
+                                            default=False)
+    licence = models.CharField('Numéro de licence', max_length=31, blank=True)
+    certificat = FileField('Certificat médical', blank=True, null=True)
+    certificat_snail = models.BooleanField('Certificat médical reçu',
+                                           default=False)
+    fiche_hotel = FileField('Réservation hébergement', blank=True, null=True)
+    fiche_hotel_snail = models.BooleanField('Réservation hébergement reçue',
+                                            default=False)
     notes = models.TextField(default='', blank=True)
 
     def __unicode__(self):
@@ -179,10 +193,15 @@ class Inscription(models.Model):
     def save(self, *args, **kwds):
         if self.pk is not None:
             orig = self.__class__.objects.get(pk=self.pk)
-            # Met à jour l'état si l'acompte a changé
-            if (self.acompte and not orig.acompte
-                and orig.etat == self.etat == PREINSCRIPTION):
-                self.etat = VALID
+            # Champs conditionnels
+            if (self.fiche_inscr):
+                self.fiche_inscr_snail = True
+            if (self.fiche_sanit):
+                self.fiche_sanit_snail = True
+            if (self.fiche_hotel):
+                self.fiche_hotel_snail = True
+            if (self.certificat or self.licence):
+                self.certificat_snail = True
             # Si l'inscription a été validée, envoie email de confirmation
             if (self.etat in (VALID, PAID) and orig.etat == PREINSCRIPTION):
                 self.send_mail()

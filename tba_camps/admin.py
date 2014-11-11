@@ -9,6 +9,8 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 from django.shortcuts import redirect
 from django.conf.urls import url
+from django.utils.html import mark_safe
+from django.contrib.admin.templatetags.admin_static import static
 
 class ManagerInline(admin.StackedInline):
     model = Manager
@@ -43,16 +45,43 @@ class FormuleAdmin(OrderedModelAdmin):
 admin.site.register(Formule, FormuleAdmin)
 
 class HebergementAdmin(OrderedModelAdmin):
-    list_display = ('nom', 'commentaire', 'move_up_down_links')
+    list_display = ('nom', 'commentaire', 'managed', 'move_up_down_links')
 admin.site.register(Hebergement, HebergementAdmin)
 
 class InscriptionAdmin(ExportMixin, admin.ModelAdmin):
-    list_display   = ('__str__', 'tel', 'formule', 'prix', 'acompte', 'reste', 'etat', 'date')
+    list_display   = ('nom', 'prenom', 'tel', 'sem_code', 'formule', 'prix', 'acompte', 'reste', 'pieces', 'etat', 'date')
+    list_display_links = ('nom', 'prenom')
     list_editable  = ('acompte', 'etat')
     list_filter    = ('date', 'etat', 'semaines')
     search_fields  = ('nom', 'prenom', 'email')
     resource_class = InscriptionResource
 
+    def sem_code(self, obj):
+        return ', '.join('S%d' % s.ord() for s in obj.semaines.iterator())
+    sem_code.short_description = 'Semaines'
+    
+    def pieces(self, obj):
+        def yesno(val):
+            return static('admin/img/icon-%s.gif' % ('yes' if val else 'no'))
+        def link(field, str):
+            if getattr(obj, field):
+                return '<a href="%suploads/%s">%s</a>' % (obj.get_absolute_url(), field, str)
+            else:
+                return str
+        
+        p = '<img src="%s"> %s' % (yesno(obj.fiche_inscr_snail),
+                                   link('fiche_inscr', 'inscription'))
+        p += '<br><img src="%s"> %s' % (yesno(obj.fiche_sanit_snail),
+                                      link('fiche_sanit', 'sanitaire'))
+        p += '<br><img src="%s"> %s' % (yesno(obj.certificat_snail),
+                                        link('certificat', 'certificat'))
+        if obj.hebergement and obj.hebergement.managed:
+            p += '<br><img src="%s"> %s' % (yesno(obj.fiche_hotel_snail),
+                                            link('fiche_hotel', 'hébergement'))
+
+        return mark_safe(p)
+    pieces.short_description = u'Pièces'
+    
     def get_urls(self):
         urls = super(InscriptionAdmin, self).get_urls()
         my_url = url(r'^(.+)/send_mail$',  
@@ -60,8 +89,9 @@ class InscriptionAdmin(ExportMixin, admin.ModelAdmin):
                      name='tba_camps_inscription_send_mail')
         return [my_url] + urls 
 
-
     def send_mail(self, request, obj_id):
         Inscription.objects.get(pk=obj_id).send_mail()
         return redirect('./')
 admin.site.register(Inscription, InscriptionAdmin)
+
+

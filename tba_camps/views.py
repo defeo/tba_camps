@@ -135,7 +135,7 @@ from models import upload_fields
 class UploadForm(forms.ModelForm):
     class Meta:
         model = Inscription
-        fields = upload_fields
+        fields = ('fiche_inscr', 'fiche_sanit', 'certificat', 'fiche_hotel') 
         widgets =  {f : my_widgets.FileInput for f in fields }
 
     def clean(self, *args, **kwds):
