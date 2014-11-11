@@ -13,7 +13,7 @@ def get_managers():
 def send_mail(subject, recipients, template, obj, ctx=None):
     "Fonction d'utilite pour envoyer des mails"
     ctx = ctx or {}
-    ctx.update(obj=obj)
+    ctx.update(obj=obj,settings=settings)
     return mail.send_mail(
         subject=subject,
         from_email=settings.FROM_EMAIL,
