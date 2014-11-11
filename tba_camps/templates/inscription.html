@@ -171,12 +171,13 @@ automatiquement annulée.{% endblock %}
     </fieldset>
   </div>
   
-  
+  {% if settings.USE_CAPTCHA %}  
   <div id="parrain-data" class="fieldgroup {{ form.captcha.css_classes }}">
     {{ form.captcha }}
     {{ form.captcha.errors }}
   </div>
-
+  {% endif %}
+  
   <button type="submit" class="pure-button pure-button-primary">S'inscrire</button>
 </form>
 

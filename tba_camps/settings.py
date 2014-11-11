@@ -126,3 +126,4 @@ ADRESSE = mark_safe("Laure SENEGAL &mdash; Camps TBA &mdash; 11 rue du verger<br
 MAX_FILE_SIZE = 1
 FROM_EMAIL = 'Camps de basket TBA <tba@camps-basket.com>'
 HOST = 'http://www.camps-basket.com'
+USE_CAPTCHA = False

@@ -51,7 +51,8 @@ class InscriptionForm(forms.ModelForm):
     licencie = forms.ChoiceField(label=u'Licencié dans un club',
                                  widget=widgets.RadioSelect,
                                  choices=[('O','Oui'), ('N','Non')])
-    captcha = ReCaptchaField(attrs={'theme' : 'clean'})
+    if settings.USE_CAPTCHA:
+        captcha = ReCaptchaField(attrs={'theme' : 'clean'})
 
     class Meta:
         model = Inscription
