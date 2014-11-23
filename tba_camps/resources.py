@@ -38,7 +38,7 @@ class InscriptionResource(resources.ModelResource):
         model = Inscription
         exclude = ('id', 'slug', 'semaines')
         export_order = ['nom', 'prenom', 'email', 'tel', 'sexe', 'naissance', 'age', 'taille', 
-                        'lieu', 'adresse', 'cp', 'ville', 'pays', 'licencie', 'venu',
+                        'lieu', 'adresse', 'cp', 'ville', 'pays', 'licence', 'venu',
                         'formule', 'etat', 'train', 'navette_a', 'navette_r', 'assurance', 
                         'prix', 'acompte', 'mode', 'du',
                         'hebergement', 'chambre', 'nom_parrain', 'adr_parrain', 'date', 'notes',

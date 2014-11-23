@@ -35,7 +35,7 @@ class Semaine(models.Model):
                                    self.fin().strftime('%d %b %Y').decode('utf8'))
 
     def ord(self):
-        return list(Semaine.objects.order_by('debut')).index(self)
+        return list(Semaine.objects.order_by('debut')).index(self) + 1
     
     def fin(self):
         return datetime.timedelta(6) + self.debut
