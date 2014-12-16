@@ -70,7 +70,7 @@ class InscriptionForm(forms.ModelForm):
             'notes': widgets.Textarea(attrs={'rows' : 5}),
         }
         help_texts = {
-            'licence': u'<a href="http://www.ffbb.com/jouer/recherche-avancee">Chercher sur ffbb.com</a>',
+            'licence': u'<a target="_blank" href="http://www.ffbb.com/jouer/recherche-avancee">Chercher sur ffbb.com</a>',
             'notes': u"N'hésitez pas à nous signaler toute situation particulière.",
         }
 
