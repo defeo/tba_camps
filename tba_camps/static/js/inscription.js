@@ -30,12 +30,13 @@ $(function() {
 	});
 
     // Update cost table
-    $('#id_formule, #id_train, #id_assurance, #id_navette_a, #id_navette_r')
+    $('#id_semaines, #id_formule, #id_train, #id_assurance, #id_navette_a, #id_navette_r')
 	.on('change', function() {
-	    var formule = $('#id_formule input:checked');
+	    var formule = $('#id_formule input:checked'),
+		nsemaines = $('#id_semaines input:checked').length;
 	    if (!formule.length) return;
 	    var costs = {
-		prix       : formule.data('prix'),
+		prix       : formule.data('prix') * nsemaines,
 		cotisation : formule.data('cotisation'),
 		taxe       : formule.data('taxe'),
 		assurance  : $('#id_assurance input:checked').val(),
