@@ -28,16 +28,18 @@ class InscriptionResource(resources.ModelResource):
 
     def __new__(cls):
         newclass = super(InscriptionResource, cls).__new__(cls)
+        export_order = []
         for i, s in enumerate(Semaine.objects.all().order_by('debut')):
             label = 'S' + str(i+1)
-            newclass._meta.export_order.append(label)
+            export_order.append(label)
             newclass.fields[label] = SemaineField(semaine=s, column_name=unicode(s))
+        newclass._meta.export_order = newclass._meta.export_base + export_order
         return newclass
 
     class Meta:
         model = Inscription
         exclude = ('id', 'slug', 'semaines')
-        export_order = ['nom', 'prenom', 'email', 'tel', 'sexe', 'naissance', 'age', 'taille', 
+        export_base = ['nom', 'prenom', 'email', 'tel', 'sexe', 'naissance', 'age', 'taille', 
                         'lieu', 'adresse', 'cp', 'ville', 'pays', 'licence', 'venu',
                         'formule', 'etat', 'train', 'navette_a', 'navette_r', 'assurance', 
                         'prix', 'acompte', 'mode', 'du',
