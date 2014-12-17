@@ -48,7 +48,7 @@
 	    <li><a href="{% url 'static_pages' 'location-parents' %}">Location Parents</a></li>
             <li><a href="{% url 'static_pages' 'special-club' %}">Spécial Club</a></li>
 	    <li><a href="{% url 'static_pages' 'infos-parents' %}">Infos Parents</a></li>
-	    <li><a href="{% url 'static_pages' 'depliant' %}">Le dépliant 2014</a></li>
+	    <li><a href="{% url 'static_pages' 'depliant' %}">Le dépliant {{ settings.ANNEE }}</a></li>
 	    <li><a href="{% url 'static_pages' 'assurance-desistement' %}">Assurance désistement</a></li>
             <li><a href="{% url 'static_pages' 'cadre' %}">Les Cadres</a></li>
 	    <li><a href="{% url 'static_pages' 'partenaire' %}">Nos partenaires</a></li>
@@ -78,7 +78,7 @@
 	      <h4>Liens</h4>
 	      <ul>
 		<li><a href="/inscription">S'inscrire à un camps de Basket TBA</a></li>
-		<li><a href="{% url 'static_pages' 'depliant' %}">Télécharger le dépliant 2013 de TBA</a></li>
+		<li><a href="{% url 'static_pages' 'depliant' %}">Télécharger le dépliant {{ settings.ANNEE }} de TBA</a></li>
 		<li><a href="{% url 'static_pages' 'photos' %}">Des images et des vidéos de TBA</a></li>
 	      </ul>
 	    </aside><!-- end of #second footer segment -->
