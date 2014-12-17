@@ -21,11 +21,11 @@
       <nav>
 	<div class="menu">
 	  <ul>
-	    <li><a href="/tba/">Home</a></li>
-	    <li><a href="/tba/historique">Historique de l'association</a>
+	    <li><a href="{% url 'static_index' %}">Home</a></li>
+	    <li><a href="{% url 'static_pages' 'historique' %}">Historique de l'association</a>
   	    </li>
-	    <li><a href="/tba/superdevoluy">Le site de Superdévoluy </a></li>
-	    <li><a href="/tba/contacts">Les contacts</a></li>
+	    <li><a href="{% url 'static_pages' 'superdevoluy' %}">Le site de Superdévoluy </a></li>
+	    <li><a href="{% url 'static_pages' 'contacts' %}">Les contacts</a></li>
 	  </ul>
 	</div>        
       </nav>
@@ -40,22 +40,22 @@
 	<aside id="sidebar"><!-- sidebar -->
 	  <h3>Les camps de Basket</h3>
 	  <ul>
-	    <li><a href="/tba/presentation">Camps de Basket TBA</a></li>
+	    <li><a href="{% url 'static_pages' 'presentation' %}">Camps de Basket TBA</a></li>
             <li><a href="{% url 'pratique' %}">Dates, formules, prix et places disponibles</a></li>
 	    <li><a href="{% url 'inscription_form' %}">Inscriptions</a></li>
 	    <li><a href="{% url 'inscription_reminder' %}">Chercher inscription</a></li>
-	    <li><a href="/tba/journee-type">Une journée type</a></li>
-	    <li><a href="/tba/location-parents">Location Parents</a></li>
-            <li><a href="/tba/special-club">Spécial Club</a></li>
-	    <li><a href="/tba/infos-parents">Infos Parents</a></li>
-	    <li><a href="/tba/depliant">Le dépliant 2014</a></li>
-	    <li><a href="/tba/assurance-desistement">Assurance désistement</a></li>
-            <li><a href="/tba/cadre">Les Cadres</a></li>
-	    <li><a href="/tba/partenaire">Nos partenaires</a></li>
-	    <li><a href="/tba/photos">Les photos</a></li>
-	    <li><a href="/tba/telechargements" target="_blank">Les téléchargements </a></li>
-            <li><a href="/tba/conseils-pratiques">Conseils pratiques</a></li>
-	    <li><a href="/tba/boutique">Boutique</a></li>
+	    <li><a href="{% url 'static_pages' 'journee-type'">Une journée type</a></li>
+	    <li><a href="{% url 'static_pages' 'location-parents' %}">Location Parents</a></li>
+            <li><a href="{% url 'static_pages' 'special-club' %}">Spécial Club</a></li>
+	    <li><a href="{% url 'static_pages' 'infos-parents' %}">Infos Parents</a></li>
+	    <li><a href="{% url 'static_pages' 'depliant' %}">Le dépliant 2014</a></li>
+	    <li><a href="{% url 'static_pages' 'assurance-desistement' %}">Assurance désistement</a></li>
+            <li><a href="{% url 'static_pages' 'cadre' %}">Les Cadres</a></li>
+	    <li><a href="{% url 'static_pages' 'partenaire' %}">Nos partenaires</a></li>
+	    <li><a href="{% url 'static_pages' 'photos' %}">Les photos</a></li>
+	    <li><a href="{% url 'static_pages' 'telechargements' %}">Les téléchargements </a></li>
+            <li><a href="{% url 'static_pages' 'conseils-pratiques' %}">Conseils pratiques</a></li>
+	    <li><a href="{% url 'static_pages' 'boutique' %}">Boutique</a></li>
 	  </ul>
 	</aside><!-- end of sidebar -->
 
@@ -68,9 +68,9 @@
 	    <aside class="footer-segment">
 	      <h4>Liens</h4>
 	      <ul>
-		<li><a href="/tba/historique">L'histoire des camps de basket TBA</a></li>
-		<li><a href="/tba/">Pourquoi choisir TBA</a></li>
-		<li><a href="/tba/journee-type">Une journée type</a></li>
+		<li><a href="{% url 'static_pages' 'historique' %}">L'histoire des camps de basket TBA</a></li>
+		<li><a href="{% url 'static_index' %}">Pourquoi choisir TBA</a></li>
+		<li><a href="{% url 'static_pages' 'journee-type' %}">Une journée type</a></li>
 	      </ul>
 	    </aside><!-- end of #first footer segment -->
             
@@ -78,17 +78,17 @@
 	      <h4>Liens</h4>
 	      <ul>
 		<li><a href="/inscription">S'inscrire à un camps de Basket TBA</a></li>
-		<li><a href="/tba/depliant">Télécharger le dépliant 2013 de TBA</a></li>
-		<li><a href="/tba/photos">Des images et des vidéos de TBA</a></li>
+		<li><a href="{% url 'static_pages' 'depliant' %}">Télécharger le dépliant 2013 de TBA</a></li>
+		<li><a href="{% url 'static_pages' 'photos' %}">Des images et des vidéos de TBA</a></li>
 	      </ul>
 	    </aside><!-- end of #second footer segment -->
 
 	    <aside class="footer-segment">
 	      <h4>Liens</h4>
 	      <ul>
-		<li><a href="/tba/forum/">Le forum de TBA pour en savoir plus </a></li>
-		<li><a href="/tba/cadre">L'encadrement des camps TBA</a></li>
-		<li><a href="/tba/contacts">Contacter TBA pour en savoir plus </a></li>
+		<li><a href="/tba/forum">Le forum de TBA pour en savoir plus </a></li>
+		<li><a href="{% url 'static_pages' 'cadre' %}">L'encadrement des camps TBA</a></li>
+		<li><a href="{% url 'static_pages' 'contacts' %}">Contacter TBA pour en savoir plus </a></li>
 	      </ul>	
 	    </aside><!-- end of #f3 footer segment -->
 	  </section><!-- end of footer-outer-block -->

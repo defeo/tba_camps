@@ -16,6 +16,6 @@ urlpatterns = patterns('',
     url(r'^cherche/$', views.ReminderView.as_view(), name='inscription_reminder'),
     url(r'^pratique/$', views.pratique, name='pratique'),
     url(r'^tba/$', views.static_page, kwargs={'page' : 'index'}, name='static_index'),
-    url(r'^tba/(?P<page>[a-z]+)/$', views.static_page, name='static_pages'),
+    url(r'^tba/(?P<page>[a-zA-Z-_]+)/$', views.static_page, name='static_pages'),
 )
 
