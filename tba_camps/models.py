@@ -121,8 +121,8 @@ class Inscription(models.Model):
     formule = models.ForeignKey(Formule)
     train = models.IntegerField('Supplément aller-retour train depuis Paris',
                                 default=0, choices=[(0, "Pas de supplément"),
-                                                    (150, 'Tarif normal (150€)'),
-                                                    (75, 'Moins de 12 ans (75€)')])
+                                                    (160, 'Tarif normal (160€)'),
+                                                    (80, 'Moins de 12 ans (80€)')])
     hebergement = models.ForeignKey(Hebergement, null=True, blank=True)
     chambre = models.CharField('En chambre avec', max_length=255,
                                default='', blank=True)
@@ -147,6 +147,7 @@ class Inscription(models.Model):
     taille = models.IntegerField('Taille (cm)', 
                                  validators=[MaxValueValidator(300),
                                              MinValueValidator(30)])
+    parrain = models.BooleanField("Parrain", default=False)
     nom_parrain = models.CharField('NOM Prénom parrain', max_length=255, blank=True)
     adr_parrain = models.CharField('Adresse parrain', max_length=255, blank=True)
     date = models.DateTimeField('Date inscription', auto_now_add=True)

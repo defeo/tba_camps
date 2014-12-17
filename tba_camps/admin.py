@@ -49,9 +49,9 @@ class HebergementAdmin(OrderedModelAdmin):
 admin.site.register(Hebergement, HebergementAdmin)
 
 class InscriptionAdmin(ExportMixin, admin.ModelAdmin):
-    list_display   = ('nom', 'prenom', 'tel', 'sem_code', 'formule', 'prix', 'acompte', 'reste', 'pieces', 'etat', 'date')
+    list_display   = ('nom', 'prenom', 'tel', 'sem_code', 'formule', 'prix', 'acompte', 'reste', 'parrain', 'pieces', 'etat', 'date')
     list_display_links = ('nom', 'prenom')
-    list_editable  = ('acompte', 'etat')
+    list_editable  = ('acompte', 'parrain', 'etat')
     list_filter    = ('date', 'etat', 'semaines')
     search_fields  = ('nom', 'prenom', 'email')
     resource_class = InscriptionResource
