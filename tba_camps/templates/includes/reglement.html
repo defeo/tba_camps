@@ -19,7 +19,7 @@
 
 {% if object.hebergement and not object.hebergement.managed %}
 <p>Pour la réservation en <b>{{ object.hebergement }}</b></p>
-<ul><li>{{ object.hebergement.commentaire }}</li></ul>
+<ul><li>{{ object.hebergement.md_commentaire }}</li></ul>
 {% endif %}
 
 <p>Dès réception de votre règlement nous vous enverrons le dossier de

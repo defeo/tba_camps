@@ -92,7 +92,7 @@ class HebergementChoiceInput(FullModelChoiceInput):
                            value=self.choice_value,
                            attrs=flatatt(self.attrs),
                            nom=force_text(self.choice_obj.nom),
-                           commentaire=mark_safe(self.choice_obj.commentaire.rendered))
+                           commentaire=self.choice_obj.md_commentaire())
 
 class HebergementRenderer(forms.widgets.ChoiceFieldRenderer):
     choice_input_class = HebergementChoiceInput

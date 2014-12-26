@@ -45,7 +45,7 @@ class FormuleAdmin(OrderedModelAdmin):
 admin.site.register(Formule, FormuleAdmin)
 
 class HebergementAdmin(OrderedModelAdmin):
-    list_display = ('nom', 'commentaire', 'managed', 'move_up_down_links')
+    list_display = ('nom', 'md_commentaire', 'managed', 'move_up_down_links')
 admin.site.register(Hebergement, HebergementAdmin)
 
 class InscriptionAdmin(ExportMixin, admin.ModelAdmin):

@@ -22,7 +22,7 @@
   
   {% if object.hebergement and object.hebergement.managed %}
   <li>La fiche de réservation en {{ object.hebergement }}.
-    {{ object.hebergement.commentaire }}
+    {{ object.hebergement.md_commentaire }}
   </li>
   {% endif %}
 </ul>

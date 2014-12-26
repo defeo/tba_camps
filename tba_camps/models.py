@@ -5,7 +5,6 @@ from django.contrib.auth.models import User
 from ordered_model.models import OrderedModel
 from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
 from django.core.urlresolvers import reverse
-from markupfield.fields import MarkupField
 from Crypto.Cipher import AES
 from django.conf import settings
 import base64
@@ -15,6 +14,8 @@ from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 import mails
 from django.template.loader import render_to_string
+from markdown import markdown
+from django.utils.safestring import mark_safe
 
 class Manager(models.Model):
     'Options en plus pour les utilisateurs'
@@ -49,11 +50,9 @@ class Semaine(models.Model):
     def restantes(self):
         return self.places - self.inscription_set.filter(etat__in=['P','V']).count()
 
-
 class Hebergement(OrderedModel):
     nom = models.CharField(max_length=255)
-    commentaire = MarkupField("Commentaire affiché à l'inscription", blank=True,
-                              default_markup_type='markdown')
+    commentaire = models.TextField("Commentaire affiché à l'inscription", blank=True)
     managed = models.BooleanField("Envoyer fiche d'inscription à TBA", default=False)
     
     class Meta(OrderedModel.Meta):
@@ -62,6 +61,9 @@ class Hebergement(OrderedModel):
     def __unicode__(self):
         return self.nom
 
+    def md_commentaire(self):
+        return mark_safe(markdown(self.commentaire))
+    
 class Formule(OrderedModel):
     groupe = models.CharField(max_length=255, blank=True, default='')
     nom = models.CharField(max_length=255)
