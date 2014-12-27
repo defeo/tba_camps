@@ -1,0 +1,15 @@
+#!/bin/bash
+
+source ve/bin/activate
+export DJANGO_SETTINGS_MODULE=tba_camps.settings_deploy
+
+# Configuration de la base de données.
+# Éditer avec les paramètres de connexion.
+export DATABASE_URL=mysql://root:PASSWORD@localhost/tba
+
+# Éditer avec l'adresse du site
+export HOST_NAME=camps-basket.com
+
+exec ve/bin/gunicorn tba_camps.wsgi \
+	--bind 'localhost:8001' \
+	--workers 3
