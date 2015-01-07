@@ -10,6 +10,12 @@ export DATABASE_URL=mysql://root:PASSWORD@localhost/tba
 # Éditer avec l'adresse du site
 export HOST_NAME=camps-basket.com
 
+# Configuration du mail, éditer avec les données de connexion
+# (d'autres variables peuvent être configurées, lire settings_deploy.py)
+export MAIL_HOST=smtp.camps-basket.com
+export MAIL_USER=username
+export MAIL_PASSWORD=password
+
 exec ve/bin/gunicorn tba_camps.wsgi \
 	--bind 'localhost:8001' \
 	--workers 3
