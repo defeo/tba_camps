@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}404 – La page n'existe pas{% endblock %}
+
+{% block description %}404: URL not found{% endblock %}
+
+{% block content %}
+<article class="featured">
+  <h2>Page non trouvée <small>(erreur 404)</small></h2>
+  
+  <h3>Nous sommes désolés, la page que vous cherchez n'existe pas.</h3>
+
+  <h3><a href="{% url 'static_index' %}">Revenir à l'accueil.</a></h3>
+</article>
+{% endblock %}
