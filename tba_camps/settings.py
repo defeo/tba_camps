@@ -127,3 +127,9 @@ MAX_FILE_SIZE = 1
 FROM_EMAIL = 'Camps de basket TBA <tba@camps-basket.com>'
 HOST = 'http://www.camps-basket.com'
 USE_CAPTCHA = False
+
+
+# Pieces PDF, Word, etc.
+PIECES = {
+    # see settings_deploy.py
+}
