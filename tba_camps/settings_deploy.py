@@ -15,6 +15,10 @@ else:
     DATABASES = {}
     print 'Warning: no database configured. Set DATABASE_URL environment variable.'
 
+SECRET_KEY = os.environ.get('SECRET_KEY') or 'PULCINELLA'
+if SECRET_KEY == 'PULCINELLA':
+    print 'Warning: SECRET_KEY not configured. Your website is vulnerable!'
+
 STATIC_ROOT = BASE_DIR + '/static/django/'
 MEDIA_ROOT = BASE_DIR + '/upload/'
 
