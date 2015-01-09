@@ -20,7 +20,7 @@ if SECRET_KEY == 'PULCINELLA':
     print 'Warning: SECRET_KEY not configured. Your website is vulnerable!'
 
 STATIC_ROOT = BASE_DIR + '/static/django/'
-MEDIA_ROOT = BASE_DIR + '/upload/'
+MEDIA_ROOT = BASE_DIR + '/uploads/'
 
 STATIC_URL = '/django/'
 
