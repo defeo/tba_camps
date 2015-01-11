@@ -141,7 +141,7 @@ class Inscription(models.Model):
     etat = models.CharField("État de l'inscription", max_length=1, default=VALID,
                             choices=[(PREINSCRIPTION, 'Pré-inscription'),
                                      (VALID, 'Validé'),
-                                     (PAID, 'Payé'),
+                                     #(PAID, 'Payé'),
                                      (CANCELED, 'Annulé'),])
     acompte = models.IntegerField(default=0)
     venu = models.CharField('Je suis déjà venu à Superdévoluy', max_length=1,
