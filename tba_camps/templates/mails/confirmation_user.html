@@ -1,7 +1,7 @@
 <p>{% if obj.sexe == 'H' %}Cher{% else %}Chère{% endif %} {{ obj.nom }} {{ obj.prenom }},</p>
 
-<p>Nous avons le plaisir de vous confirmer que votre inscription au camp
-de Basket TBA pour les semaines</p>
+<p>Tu viens de t’inscrire au camp de SUPERDEVOLUY pour les
+  semaines</p>
 
 <ul>
 {% for s in obj.semaines.iterator %}
@@ -9,19 +9,25 @@ de Basket TBA pour les semaines</p>
 {% endfor %}
 </ul>
 
-<p>a été acceptée. Vous pouvez télécharger votre dossier de
-  confirmation en cliquant sur le bouton ci-dessous.</p>
+<table>
+  <tr><td>Acompte donné</td><td style="text-align:right;padding-left:1ex">{{ obj.acompte }}€</td></tr>
+  <tr><td>Solde dû sur place</td><td style="text-align:right;padding-left:1ex">{{ obj.reste }}€</td></tr>
+</table>
+
+<p>À ton arrivée t'attendent des cadeaux et plein de
+  surprises. Retrouve toutes les informations pratiques sur le camp en
+  cliquant sur le bouton ci-dessous.</p>
 
 <p style="text-align:centered">
-  <a href="{{ obj.get_full_url }}fiche" style="text-decoration:none;color:white;font-weight:bold">
+  <a href="{{ obj.get_full_url }}" style="text-decoration:none;color:white;font-weight:bold">
     <div style="border-radius:5px;background-color:#c60;display:inline-block;padding:1ex">
-      Télécharger confirmation
+      Accès inscription
     </div>
   </a>
 </p>
 
-<p>Vous pouvez également copier-coller le lien ci-dessous.</p>
-<p><a href="{{ obj.get_full_url }}fiche">{{ obj.get_full_url }}fiche</a></p>
+<p>Tu peux également copier-coller le lien ci-dessous.</p>
+<p><a href="{{ obj.get_full_url }}">{{ obj.get_full_url }}</a></p>
 
 <p>Sportivement,</p>
 <h3>Team Basket Association</h3>

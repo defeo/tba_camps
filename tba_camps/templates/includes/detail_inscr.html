@@ -1,0 +1,30 @@
+<ul>
+  {% for s in object.semaines.iterator %}
+  <li>{{ s }},</li>
+  {% endfor %}
+</ul>
+
+<p>aux conditions de la formule <b>{{ object.formule }}</b>
+  ({{ object.formule.prix }}€), avec les options suivantes :</p>
+
+<table>
+  <tr><td>Cotisation TBA {{ settings.ANNEEE }}</td><td class="price">{{ object.formule.cotisation }}€</td></tr>
+  {% if object.navette_a %}
+  <tr><td>Assurance annulation</td><td class="price">{{ object.assurance }}€</td></tr>
+  {% endif %}
+  {% if object.train %}
+  <tr><td>Trajet en train accompagné de Paris</td><td class="price">{{ object.train }}€</td></tr>
+  {% endif %}
+  {% if object.navette_a %}
+  <tr><td>Navette aller</td><td class="price">{{ object.navette_a }}€</td></tr>
+  {% endif %}
+  {% if object.navette_r %}
+  <tr><td>Navette retour</td><td class="price">{{ object.navette_r }}€</td></tr>
+  {% endif %}
+  {% if object.hebergement %}
+  <tr><td>Hébergement en <b>{{ object.hebergement }}</b></td></tr>
+  {% endif %}
+  {% if object.formule.taxe %}
+  <tr><td>Taxe ménage</td><td class="price">{{ object.formule.taxe }}€</td></tr>
+  {% endif %}
+</table>

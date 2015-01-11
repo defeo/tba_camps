@@ -1,14 +1,16 @@
 {% if obj.sexe == 'H' %}Cher{% else %}Chère{% endif %} {{ obj.nom }} {{ obj.prenom }},
 
-Nous avons le plaisir de vous confirmer que votre inscription au camp
-de Basket TBA pour les semaines
-
+Tu viens de t’inscrire au camp de SUPERDEVOLUY pour les semaines
 {% for s in obj.semaines.iterator %}
 - {{ s }}
 {% endfor %}
+Acompte donné :      {{ obj.acompte }}€
+Solde dû sur place : {{ obj.reste }}€
 
-a été acceptée. Vous pouvez télécharger votre dossier de confirmation
-à l'adresse {{ obj.get_full_url }}.
+À ton arrivée t'attendent des cadeaux et plein de surprises. Retrouve
+toutes les informations pratiques sur le camp à l'adresse
+
+{{ obj.get_full_url }}
 
 Sportivement,
 

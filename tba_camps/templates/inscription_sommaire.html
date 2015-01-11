@@ -1,10 +1,80 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Bulletin d'inscription{% endblock %}
+{% block title %}Confirmation d'inscription{% endblock %}
+
+{% block extrahead %}
+<style>
+  ul {
+    margin: 1ex 10%;
+  }
+  table {
+    width: 80%;
+    margin: 1ex auto;
+  }
+  ul.cadeaux {
+    font-size: 120%;
+    line-height: 1.2;
+  }
+  ul.cadeaux li {
+    list-style-type: none;
+  }
+  blockquote {
+    text-align: center;
+    font-size: 120%;
+    color: red;
+    margin: 1ex 0;
+  }
+  p { margin: 0.3ex 0 }
+  .signature {
+  text-align: right;
+  margin: 2ex 5em 2ex 0;
+  font-size: 110%;
+  }
+  .price {
+  text-align: right;
+  margin-right: 10%;
+  }
+</style>
+{% endblock %}
 
 {% block content %}
 
-<h2>Bulletin d'inscription de {{ object }}</h2>
+<h2>{% if object.sexe == 'H' %}Cher{% else %}Chère{% endif %} {{ object.prenom }} {{ object.nom }},</h2>
+
+<p>Tu viens de t’inscrire au camp de <strong>SUPERDEVOLUY</strong>
+  pour les semaines :</p>
+
+{% include "includes/detail_inscr.html" %}
+
+<p class="price">Acompte donné : {{ object.acompte }}€<br>
+  Solde dû sur place : <b>{{ object.reste }}€</b></p>
+
+<p>Trouve tous les
+  <a href="{{ settings.PIECES.renseignements_pdf }}">renseignements pratiques</a>
+  sur le camp de SUPERDEVOLUY
+  <a href="{{ settings.PIECES.renseignements_pdf }}">ICI</a>. À ton
+    arrivée au camp nous t’offrons <strong>TROIS
+    CADEAUX :</strong></p>
+
+<ul class="cadeaux">
+<li>Un maillot réversible,</li>
+<li>Un sac à dos,</li>
+<li>Une gourde.</li>
+</ul>
+  
+<p>À la fin du stage nous t’offrons</p>
+
+<ul class="cadeaux">
+  <li>La photo souvenir de ton camp.</li>
+</ul>
+
+<p>Bon camp {{ settings.ANNEE }},</p>
+
+<p class="signature">Jean-Michel SENEGAL</p>
+
+<div class="fieldgroup">
+{% include "includes/parrainage.html" %}
+</div>
 
 {% endblock %}
