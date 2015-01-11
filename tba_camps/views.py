@@ -109,7 +109,12 @@ class InscriptionFormView(SuccessMessageMixin, CreateView):
     """
     template_name = 'inscription.html'
     form_class = InscriptionForm
-    success_message = u"Un mail de confirmation a été envoyé à l'adresse %(email)s."
+    success_message = u"""<p><strong>Un mail de confirmation a été envoyé à
+%%(email)s.</strong></p>
+
+<p>Si vous n'avez rien reçu, veuillez attendre quelques minutes et
+vérifier dans votre boîte à SPAM. Ajoutez %s à votre carnet d'adresses
+pour être sûrs de toujours reçevoir nos emails.</p>""" % settings.FROM_EMAIL
 
     def form_valid(self, form):
         res = super(InscriptionFormView, self).form_valid(form)
