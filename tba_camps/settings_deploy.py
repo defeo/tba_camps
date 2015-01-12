@@ -51,6 +51,7 @@ PIECES = {
     'autorisation_pdf':      '/tba/pdf/autorisation-parentale-2015.pdf',
     'margot':                '/tba/pdf/2015-Chalets-Margot-tarifs.pdf',
     'hameau_resa':           '/tba/pdf/Fiche-de-reservation-Hameau-du-Puy-2015.doc',
+    'hameau_resa_pdf':           '/tba/pdf/Fiche-de-reservation-Hameau-du-Puy-2015.pdf',
     'hameau_tarif':          '/tba/pdf/tarif-hameau-du-puy-2015.docx',
     'devoluy' :              '/tba/pdf/RESERVATION-EN-DEVOLUY-TARIFS-PUBLICS-ETE-2015.pdf',
 }
