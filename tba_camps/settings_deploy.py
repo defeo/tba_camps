@@ -24,6 +24,9 @@ MEDIA_ROOT = BASE_DIR + '/uploads/'
 
 STATIC_URL = '/django/'
 
+# Taille maximale des pieces telechargees (en Mo)
+MAX_FILE_SIZE = 3
+
 # Mail settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
