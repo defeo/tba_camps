@@ -45,21 +45,22 @@ $(function() {
 		train      : $('#id_train').val(),
 	    }
 	    
-	    var total = 0, sum = $('#cost-summary');
+	    var total = 0, acompte = 0, sum = $('#cost-summary');
 	    sum.find('.prix, .cotisation, .taxe, .assurance, .train, .navette')
 		.each(function() {
 		    var $this = $(this);
-		    var clas = $this.attr('class')
+		    var clas = $this.attr('class');
 		    var c = parseInt(costs[clas]);
 		    if (c == 0 || (clas == 'train' && !formule.data('train'))) {
 			$this.hide('fast');
 		    } else {
 			total += c;
+			acompte += c * parseInt($this.data('acompte')) / 100;
 			$this.show('fast').find('td:nth-child(2)').html(c);
 		    }
 		});
 	    sum.find('.total td:nth-child(2)').html(total);
-	    sum.find('.acompte td:nth-child(2)').html(Math.floor(total / 2));
+	    sum.find('.acompte td:nth-child(2)').html(Math.floor(acompte));
 	});
     
     // Trigger events if dependee fields are checked

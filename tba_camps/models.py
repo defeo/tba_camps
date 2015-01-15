@@ -86,6 +86,8 @@ class Formule(OrderedModel):
     def total(self, semaines):
         return self.prix*semaines + self.taxe + self.cotisation
 
+    def avance(self, semaines):
+        return self.prix*semaines // 2 + self.taxe + self.cotisation
 
 PREINSCRIPTION = 'P'
 VALID = 'V'
@@ -187,7 +189,8 @@ class Inscription(models.Model):
                 + self.assurance + self.navette_a + self.navette_r)
 
     def avance(self):
-        return self.prix() // 2
+        return (self.formule.avance(self.semaines.count()) + self.train // 2
+                + self.assurance + self.navette_a + self.navette_r)
 
     def reste(self):
         return (self.etat != PAID) * (self.prix() - self.acompte)
