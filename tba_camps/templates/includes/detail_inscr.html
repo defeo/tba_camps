@@ -9,7 +9,7 @@
 
 <table>
   <tr><td>Cotisation TBA {{ settings.ANNEEE }}</td><td class="price">{{ object.formule.cotisation }}€</td></tr>
-  {% if object.navette_a %}
+  {% if object.assurance %}
   <tr><td>Assurance annulation</td><td class="price">{{ object.assurance }}€</td></tr>
   {% endif %}
   {% if object.train %}
