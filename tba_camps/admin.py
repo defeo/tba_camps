@@ -11,6 +11,8 @@ from django.shortcuts import redirect
 from django.conf.urls import url
 from django.utils.html import mark_safe
 from django.contrib.admin.templatetags.admin_static import static
+from django.db import models
+from django.forms import widgets
 
 class ManagerInline(admin.StackedInline):
     model = Manager
@@ -54,6 +56,32 @@ class InscriptionAdmin(ExportMixin, admin.ModelAdmin):
     list_editable  = ('acompte', 'parrain', 'etat')
     list_filter    = ('date', 'etat', 'semaines')
     search_fields  = ('nom', 'prenom', 'email')
+    readonly_fields = ('age', 'prix')
+    fields  = (
+        ('navette_a', 'navette_r',),
+        ('taille', 'cp'),
+        ('age', 'naissance'),
+        ('sexe', 'venu'),
+        ('nom', 'prenom'),
+        ('adresse', 'ville', 'pays'),
+        ('prix', 'formule'),
+        ('assurance', 'train'),
+        ('semaines'),
+        ('hebergement', 'chambre'),
+        ('lieu'), 
+        ('email', 'tel'),
+        ('mode', 'acompte'),
+        ('etat'),
+        ('parrain', 'nom_parrain', 'adr_parrain'),
+        ('fiche_inscr', 'fiche_inscr_snail'),
+        ('fiche_sanit', 'fiche_sanit_snail'),
+        ('licence', 'certificat', 'certificat_snail'),
+        ('fiche_hotel', 'fiche_hotel_snail'),
+        ('notes'),
+     )
+    formfield_overrides = {
+        models.TextField: {'widget': widgets.Textarea(attrs={'rows' : 3})},
+    }
     resource_class = InscriptionResource
 
     def sem_code(self, obj):

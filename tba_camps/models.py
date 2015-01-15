@@ -182,7 +182,10 @@ class Inscription(models.Model):
 
     def age(self):
         "Age au mois de juin de l'annee en cours"
-        return (datetime.date(settings.ANNEE,6,1) - self.naissance).days // 365
+        if self.naissance:
+            return (datetime.date(settings.ANNEE,6,1) - self.naissance).days // 365
+        else:
+            return 0
 
     def prix(self):
         return (self.formule.total(self.semaines.count()) + self.train
