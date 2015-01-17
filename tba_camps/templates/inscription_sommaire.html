@@ -50,6 +50,8 @@
 <p class="price">Acompte donné : {{ object.acompte }}€<br>
   Solde dû sur place : <b>{{ object.reste }}€</b></p>
 
+{% include "includes/manquantes.html" %}
+
 <p>Trouve tous les
   <a href="{{ settings.PIECES.renseignements_pdf }}">renseignements pratiques</a>
   sur le camp de SUPERDEVOLUY

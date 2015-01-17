@@ -14,6 +14,8 @@
   <tr><td>Solde dû sur place</td><td style="text-align:right;padding-left:1ex">{{ obj.reste }}€</td></tr>
 </table>
 
+{% include "includes/manquantes.html" with object=obj %}
+
 <p>À ton arrivée t'attendent des cadeaux et plein de
   surprises. Retrouve toutes les informations pratiques sur le camp en
   cliquant sur le bouton ci-dessous.</p>
