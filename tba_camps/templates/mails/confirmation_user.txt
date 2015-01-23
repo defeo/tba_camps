@@ -4,13 +4,15 @@ Tu viens de t’inscrire au camp de SUPERDEVOLUY pour les semaines
 {% for s in obj.semaines.iterator %}
 - {{ s }}
 {% endfor %}
-Acompte donné :      {{ obj.acompte }}€
-Solde dû sur place : {{ obj.reste }}€
+aux conditions de la formule {{ obj.formule }}.
 
 À ton arrivée t'attendent des cadeaux et plein de surprises. Retrouve
 toutes les informations pratiques sur le camp à l'adresse
 
 {{ obj.get_full_url }}
+
+Acompte donné :      {{ obj.acompte }}€
+Solde dû sur place : {{ obj.reste }}€
 
 Sportivement,
 
