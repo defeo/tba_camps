@@ -13,6 +13,7 @@ from django.utils.html import mark_safe
 from django.contrib.admin.templatetags.admin_static import static
 from django.db import models
 from django.forms import widgets
+from django.contrib import messages
 
 class ManagerInline(admin.StackedInline):
     model = Manager
@@ -118,7 +119,9 @@ class InscriptionAdmin(ExportMixin, admin.ModelAdmin):
         return [my_url] + urls 
 
     def send_mail(self, request, obj_id):
-        Inscription.objects.get(pk=obj_id).send_mail()
+        obj = Inscription.objects.get(pk=obj_id)
+        obj.send_mail()
+        messages.info(request, u"Email envoyé à <%s>." %obj.email )
         return redirect('./')
 admin.site.register(Inscription, InscriptionAdmin)
 

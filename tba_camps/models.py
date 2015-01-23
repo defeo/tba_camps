@@ -217,8 +217,8 @@ class Inscription(models.Model):
             if (self.certificat or self.licence):
                 self.certificat_snail = True
             # Si l'inscription a été validée, envoie email de confirmation
-            if (self.etat in (VALID, PAID) and orig.etat == PREINSCRIPTION):
-                self.send_mail()
+            #if (self.etat in (VALID, PAID) and orig.etat == PREINSCRIPTION):
+            #    self.send_mail()
             # Efface les vieux fichiers
             for f in upload_fields:
                 of, nf = getattr(orig, f), getattr(self, f)
