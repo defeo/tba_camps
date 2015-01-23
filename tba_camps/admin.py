@@ -51,9 +51,9 @@ class HebergementAdmin(OrderedModelAdmin):
 admin.site.register(Hebergement, HebergementAdmin)
 
 class InscriptionAdmin(ExportMixin, admin.ModelAdmin):
-    list_display   = ('nom', 'prenom', 'tel', 'sem_code', 'formule', 'prix', 'acompte', 'reste', 'parrain', 'pieces', 'etat', 'date')
+    list_display   = ('nom', 'prenom', 'tel', 'sem_code', 'formule', 'prix', 'prix_hebergement', 'acompte', 'reste', 'parrain', 'pieces', 'etat', 'date')
     list_display_links = ('nom', 'prenom')
-    list_editable  = ('acompte', 'parrain', 'etat')
+    list_editable  = ('prix_hebergement', 'acompte', 'parrain', 'etat')
     list_filter    = ('date', 'etat', 'semaines')
     search_fields  = ('nom', 'prenom', 'email')
     readonly_fields = ('age', 'prix')
@@ -67,10 +67,10 @@ class InscriptionAdmin(ExportMixin, admin.ModelAdmin):
         ('prix', 'formule'),
         ('assurance', 'train'),
         ('semaines'),
-        ('hebergement', 'chambre'),
+        ('hebergement', 'prix_hebergement', 'chambre'),
         ('lieu'), 
         ('email', 'tel'),
-        ('mode', 'acompte'),
+        ('mode', 'acompte', 'remise'),
         ('etat'),
         ('parrain', 'nom_parrain', 'adr_parrain'),
         ('fiche_inscr', 'fiche_inscr_snail'),

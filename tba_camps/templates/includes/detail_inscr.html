@@ -22,9 +22,16 @@
   <tr><td>Navette retour</td><td class="price">{{ object.navette_r }}€</td></tr>
   {% endif %}
   {% if object.hebergement %}
-  <tr><td>Hébergement en <b>{{ object.hebergement }}</b></td></tr>
+  <tr><td>Hébergement en <b>{{ object.hebergement }}</b></td>
+    {% if object.prix_hebergement %}
+    <td class="price">{{ object.prix_hebergement }}€</td>
+    {% endif %}
+  </tr>
   {% endif %}
   {% if object.formule.taxe %}
   <tr><td>Taxe ménage</td><td class="price">{{ object.formule.taxe }}€</td></tr>
+  {% endif %}
+  {% if object.remise %}
+  <tr><td>Remise</td><td class="price">-{{ object.remise }}€</td></tr>
   {% endif %}
 </table>

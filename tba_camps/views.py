@@ -48,6 +48,8 @@ class InscriptionForm(forms.ModelForm):
                                             required=False)
     etat = forms.Field(required=False, widget=forms.HiddenInput)
     acompte = forms.Field(required=False, widget=forms.HiddenInput)
+    prix_hebergement = forms.Field(required=False, widget=forms.HiddenInput)
+    remise = forms.Field(required=False, widget=forms.HiddenInput)
     licencie = forms.ChoiceField(label=u'Licencié dans un club',
                                  widget=widgets.RadioSelect,
                                  choices=[('O','Oui'), ('N','Non')])
@@ -81,6 +83,12 @@ class InscriptionForm(forms.ModelForm):
         return PREINSCRIPTION
 
     def clean_acompte(self):
+        return 0
+
+    def clean_prix_hebergement(self):
+        return 0
+
+    def clean_remise(self):
         return 0
 
     def clean(self):

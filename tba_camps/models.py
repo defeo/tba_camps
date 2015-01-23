@@ -128,6 +128,7 @@ class Inscription(models.Model):
                                                     (160, 'Tarif normal (160€)'),
                                                     (80, 'Moins de 12 ans (80€)')])
     hebergement = models.ForeignKey(Hebergement, null=True, blank=True)
+    prix_hebergement = models.IntegerField('Prix hébergement', default=0)
     chambre = models.CharField('En chambre avec', max_length=255,
                                default='', blank=True)
     navette_a = models.IntegerField('Navette aller', default=0,
@@ -146,6 +147,7 @@ class Inscription(models.Model):
                                      #(PAID, 'Payé'),
                                      (CANCELED, 'Annulé'),])
     acompte = models.IntegerField(default=0)
+    remise = models.IntegerField('Remise', default=0)
     venu = models.CharField('Je suis déjà venu à Superdévoluy', max_length=1,
                             choices=[('O', 'Oui'), ('N', 'Non')], default=0)
     taille = models.IntegerField('Taille (cm)', 
@@ -189,11 +191,14 @@ class Inscription(models.Model):
 
     def prix(self):
         return (self.formule.total(self.semaines.count()) + self.train
-                + self.assurance + self.navette_a + self.navette_r)
+                + self.assurance + self.navette_a + self.navette_r + self.prix_hebergement
+                - self.remise)
 
     def avance(self):
-        return (self.formule.avance(self.semaines.count()) + self.train // 2
-                + self.assurance + self.navette_a + self.navette_r)
+        return min(self.formule.avance(self.semaines.count()) + self.train // 2
+                   + self.assurance + self.navette_a + self.navette_r
+                   + self.prix_hebergement * 3 // 10,
+                   self.prix())
 
     def reste(self):
         return (self.etat != PAID) * (self.prix() - self.acompte)
