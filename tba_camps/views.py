@@ -106,6 +106,10 @@ class InscriptionForm(forms.ModelForm):
                 cleaned_data['hebergement'] = None
             if not formule.affiche_train:
                 cleaned_data['train'] = 0
+            if not formule.affiche_navette:
+                cleaned_data['navette_a'] = cleaned_data['navette_r'] = 0
+            if not formule.affiche_assurance:
+                cleaned_data['assurance'] = 0
         if email != email2:
             self.add_error('email2', self.error_class([u'Emails différents.']))
         return cleaned_data

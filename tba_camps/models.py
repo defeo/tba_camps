@@ -16,6 +16,7 @@ import mails
 from django.template.loader import render_to_string
 from markdown import markdown
 from django.utils.safestring import mark_safe
+from decimal import Decimal
 
 class Manager(models.Model):
     'Options en plus pour les utilisateurs'
@@ -71,11 +72,18 @@ class Formule(OrderedModel):
     prix = models.DecimalField(max_digits=10, decimal_places=2)
     taxe = models.DecimalField('Taxe menage', default=0, max_digits=10, decimal_places=2)
     cotisation = models.DecimalField('Cotisation TBA', default=15, max_digits=10, decimal_places=2)
-    affiche_train = models.BooleanField("Afficher option Train", default=False)
-    affiche_hebergement = models.BooleanField("Afficher option Hébergement", 
+    affiche_train = models.BooleanField("Opt. train", default=False)
+    affiche_hebergement = models.BooleanField("Opt. hébergement", 
                                               default=False)
-    affiche_chambre = models.BooleanField("Afficher option 'En chambre avec'",
+    affiche_chambre = models.BooleanField("Opt. 'chambre avec'",
                                           default=False)
+    affiche_navette = models.BooleanField("Opt. navette",
+                                          default=True)
+    affiche_assurance = models.BooleanField("Opt. assurance",
+                                            default=True)
+    affiche_mode = models.BooleanField("Opt. mode réglément",
+                                       default=True)
+    publique = models.BooleanField("Tout publique", default=True)
 
     class Meta(OrderedModel.Meta):
         pass
@@ -125,27 +133,28 @@ class Inscription(models.Model):
     formule = models.ForeignKey(Formule)
     train = models.DecimalField('Supplément aller-retour train depuis Paris',
                                 max_digits=10, decimal_places=2,
-                                default=0, choices=[(0, "Pas de supplément"),
-                                                    (160, 'Tarif normal (160€)'),
-                                                    (80, 'Moins de 12 ans (80€)')])
+                                default=Decimal('0.00'),
+                                choices=[(Decimal('0.00'), "Pas de supplément"),
+                                         (Decimal('160.00'), 'Tarif normal (160€)'),
+                                         (Decimal('80.00'), 'Moins de 12 ans (80€)')])
     hebergement = models.ForeignKey(Hebergement, null=True, blank=True)
     prix_hebergement = models.DecimalField('Prix hébergement', default=0,
                                            max_digits=10, decimal_places=2)
     chambre = models.CharField('En chambre avec', max_length=255,
                                default='', blank=True)
-    navette_a = models.DecimalField('Navette aller', default=0,
+    navette_a = models.DecimalField('Navette aller', default=Decimal('0.00'),
                                     max_digits=10, decimal_places=2,
-                                    choices=[(0, 'Non'),
-                                             (6, u'Oui (6€)')])
-    navette_r = models.DecimalField('Navette retour', default=0,
+                                    choices=[(Decimal('0.00'), 'Non'),
+                                             (Decimal('6.00'), u'Oui (6€)')])
+    navette_r = models.DecimalField('Navette retour', default=Decimal('0.00'),
                                     max_digits=10, decimal_places=2,
-                                    choices=[(0, 'Non'),
-                                             (6, u'Oui (6€)')])
-    assurance = models.DecimalField(default=0,
+                                    choices=[(Decimal('0.00'), 'Non'),
+                                             (Decimal('6.00'), u'Oui (6€)')])
+    assurance = models.DecimalField(default=Decimal('0.00'),
                                     max_digits=10, decimal_places=2,
-                                    choices=[(0, 'Non'), 
-                                             (6, u'Avec assurance (6€)')])
-    mode = models.CharField('Mode de règlement', max_length=1023, blank=True)
+                                    choices=[(Decimal('0.00'), 'Non'), 
+                                             (Decimal('6.00'), u'Avec assurance (6€)')])
+    mode = models.CharField('Mode de règlement', max_length=1023, default='', blank=True)
     etat = models.CharField("État de l'inscription", max_length=1, default=VALID,
                             choices=[(PREINSCRIPTION, 'Pré-inscription'),
                                      (VALID, 'Validé'),

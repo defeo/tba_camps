@@ -11,8 +11,17 @@ $(function() {
 	$('#id_train').trigger($this.data('train')
 			       ? 'show.formule'
 			       : 'hide.formule');
+	$('#id_navette_a, #id_navette_r').trigger($this.data('navette')
+						  ? 'show.formule'
+						  : 'hide.formule');
+	$('#id_assurance').trigger($this.data('assurance')
+			       ? 'show.formule'
+			       : 'hide.formule');
+	$('#id_mode').trigger($this.data('mode')
+			      ? 'show.formule'
+			      : 'hide.formule');
     });
-    $('#id_hebergement, #id_train, #id_chambre').parent()
+    $('#id_hebergement, #id_train, #id_chambre, #id_navette_a, #id_navette_r, #id_assurance, #id_mode').parent()
 	.hide()
 	.on('show.formule hide.formule', function(e, speed) {
 	    $(this)[e.type]('slow');
@@ -30,7 +39,7 @@ $(function() {
 	});
 
     // Update cost table
-    $('#id_semaines, #id_formule, #id_train, #id_assurance, #id_navette_a, #id_navette_r')
+    $('#id_semaines, #id_formule, #id_train, #id_assurance, #id_navette_a, #id_navette_r, #id_mode')
 	.on('change', function() {
 	    var formule = $('#id_formule input:checked'),
 		nsemaines = $('#id_semaines input:checked').length;
@@ -51,7 +60,10 @@ $(function() {
 		    var $this = $(this);
 		    var clas = $this.attr('class');
 		    var c = parseInt(costs[clas]);
-		    if (c == 0 || (clas == 'train' && !formule.data('train'))) {
+		    if (c == 0
+			|| (clas == 'train' && !formule.data('train'))
+			|| (clas == 'navette' && !formule.data('navette'))
+			|| (clas == 'assurance' && !formule.data('assurance'))) {
 			$this.hide('fast');
 		    } else {
 			total += c;

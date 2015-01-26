@@ -17,13 +17,15 @@
 	
         <p align="center" style="font-size:30px; font-weight:bold ">FORMULES ET PRIX</p>
 	<table cellspacing="0" cellpadding="0" width="588" height="181" style="font-weight:bold">
-	{% for f in formules %}
-	<tr>
-	  <td >{{ f.nom }}</td>
-	  <td align="right">{{ f.prix.strip }}&euro;</td>
-	</tr>
-	<tr><td colspan="2" style="font-weight:normal;padding-left:3ex"><p>{{ f.description }}</p></td></tr>
-	{% endfor %}
+	  {% for f in formules %}
+	  {% if f.publique %}
+	  <tr>
+	    <td >{{ f.nom }}</td>
+	    <td align="right">{{ f.prix.strip }}&euro;</td>
+	  </tr>
+	  <tr><td colspan="2" style="font-weight:normal;padding-left:3ex"><p>{{ f.description }}</p></td></tr>
+	  {% endif %}
+	  {% endfor %}
         </table>
 
 

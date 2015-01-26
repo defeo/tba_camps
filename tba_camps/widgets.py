@@ -30,18 +30,24 @@ class FormuleChoiceInput(FullModelChoiceInput):
             self.attrs['data-hebergement'] = '1'
         if self.choice_obj.affiche_chambre:
             self.attrs['data-chambre'] = '1'
+        if self.choice_obj.affiche_navette:
+            self.attrs['data-navette'] = '1'
+        if self.choice_obj.affiche_assurance:
+            self.attrs['data-assurance'] = '1'
+        if self.choice_obj.affiche_mode:
+            self.attrs['data-mode'] = '1'
         self.attrs['data-prix'] = self.choice_obj.prix
         self.attrs['data-cotisation'] = self.choice_obj.cotisation
         self.attrs['data-taxe'] = self.choice_obj.taxe
         return format_html(u'''<label>
 <input type="radio" name="{name}" value="{value}"{attrs}/> {nom}
-<span class="prix">({prix}€)</span>
+<span class="prix">{prix}</span>
 <span class="description">{description}</span></label>''',
                            name=self.name,
                            value=self.choice_value,
                            attrs=flatatt(self.attrs),
                            nom=force_text(self.choice_obj.nom),
-                           prix=self.choice_obj.prix.strip(),
+                           prix=format_html(u'({}€)', self.choice_obj.prix.strip()) * self.choice_obj.publique,
                            description=force_text(self.choice_obj.description))
 
 ### Formule widget
