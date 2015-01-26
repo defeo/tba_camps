@@ -81,6 +81,7 @@ class InscriptionAdmin(ExportMixin, admin.ModelAdmin):
      )
     formfield_overrides = {
         models.TextField: {'widget': widgets.Textarea(attrs={'rows' : 3})},
+        models.DecimalField: {'widget': widgets.NumberInput(attrs={'style' : 'width: 6em'})},
     }
     resource_class = InscriptionResource
 
