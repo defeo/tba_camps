@@ -194,10 +194,14 @@ class Inscription(models.Model):
         else:
             return 0
 
+    def prix_formule(self):
+        return self.formule.total(self.semaines.count())
+        
     def prix(self):
         return (self.formule.total(self.semaines.count()) + self.train
                 + self.assurance + self.navette_a + self.navette_r + self.prix_hebergement
                 - self.remise)
+    prix.short_description = u'Total'
 
     def avance(self):
         return min(self.formule.avance(self.semaines.count()) + self.train // 2

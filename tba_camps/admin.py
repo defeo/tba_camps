@@ -57,7 +57,7 @@ class InscriptionAdmin(ExportMixin, admin.ModelAdmin):
     list_editable  = ('prix_hebergement', 'acompte', 'parrain', 'etat')
     list_filter    = ('date', 'etat', 'semaines')
     search_fields  = ('nom', 'prenom', 'email')
-    readonly_fields = ('age', 'prix')
+    readonly_fields = ('age', 'prix', 'prix_formule', 'reste')
     fields  = (
         ('navette_a', 'navette_r',),
         ('taille', 'cp'),
@@ -65,13 +65,12 @@ class InscriptionAdmin(ExportMixin, admin.ModelAdmin):
         ('sexe', 'venu'),
         ('nom', 'prenom'),
         ('adresse', 'ville', 'pays'),
-        ('prix', 'formule'),
-        ('assurance', 'train'),
+        ('formule', 'prix_formule', 'remise', 'assurance', 'train'),
+        ('prix', 'acompte', 'mode', 'reste'),
         ('semaines'),
         ('hebergement', 'prix_hebergement', 'chambre'),
         ('lieu'), 
         ('email', 'tel'),
-        ('mode', 'acompte', 'remise'),
         ('etat'),
         ('parrain', 'nom_parrain', 'adr_parrain'),
         ('fiche_inscr', 'fiche_inscr_snail'),
