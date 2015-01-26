@@ -45,6 +45,9 @@ class FormuleAdmin(OrderedModelAdmin):
     list_display_links = ('nom',)
     list_editable = ('prix', 'taxe', 'cotisation', 'affiche_train', 'affiche_hebergement', 
                      'affiche_chambre')
+    formfield_overrides = {
+        models.DecimalField: {'widget': widgets.NumberInput(attrs={'style' : 'width: 6em'})},
+    }
 admin.site.register(Formule, FormuleAdmin)
 
 class HebergementAdmin(OrderedModelAdmin):
@@ -52,7 +55,7 @@ class HebergementAdmin(OrderedModelAdmin):
 admin.site.register(Hebergement, HebergementAdmin)
 
 class InscriptionAdmin(ExportMixin, admin.ModelAdmin):
-    list_display   = ('nom', 'prenom', 'tel', 'sem_code', 'formule', 'prix', 'prix_hebergement', 'acompte', 'reste', 'parrain', 'pieces', 'etat', 'date')
+    list_display   = ('nom', 'prenom', 'sem_code', 'formule', 'prix', 'prix_hebergement', 'acompte', 'reste', 'parrain', 'pieces', 'etat', 'date')
     list_display_links = ('nom', 'prenom')
     list_editable  = ('prix_hebergement', 'acompte', 'parrain', 'etat')
     list_filter    = ('date', 'etat', 'semaines')
