@@ -68,9 +68,9 @@ class Formule(OrderedModel):
     groupe = models.CharField(max_length=255, blank=True, default='')
     nom = models.CharField(max_length=255)
     description = models.TextField()    
-    prix = models.IntegerField()
-    taxe = models.IntegerField('Taxe menage', default=0)
-    cotisation = models.IntegerField('Cotisation TBA', default=15)
+    prix = models.DecimalField(max_digits=10, decimal_places=2)
+    taxe = models.DecimalField('Taxe menage', default=0, max_digits=10, decimal_places=2)
+    cotisation = models.DecimalField('Cotisation TBA', default=15, max_digits=10, decimal_places=2)
     affiche_train = models.BooleanField("Afficher option Train", default=False)
     affiche_hebergement = models.BooleanField("Afficher option Hébergement", 
                                               default=False)
@@ -123,21 +123,26 @@ class Inscription(models.Model):
         RegexValidator(regex='^\+?[\d -\.]{10,}$', message='Numéro invalide')])
     semaines = models.ManyToManyField(Semaine)
     formule = models.ForeignKey(Formule)
-    train = models.IntegerField('Supplément aller-retour train depuis Paris',
+    train = models.DecimalField('Supplément aller-retour train depuis Paris',
+                                max_digits=10, decimal_places=2,
                                 default=0, choices=[(0, "Pas de supplément"),
                                                     (160, 'Tarif normal (160€)'),
                                                     (80, 'Moins de 12 ans (80€)')])
     hebergement = models.ForeignKey(Hebergement, null=True, blank=True)
-    prix_hebergement = models.IntegerField('Prix hébergement', default=0)
+    prix_hebergement = models.DecimalField('Prix hébergement', default=0,
+                                           max_digits=10, decimal_places=2)
     chambre = models.CharField('En chambre avec', max_length=255,
                                default='', blank=True)
-    navette_a = models.IntegerField('Navette aller', default=0,
+    navette_a = models.DecimalField('Navette aller', default=0,
+                                    max_digits=10, decimal_places=2,
                                     choices=[(0, 'Non'),
                                              (6, u'Oui (6€)')])
-    navette_r = models.IntegerField('Navette retour', default=0,
+    navette_r = models.DecimalField('Navette retour', default=0,
+                                    max_digits=10, decimal_places=2,
                                     choices=[(0, 'Non'),
                                              (6, u'Oui (6€)')])
-    assurance = models.IntegerField(default=0,
+    assurance = models.DecimalField(default=0,
+                                    max_digits=10, decimal_places=2,
                                     choices=[(0, 'Non'), 
                                              (6, u'Avec assurance (6€)')])
     mode = models.CharField('Mode de règlement', max_length=1023, blank=True)
@@ -146,8 +151,8 @@ class Inscription(models.Model):
                                      (VALID, 'Validé'),
                                      #(PAID, 'Payé'),
                                      (CANCELED, 'Annulé'),])
-    acompte = models.IntegerField(default=0)
-    remise = models.IntegerField('Remise', default=0)
+    acompte = models.DecimalField(default=0, max_digits=10, decimal_places=2)
+    remise = models.DecimalField('Remise', default=0, max_digits=10, decimal_places=2)
     venu = models.CharField('Je suis déjà venu à Superdévoluy', max_length=1,
                             choices=[('O', 'Oui'), ('N', 'Non')], default=0)
     taille = models.IntegerField('Taille (cm)', 

@@ -43,6 +43,11 @@ INSTALLED_APPS = (
     'tba_camps',
 )
 
+# Hack Decimal to make it more friendly
+from decimal import Decimal
+Decimal.w_cents = lambda self: self.quantize(Decimal('0.01'))
+Decimal.strip = lambda self: self.to_integral() if self == self.to_integral() else self
+
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',

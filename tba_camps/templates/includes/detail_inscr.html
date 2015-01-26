@@ -5,7 +5,7 @@
 </ul>
 
 <p>aux conditions de la formule <b>{{ object.formule }}</b>
-  ({{ object.formule.prix }}€), avec les options suivantes :</p>
+  ({{ object.formule.prix.strip }}€), avec les options suivantes :</p>
 
 <table>
   <tr><td>Cotisation TBA {{ settings.ANNEEE }}</td><td class="price">{{ object.formule.cotisation }}€</td></tr>

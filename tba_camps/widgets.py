@@ -41,7 +41,7 @@ class FormuleChoiceInput(FullModelChoiceInput):
                            value=self.choice_value,
                            attrs=flatatt(self.attrs),
                            nom=force_text(self.choice_obj.nom),
-                           prix=self.choice_obj.prix,
+                           prix=self.choice_obj.prix.strip(),
                            description=force_text(self.choice_obj.description))
 
 ### Formule widget

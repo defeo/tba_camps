@@ -20,7 +20,7 @@
 	{% for f in formules %}
 	<tr>
 	  <td >{{ f.nom }}</td>
-	  <td align="right">{{ f.prix }}&euro;</td>
+	  <td align="right">{{ f.prix.strip }}&euro;</td>
 	</tr>
 	<tr><td colspan="2" style="font-weight:normal;padding-left:3ex"><p>{{ f.description }}</p></td></tr>
 	{% endfor %}
