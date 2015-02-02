@@ -166,7 +166,7 @@ class Inscription(models.Model):
                             choices=[('O', 'Oui'), ('N', 'Non')], default=0)
     taille = models.IntegerField('Taille (cm)', 
                                  validators=[MaxValueValidator(300),
-                                             MinValueValidator(30)])
+                                             MinValueValidator(30)], null=True, blank=True)
     parrain = models.BooleanField("Parrain", default=False)
     nom_parrain = models.CharField('NOM Prénom parrain', max_length=255, blank=True)
     adr_parrain = models.CharField('Adresse parrain', max_length=255, blank=True)

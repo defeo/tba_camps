@@ -64,17 +64,16 @@ class InscriptionAdmin(ExportMixin, admin.ModelAdmin):
     search_fields  = ('nom', 'prenom', 'email')
     readonly_fields = ('age', 'prix', 'prix_formule', 'reste')
     fields  = (
-        ('navette_a', 'navette_r',),
         ('taille', 'cp'),
-        ('age', 'naissance'),
+        ('age', 'naissance', 'lieu'),
         ('sexe', 'venu'),
         ('nom', 'prenom'),
         ('adresse', 'ville', 'pays'),
         ('formule', 'prix_formule', 'remise', 'assurance', 'train'),
+        ('navette_a', 'navette_r',),
         ('prix', 'acompte', 'mode', 'reste'),
         ('semaines'),
         ('hebergement', 'prix_hebergement', 'chambre'),
-        ('lieu'), 
         ('email', 'tel'),
         ('etat'),
         ('parrain', 'nom_parrain', 'adr_parrain'),
