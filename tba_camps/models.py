@@ -150,7 +150,7 @@ class Inscription(models.Model):
                                     max_digits=10, decimal_places=2,
                                     choices=[(Decimal('0.00'), 'Non'),
                                              (Decimal('6.00'), u'Oui (6€)')])
-    assurance = models.DecimalField(default=Decimal('0.00'),
+    assurance = models.DecimalField(default=Decimal('6.00'),
                                     max_digits=10, decimal_places=2,
                                     choices=[(Decimal('0.00'), 'Non'), 
                                              (Decimal('6.00'), u'Avec assurance (6€)')])
