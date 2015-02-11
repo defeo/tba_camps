@@ -64,6 +64,7 @@ class InscriptionAdmin(ExportMixin, admin.ModelAdmin):
     search_fields  = ('nom', 'prenom', 'email')
     readonly_fields = ('age', 'prix', 'prix_formule', 'reste')
     fields  = (
+        ('etat'),
         ('taille', 'cp'),
         ('age', 'naissance', 'lieu'),
         ('sexe', 'venu'),
@@ -75,7 +76,6 @@ class InscriptionAdmin(ExportMixin, admin.ModelAdmin):
         ('semaines'),
         ('hebergement', 'prix_hebergement', 'chambre'),
         ('email', 'tel'),
-        ('etat'),
         ('parrain', 'nom_parrain', 'adr_parrain'),
         ('fiche_inscr', 'fiche_inscr_snail'),
         ('fiche_sanit', 'fiche_sanit_snail'),
