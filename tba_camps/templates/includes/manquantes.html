@@ -1,8 +1,8 @@
-{% if not object.fiche_inscr_snail or not object.fiche_sanit_snail or not object.certificat_snail %}
+{% if not object.complete %}
 
-<p><strong>Attention&nbsp;!</strong>Il manque les pièces suivantes à
+<p><strong>Attention&nbsp;!</strong> Il manque les pièces suivantes à
   ton dossier, il faut nous les envoyer par courrier ou par mail. On
-  dois impérativement les avoir le jour de ton arrivée.</p>
+  doit impérativement les avoir le jour de ton arrivée.</p>
 
 <ul>
   {% if not object.fiche_inscr_snail %}
@@ -19,4 +19,10 @@
     et <a href="{{ host }}{{ settings.PIECES.sanitaire_pdf }}" target="_blank">ici en pdf</a>).</li>
   {% endif %}
 </ul>
+
+{% elif object.etat == 'C' %}
+
+<h3>Nous avons reçu toutes les pièces de ton dossier ainsi que la
+  totalité de ton règlement. Nous t'attendons à SUPERDEVOLUY !</h3>
+
 {% endif %}

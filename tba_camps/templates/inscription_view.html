@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load static %}
+{% load forms %}
+
+{% block title %}Confirmation d'inscription{% endblock %}
+
+{% block extrahead %}
+<style>
+  ul {
+    margin: 1ex 10%;
+  }
+  table {
+    width: 80%;
+    margin: 1ex auto;
+  }
+  ul.cadeaux {
+    font-size: 120%;
+    line-height: 1.2;
+  }
+  ul.cadeaux li {
+    list-style-type: none;
+  }
+  blockquote {
+    text-align: center;
+    font-size: 120%;
+    margin: 2px;
+  }
+  .alert {
+    color: red;
+  }
+  p { margin: 0.3ex 0 }
+  .signature {
+    text-align: right;
+    margin: 2ex 5em 2ex 0;
+    font-size: 110%;
+  }
+  .price {
+    text-align: right;
+    margin-right: 10%;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+{% block greetings %}
+<h2>{% if object.sexe == 'H' %}Cher{% else %}Chère{% endif %} {{ object.prenom }} {{ object.nom }},</h2>
+{% endblock %}
+
+{% if messages %}
+<ul class="messages">
+  {% for message in messages %}
+  <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message | safe | urlize }}</li>
+  {% endfor %}
+</ul>
+{% endif %}
+
+{% block main-content %}{% endblock %}
+
+{% endblock %}

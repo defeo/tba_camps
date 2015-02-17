@@ -1,0 +1,22 @@
+{% extends "inscription_view.html" %}
+
+{% block main-content %}
+
+<p>Tu viens de t’inscrire au camp de <strong>SUPERDEVOLUY</strong>
+  pour les semaines :</p>
+
+{% include "includes/detail_inscr.html" %}
+
+<p class="price">Acompte donné : {{ object.acompte }}€<br>
+  Solde dû sur place : <b>{{ object.reste }}€</b></p>
+
+<hr>
+
+{% include "includes/manquantes.html" %}
+{% include "includes/pieces_form.html" %}
+
+<h4>Adresse postale pour l'envoi des pièces :</h4>
+
+<blockquote class="adress">{{ settings.ADRESSE }}</blockquote>
+
+{% endblock %}

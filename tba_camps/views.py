@@ -10,7 +10,7 @@ from django.views.generic.base import TemplateView
 from django.template import TemplateDoesNotExist
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
-from models import Inscription, Formule, Hebergement, Semaine, PREINSCRIPTION, VALID, PAID, CANCELED
+from models import Inscription, Formule, Hebergement, Semaine, PREINSCRIPTION, VALID, COMPLETE, CANCELED
 from captcha.fields import ReCaptchaField
 import widgets as my_widgets
 from django.utils.translation import ugettext_lazy as _
@@ -146,7 +146,9 @@ class InscriptionView(DetailView):
         etat = self.get_object().etat
         if etat == PREINSCRIPTION:
             return PreinscriptionView.as_view()(req, *args, **kwds)
-        elif etat in (VALID, PAID):
+        elif etat == VALID:
+            return ValideView.as_view()(req, *args, **kwds)
+        elif etat == COMPLETE:
             return ConfirmationView.as_view()(req, *args, **kwds)
         return super(InscriptionView, self).dispatch(req, *args, **kwds)
 
@@ -187,11 +189,16 @@ class PreinscriptionView(UpdateView):
         messages.error(self.request, form.non_field_errors()[0])
         return HttpResponseRedirect(self.get_success_url())
 
-class ConfirmationView(DetailView):
+class ValideView(PreinscriptionView):
+    """
+    Page de confirmation après validation, avec possibilité de upload.
+    """
+    template_name = 'inscription_valide.html'
+    
+class ConfirmationView(PreinscriptionView):
     """
     Page de confirmation d'inscription
     """
-    model = Inscription
     template_name = 'inscription_sommaire.html'
 
 class InscriptionPDFView(PDFTemplateResponseMixin, DetailView):

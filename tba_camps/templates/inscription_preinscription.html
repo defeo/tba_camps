@@ -1,79 +1,14 @@
-{% extends "base.html" %}
-{% load static %}
-{% load forms %}
+{% extends "inscription_view.html" %}
 
 {% block title %}Confirmation de pré-inscription{% endblock %}
 
-{% block extrahead %}
-<style>
-  ul {
-    margin-left: 2ex;
-  }
-  blockquote {
-    margin: 2ex;
-    font-size: 120%;
-  }
-  p { margin: 0.3ex 0 }
-</style>
-{% endblock %}
+{% block greetings %}<h3>{{ object.prenom }} {{ object.nom }}, nous
+vous remercions de votre demande d'inscription.</h3>{% endblock %}
 
-{% block content %}
-
-<h3>{{ object.prenom }} {{ object.nom }}, nous vous remercions de
-votre demande d'inscription.</h3>
-
-{% if messages %}
-<ul class="messages">
-  {% for message in messages %}
-  <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message | safe | urlize }}</li>
-  {% endfor %}
-</ul>
-{% endif %}
-
+{% block main-content %}
 {% include "includes/pieces.html" %}
-
-<form action="" method="post" class="pure-form pure-form-aligned"
-      enctype="multipart/form-data">
-  {% csrf_token %}
-
-  <div id="uploads" class="fieldgroup">
-    <h3>Vous pouvez joindre ces pièces à votre règlement, ou les
-      scanner et nous les envoyer à l'aide de ce formulaire (maximum
-      {{ settings.MAX_FILE_SIZE }}Mo)</h3>
-
-    <div class="pure-control-group">
-      <label for="{{ form.fiche_inscr.name }}">{{ form.fiche_inscr.label }}</label>
-      {{ form.fiche_inscr }}
-    </div>
-
-    <div class="pure-control-group">
-      <label for="{{ form.fiche_sanit.name }}">{{ form.fiche_sanit.label }}</label>
-      {{ form.fiche_sanit }}
-    </div>
-
-    {% if not object.licence %}
-    <div class="pure-control-group">
-      <label for="{{ form.certificat.name }}">{{ form.certificat.label }}</label>
-      {{ form.certificat }}
-    </div>
-    {% endif %}
-
-    {% if object.hebergement and object.hebergement.managed %}
-    <div class="pure-control-group">
-      <label for="{{ form.fiche_hotel.name }}">{{ form.fiche_hotel.label }}</label>
-      {{ form.fiche_hotel }}
-    </div>
-    {% endif %}
-
-    <button type="submit" class="pure-button pure-button-primary">Mettre à jour</button>
-  </div>
-</form>
-
+{% include "includes/pieces_form.html" %}
 <div class="fieldgroup">
-
 {% include "includes/reglement.html" %}
-
 </div>
-
-
 {% endblock %}

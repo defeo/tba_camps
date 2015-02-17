@@ -99,7 +99,7 @@ class Formule(OrderedModel):
 
 PREINSCRIPTION = 'P'
 VALID = 'V'
-PAID = 'D'
+COMPLETE = 'C'
 CANCELED = 'A'
     
 import django.db.models.fields.files as files
@@ -158,7 +158,7 @@ class Inscription(models.Model):
     etat = models.CharField("État de l'inscription", max_length=1, default=VALID,
                             choices=[(PREINSCRIPTION, 'Pré-inscription'),
                                      (VALID, 'Validé'),
-                                     #(PAID, 'Payé'),
+                                     (COMPLETE, 'Complet'),
                                      (CANCELED, 'Annulé'),])
     acompte = models.DecimalField(default=0, max_digits=10, decimal_places=2)
     remise = models.DecimalField('Remise', default=0, max_digits=10, decimal_places=2)
@@ -219,8 +219,13 @@ class Inscription(models.Model):
                    self.prix())
 
     def reste(self):
-        return (self.etat != PAID) * (self.prix() - self.acompte)
+        return self.prix() - self.acompte
     reste.short_description = u'Solde dû'
+
+    def complete(self):
+        return self.etat == COMPLETE or (self.fiche_inscr_snail
+                                         and self.fiche_sanit_snail
+                                         and self.certificat_snail)
 
     def save(self, *args, **kwds):
         if self.pk is not None:
@@ -258,9 +263,17 @@ class Inscription(models.Model):
                     obj=self,
                     ctx={ 'host' : settings.HOST }
                 )
-            elif self.etat in (VALID, PAID):
+            elif self.etat == VALID:
                 mails.send_mail(
                     subject="Confirmation d'inscription",
+                    recipients=[ self.email ],
+                    template='confirmation_user',
+                    obj=self,
+                    ctx={ 'host' : settings.HOST }
+                )
+            elif self.etat == COMPLETE:
+                mails.send_mail(
+                    subject="Dossier d'inscription complet",
                     recipients=[ self.email ],
                     template='confirmation_user',
                     obj=self,
