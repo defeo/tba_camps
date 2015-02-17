@@ -131,7 +131,7 @@ class Inscription(models.Model):
         RegexValidator(regex='^\+?[\d -\.]{10,}$', message='Numéro invalide')])
     semaines = models.ManyToManyField(Semaine)
     formule = models.ForeignKey(Formule)
-    train = models.DecimalField('Supplément aller-retour train depuis Paris',
+    train = models.DecimalField('Supplément aller-retour train depuis Paris (inclut les navettes aller et retour)',
                                 max_digits=10, decimal_places=2,
                                 default=Decimal('0.00'),
                                 choices=[(Decimal('0.00'), "Pas de supplément"),
