@@ -43,13 +43,14 @@ class Semaine(models.Model):
         return datetime.timedelta(6) + self.debut
 
     def inscrits(self):
-        return self.inscription_set.filter(etat='V').count()
+        return self.inscription_set.filter(etat__in=[VALID, COMPLETE]).count()
         
     def preinscrits(self):
-        return self.inscription_set.filter(etat='P').count()
+        return self.inscription_set.filter(etat=PREINSCRIPTION).count()
 
     def restantes(self):
-        return self.places - self.inscription_set.filter(etat__in=['P','V']).count()
+        return (self.places
+                - self.inscription_set.filter(etat__in=[PREINSCRIPTION, VALID, COMPLETE]).count())
 
 class Hebergement(OrderedModel):
     nom = models.CharField(max_length=255)
