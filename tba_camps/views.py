@@ -22,11 +22,7 @@ class SemainesField(forms.ModelMultipleChoiceField):
     widget = widgets.CheckboxSelectMultiple
 
     def __init__(self, *args, **kwds):
-        super(SemainesField, self).__init__(queryset=Semaine.objects.filter(fermer=False), 
-                                            *args, **kwds)
-        self.choices = [(self.prepare_value(s), self.label_from_instance(s))
-                        for s in self.queryset
-                        if s.restantes() > 0]
+        super(SemainesField, self).__init__(queryset=Semaine.objects.open(), *args, **kwds)
 
 class InscriptionForm(forms.ModelForm):
     """

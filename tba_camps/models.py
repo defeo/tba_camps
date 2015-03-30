@@ -24,12 +24,22 @@ class Manager(models.Model):
     notif = models.BooleanField('Reçoit une notification à chaque action des utilisateurs',
                                 default=True)
 
+class SemaineQuerySet(models.QuerySet):
+    def open(self):
+        '''
+        Queryset discarding full/closed weeks
+        '''
+        return self.filter(fermer=False).filter(models.Q(inscription__isnull=True)
+                                                | ~models.Q(inscription__etat=CANCELED)).annotate(models.Count('inscription')).filter(inscription__count__lt=models.F('places'))
+    
 class Semaine(models.Model):
     debut = models.DateField('Début de la semaine', unique=True)
     commentaire = models.CharField('Commentaire affiché', max_length=255, blank=True)
     places = models.IntegerField('Nombre de places', default=0)
     fermer = models.BooleanField('Inscriptions fermées', default=False)
 
+    objects = SemaineQuerySet.as_manager()
+    
     def __unicode__(self):
         from datetime import timedelta
         return u'S%d:  %s – %s' % (self.ord(),
@@ -50,7 +60,7 @@ class Semaine(models.Model):
 
     def restantes(self):
         return (self.places
-                - self.inscription_set.filter(etat__in=[PREINSCRIPTION, VALID, COMPLETE]).count())
+                - self.inscription_set.exclude(etat=CANCELED).count())
 
 class Hebergement(OrderedModel):
     nom = models.CharField(max_length=255)
