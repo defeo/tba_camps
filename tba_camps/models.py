@@ -173,6 +173,8 @@ class Inscription(models.Model):
                                      (CANCELED, 'Annulé'),])
     acompte = models.DecimalField(default=0, max_digits=10, decimal_places=2)
     remise = models.DecimalField('Remise', default=0, max_digits=10, decimal_places=2)
+    supplement = models.DecimalField('Supplément', default=0, max_digits=10, decimal_places=2)
+    motif = models.CharField('Motif du supplément', max_length=255, default='', blank=True)
     venu = models.CharField('Je suis déjà venu à Superdévoluy', max_length=1,
                             choices=[('O', 'Oui'), ('N', 'Non')], default=0)
     taille = models.IntegerField('Taille (cm)', 
@@ -220,7 +222,7 @@ class Inscription(models.Model):
     def prix(self):
         return (self.formule.total(self.semaines.count()) + self.train
                 + self.assurance + self.navette_a + self.navette_r + self.prix_hebergement
-                - self.remise)
+                - self.remise + self.supplement)
     prix.short_description = u'Total'
 
     def avance(self):

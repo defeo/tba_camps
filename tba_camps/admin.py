@@ -71,7 +71,7 @@ class InscriptionAdmin(ExportMixin, admin.ModelAdmin):
         ('nom', 'prenom'),
         ('adresse', 'ville', 'pays'),
         ('formule', 'prix_formule', 'remise', 'assurance', 'train'),
-        ('navette_a', 'navette_r',),
+        ('navette_a', 'navette_r', 'supplement', 'motif'),
         ('prix', 'acompte', 'mode', 'reste'),
         ('semaines'),
         ('hebergement', 'prix_hebergement', 'chambre'),

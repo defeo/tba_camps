@@ -31,6 +31,9 @@
   {% if object.formule.taxe %}
   <tr><td>Taxe ménage</td><td class="price">{{ object.formule.taxe }}€</td></tr>
   {% endif %}
+  {% if object.supplement %}
+  <tr><td>{{ object.motif | default:"Supplément" }}</td><td class="price">{{ object.supplement }}€</td></tr>
+  {% endif %}
   {% if object.remise %}
   <tr><td>Remise</td><td class="price">-{{ object.remise }}€</td></tr>
   {% endif %}
