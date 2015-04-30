@@ -173,6 +173,7 @@ class Inscription(models.Model):
                                      (CANCELED, 'Annulé'),])
     acompte = models.DecimalField(default=0, max_digits=10, decimal_places=2)
     remise = models.DecimalField('Remise', default=0, max_digits=10, decimal_places=2)
+    motif_rem = models.CharField('Motif de la remise', max_length=255, default='', blank=True)
     supplement = models.DecimalField('Supplément', default=0, max_digits=10, decimal_places=2)
     motif = models.CharField('Motif du supplément', max_length=255, default='', blank=True)
     venu = models.CharField('Je suis déjà venu à Superdévoluy', max_length=1,
