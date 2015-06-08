@@ -296,13 +296,13 @@ class Inscription(models.Model):
 
 
 
-@receiver(post_delete, sender=Inscription)
+@receiver(post_delete, sender=Inscription, dispatch_uid="delete_files")
 def delete_files(sender, instance, **kwargs):
     'Delete files after deleting Inscription instances'
     for f in upload_fields:
         ff = getattr(instance, f)
         if ff:
-            ff.delete()
+            ff.delete(save=False)
 
 from django_downloadview import ObjectDownloadView
 from django.conf.urls import url
