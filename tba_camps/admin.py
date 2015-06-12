@@ -2,7 +2,7 @@
 
 from django.contrib import admin
 from ordered_model.admin import OrderedModelAdmin
-from models import Manager, Semaine, Formule, Hebergement, Inscription
+from models import Manager, Semaine, Formule, Hebergement, Inscription, CANCELED
 from import_export.admin import ExportMixin
 from resources import InscriptionResource
 from django.contrib.auth.admin import UserAdmin
@@ -56,11 +56,36 @@ class HebergementAdmin(OrderedModelAdmin):
     list_display = ('nom', 'md_commentaire', 'managed', 'move_up_down_links')
 admin.site.register(Hebergement, HebergementAdmin)
 
+class CanceledFilter(admin.SimpleListFilter):
+    title = 'Montrer inscriptions annulées'
+    parameter_name = 'canceled'
+    template = 'filter_no_by.html'
+    
+    def lookups(self, req, model):
+        return ( (None, 'Non',), ('y', 'Oui') )
+
+    # http://stackoverflow.com/questions/851636/default-filter-in-django-admin/3783930#3783930
+    def choices(self, cl):
+        for lookup, title in self.lookup_choices:
+            yield {
+                'selected': self.value() == lookup,
+                'query_string': cl.get_query_string({
+                    self.parameter_name: lookup,
+                }, []),
+                'display': title,
+            }
+    
+    def queryset(self, req, queryset):
+        if self.value() == 'y':
+            return queryset
+        else:
+            return queryset.exclude(etat=CANCELED)
+
 class InscriptionAdmin(ExportMixin, admin.ModelAdmin):
     list_display   = ('nom', 'prenom', 'sem_code', 'formule', 'prix', 'prix_hebergement', 'acompte', 'reste', 'parrain', 'pieces', 'etat', 'date')
     list_display_links = ('nom', 'prenom')
     list_editable  = ('prix_hebergement', 'acompte', 'parrain', 'etat')
-    list_filter    = ('date', 'etat', 'semaines')
+    list_filter    = ('date', CanceledFilter, 'semaines')
     search_fields  = ('nom', 'prenom', 'email')
     readonly_fields = ('age', 'prix', 'prix_formule', 'reste')
     fields  = (
