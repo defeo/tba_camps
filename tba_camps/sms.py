@@ -24,7 +24,7 @@ def sms(req):
             f = form.cleaned_data['formules']
             inscr = Inscription.objects.filter(semaines=s, formule__in=f)
             nums = list(set(str(i.tel).translate(None, '- .') for i in inscr))
-            return JsonResponse({'nums': nums, 'semaine': s.pk, 'formules': [x.nom for x in f]})
+            return JsonResponse({'nums': nums, 'semaine': s.ord(), 'formules': [x.nom for x in f]})
     return HttpResponseBadRequest()
 
 @login_required(login_url='/admin/login')
