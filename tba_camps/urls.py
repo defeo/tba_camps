@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.views.generic import RedirectView
-import views, models
+import views, models, sms
 from django.contrib import admin
 admin.autodiscover()
 
@@ -8,6 +8,7 @@ urlpatterns = patterns('',
     url(r'^$', RedirectView.as_view(url='/tba/')),
     url(r'^index-tba.htm$', RedirectView.as_view(url='/tba/presentation.htm')),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^sms/', include(sms.urls)),
     url(r'^tba/inscriptions\.htm$', views.InscriptionFormView.as_view(), name='inscription_form'),
     url(r'^tba/inscriptions\.htm/(?P<slug>[\w-]{22})/', include(patterns('inscription.views',
         url(r'^$', views.InscriptionView.as_view(), name='inscription_view'),
