@@ -37,7 +37,7 @@ def select(req):
     return render(req, 'sms.html', {
         'form' : SelectForm(initial={
             'semaines': today,
-            'formules': []
+            'formules': [x.pk for x in Formule.objects.filter(taxe=0, publique=True)]
         })
     })
 
