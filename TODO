@@ -1,0 +1,48 @@
+;; This buffer is for notes you don't want to save, and for Lisp evaluation.
+;; If you want to create a file, visit that file with C-x C-f,
+;; then enter the text in that file's own buffer.
+
+[] effacer inscription avec fichier disparu, ou pas?
+
+[] Utiliser templates dans les chaînes markdownifiées de Hebergement
+
+[] sauvegardes BD
+
+[] Mail de notif: infos dans expe + sujet
+
+[] template first week in index
+
+[] No licences non obligatoire?
+
+
+# ListViews
+
+[] (Coachs) nom, prenom, age↑, sexe
+[] (Réversibles) nom↑, prénom↑, age, taille, sexe
+[] (F3) nom, prénom, age↑, taille, sexe*, code postal
+[] nom, prénom, age
+
+
+# Réunion 29/7
+
+- [ ] Traiter différemment préinscription -> annulé et validé ->
+  annulé ?
+- [ ] Différencier mail accompagnateur
+- [ ] Ajouter case "nom du club" pour les licenciés
+- [ ] Châlet club: accompagnateur obligatoire
+- [ ] Enregistrer date de validation
+- [ ] Basculer modification annulés
+- [x] Age au 1er Janvier
+
+## Fiche inscription (admin) 
+
+- [ ] Agrandir cadre semaines
+- [ ] répéter boutons en haut et en bas
+- [ ] mettre nom en gros
+
+## Gestion logements
+
+- Remplissage chalets: bloquer, prix
+- Gestion par groupe?
+- Chambre avec?
+
