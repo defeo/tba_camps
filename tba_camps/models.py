@@ -211,9 +211,9 @@ class Inscription(models.Model):
         return settings.HOST + self.get_absolute_url()
 
     def age(self):
-        "Age au mois de juin de l'annee en cours"
+        "Age (au 31 décembre de l'année en cours)"
         if self.naissance:
-            return (datetime.date(settings.ANNEE,1,1) - self.naissance).days // 365
+            return settings.ANNEE - self.naissance.year
         else:
             return 0
 
