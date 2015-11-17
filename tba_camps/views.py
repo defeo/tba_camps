@@ -222,7 +222,7 @@ class ReminderView(FormView):
     La page pour chercher des inscriptions
     '''
     template_name = 'reminder.html'
-    success_url = '.'
+    success_url = '#'
     form_class = ReminderForm
 
     def form_valid(self, form, *args, **kwds):
