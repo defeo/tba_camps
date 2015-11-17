@@ -263,10 +263,11 @@ class Inscription(models.Model):
                     of.delete(save=False)
         else:
             super(Inscription, self).save(*args, **kwds)
-        cipher = AES.new(settings.SECRET_KEY[:16], AES.MODE_ECB)
-        self.slug = base64.b64encode(cipher.encrypt("{:0>16X}".format(self.pk)), '_-')[:-2]
-        super(Inscription, self).save(*args, **kwds)
-
+        if not kwds.get('force_insert'):
+            cipher = AES.new(settings.SECRET_KEY[:16], AES.MODE_ECB)
+            self.slug = base64.b64encode(cipher.encrypt("{:0>16X}".format(self.pk)), '_-')[:-2]
+            super(Inscription, self).save(*args, **kwds)
+        
     def send_mail(self):
         if self.email:
             if self.etat == PREINSCRIPTION:
