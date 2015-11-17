@@ -1,7 +1,7 @@
 # -:- encoding: utf-8
 
 from django.utils.html import format_html
-from django.forms.util import flatatt
+from django.forms.utils import flatatt
 from django.utils.safestring import mark_safe
 from django import forms
 from django.utils.encoding import force_text

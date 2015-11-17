@@ -26,7 +26,7 @@ class MyUserAdmin(UserAdmin):
 
     def gets_notifs(self, obj):
         return obj.manager.notif
-    gets_notifs.short_description = 'Reçoit les notifications'
+    gets_notifs.short_description = u'Reçoit les notifications'
     gets_notifs.boolean = True
 admin.site.unregister(User)
 admin.site.register(User, MyUserAdmin)
@@ -57,7 +57,7 @@ class HebergementAdmin(OrderedModelAdmin):
 admin.site.register(Hebergement, HebergementAdmin)
 
 class CanceledFilter(admin.SimpleListFilter):
-    title = 'Montrer inscriptions annulées'
+    title = u'Montrer inscriptions annulées'
     parameter_name = 'canceled'
     template = 'filter_no_by.html'
     
@@ -136,7 +136,7 @@ class InscriptionAdmin(ExportMixin, admin.ModelAdmin):
                                         link('certificat', 'certificat'))
         if obj.hebergement and obj.hebergement.managed:
             p += '<br><img src="%s"> %s' % (yesno(obj.fiche_hotel_snail),
-                                            link('fiche_hotel', 'hébergement'))
+                                            link('fiche_hotel', u'hébergement'))
 
         return mark_safe(p)
     pieces.short_description = u'Pièces'

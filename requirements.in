@@ -1,0 +1,19 @@
+django>=1.8
+
+# Dependencies
+django-ordered-model
+django-import-export
+pycrypto
+markdown
+django-downloadview
+django-recaptcha
+django-easy-pdf
+
+# For production
+gunicorn
+mysql-python
+dj-static
+dj-database-url
+
+# For Heroku
+django-toolbelt

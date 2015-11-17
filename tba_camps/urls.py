@@ -5,8 +5,8 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('', 
-    url(r'^$', RedirectView.as_view(url='/tba/')),
-    url(r'^index-tba.htm$', RedirectView.as_view(url='/tba/presentation.htm')),
+    url(r'^$', RedirectView.as_view(url='/tba/', permanent=True)),
+    url(r'^index-tba.htm$', RedirectView.as_view(url='/tba/presentation.htm', permanent=True)),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^sms/', include(sms.urls)),
     url(r'^tba/inscriptions\.htm$', views.InscriptionFormView.as_view(), name='inscription_form'),
