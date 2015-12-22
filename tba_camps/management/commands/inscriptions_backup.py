@@ -3,6 +3,7 @@ from django.core import serializers
 import tarfile
 from datetime import datetime
 from tba_camps.models import Inscription, Semaine, Hebergement, Formule
+from django.conf import settings
 
 _models = [Inscription, Semaine, Hebergement, Formule]
 
@@ -44,5 +45,5 @@ class Command(BaseCommand):
             self.stdout.write('done!')
             if opts['uploads']:
                 self.stdout.write('Compressing uploads... ', ending='')
-                out.add('uploads')
+                out.add(settings.MEDIA_ROOT)
                 self.stdout.write('done!')
