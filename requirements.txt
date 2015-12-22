@@ -9,21 +9,28 @@ dj-database-url==0.3.0
 dj-static==0.0.6
 django-downloadview==1.8
 django-easy-pdf==0.1.0
-django-import-export==0.2.9
-django-ordered-model==0.4.2
+django-import-export==0.4.1
+django-ordered-model==1.0.0
 django-recaptcha==1.0.4
 django-toolbelt==0.0.1
-django==1.8.6
-gunicorn==19.3.0
-markdown==2.6.4
+django==1.9
+gunicorn==19.4.1
+html5lib==0.9999999       # via xhtml2pdf
+markdown==2.6.5
 mysql-python==1.2.5
+pillow==3.0.0             # via reportlab, xhtml2pdf
 psycopg2==2.6.1           # via django-toolbelt
 pycrypto==2.6.1
-requests==2.8.1           # via django-downloadview
-six==1.10.0               # via django-downloadview
+pypdf2==1.25.1            # via xhtml2pdf
+pysqlite==2.8.1
+reportlab==3.2.0          # via xhtml2pdf
+requests==2.9.0           # via django-downloadview
+six==1.10.0               # via django-downloadview, html5lib
 static3==0.6.1            # via dj-static
 tablib==0.10.0            # via django-import-export
+xhtml2pdf==0.0.6
 
 # The following packages are commented out because they are
 # considered to be unsafe in a requirements file:
-# setuptools==18.5          # via django-downloadview
+# pip==7.1.2                # via reportlab
+# setuptools==19.1.1        # via django-downloadview, reportlab

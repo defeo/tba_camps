@@ -22,8 +22,6 @@ SECRET_KEY = '$8!01^omw4lywz^(7-&wl2bsem20alqkbs_^^&gg45foktztsc'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-TEMPLATE_DEBUG = True
-
 ALLOWED_HOSTS = []
 
 
@@ -67,11 +65,8 @@ WSGI_APPLICATION = 'tba_camps.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE'  : 'django.db.backends.mysql',
-        'USER'    : 'tba_camps',
-        'PASSWORD': 'dummy',
-        'HOST'    : 'localhost',
-        'NAME'    : 'tba',
+        'ENGINE'  : 'django.db.backends.sqlite3',
+        'NAME'    : 'tba.sqlite',
     }
 }
 
@@ -101,18 +96,27 @@ STATIC_ROOT = 'staticfiles'
 STATIC_URL = '/static/'
 
 # Uploaded files
-MEDIA_ROOT = '/tmp/'
+MEDIA_ROOT = BASE_DIR + '/uploads/'
 
 # Templates
-TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
-TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
-                               "django.core.context_processors.debug",
-                               "django.core.context_processors.i18n",
-                               "django.core.context_processors.media",
-                               "django.core.context_processors.static",
-                               "django.core.context_processors.tz",
-                               "django.contrib.messages.context_processors.messages",
-                               "tba_camps.context_processor.cp")
+#TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': ["django.contrib.auth.context_processors.auth",
+                                   "django.core.context_processors.debug",
+                                   "django.core.context_processors.i18n",
+                                   "django.core.context_processors.media",
+                                   "django.core.context_processors.static",
+                                   "django.core.context_processors.tz",
+                                   "django.contrib.messages.context_processors.messages",
+                                   "tba_camps.context_processor.cp"],
+            'debug': True,
+        },
+    },
+]
 
 
 # Mail configuration

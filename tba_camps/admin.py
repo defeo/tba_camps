@@ -121,21 +121,21 @@ class InscriptionAdmin(ExportMixin, admin.ModelAdmin):
     
     def pieces(self, obj):
         def yesno(val):
-            return static('admin/img/icon-%s.gif' % ('yes' if val else 'no'))
+            return static('admin/img/icon-%s.svg' % ('yes' if val else 'no'))
         def link(field, str):
             if getattr(obj, field):
                 return '<a href="%suploads/%s">%s</a>' % (obj.get_absolute_url(), field, str)
             else:
                 return str
         
-        p = '<img src="%s"> %s' % (yesno(obj.fiche_inscr_snail),
+        p = '<img src="%s">%s' % (yesno(obj.fiche_inscr_snail),
                                    link('fiche_inscr', 'inscription'))
-        p += '<br><img src="%s"> %s' % (yesno(obj.fiche_sanit_snail),
+        p += '<br><img src="%s">%s' % (yesno(obj.fiche_sanit_snail),
                                       link('fiche_sanit', 'sanitaire'))
-        p += '<br><img src="%s"> %s' % (yesno(obj.certificat_snail),
+        p += '<br><img src="%s">%s' % (yesno(obj.certificat_snail),
                                         link('certificat', 'certificat'))
         if obj.hebergement and obj.hebergement.managed:
-            p += '<br><img src="%s"> %s' % (yesno(obj.fiche_hotel_snail),
+            p += '<br><img src="%s">%s' % (yesno(obj.fiche_hotel_snail),
                                             link('fiche_hotel', u'hébergement'))
 
         return mark_safe(p)
