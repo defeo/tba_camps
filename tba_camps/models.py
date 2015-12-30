@@ -142,12 +142,16 @@ class Inscription(models.Model):
         RegexValidator(regex='^\+?[\d -\.]{10,}$', message='Numéro invalide')])
     semaines = models.ManyToManyField(Semaine)
     formule = models.ForeignKey(Formule)
-    train = models.DecimalField('Supplément aller-retour train depuis Paris (inclut les navettes aller et retour)',
+    train = models.DecimalField('Supplément train depuis Paris (inclut les navettes aller et retour)',
                                 max_digits=10, decimal_places=2,
                                 default=Decimal('0.00'),
                                 choices=[(Decimal('0.00'), "Pas de supplément"),
-                                         (Decimal('160.00'), 'Tarif normal (160€)'),
-                                         (Decimal('80.00'), 'Moins de 12 ans (80€)')])
+                                         (Decimal('160.00'), 'Aller-retour tarif normal (160€)'),
+                                         (Decimal('80.00'), 'Aller-retour moins de 12 ans (80€)'),
+                                         (Decimal('80.00'), 'Aller tarif normal (80€)'),
+                                         (Decimal('40.00'), 'Aller moins de 12 ans (40€)'),
+                                         (Decimal('80.00'), 'Retour tarif normal (80€)'),
+                                         (Decimal('40.00'), 'Retour moins de 12 ans (40€)')])
     hebergement = models.ForeignKey(Hebergement, null=True, blank=True)
     prix_hebergement = models.DecimalField('Prix hébergement', default=0,
                                            max_digits=10, decimal_places=2)
@@ -200,7 +204,9 @@ class Inscription(models.Model):
     fiche_hotel_snail = models.BooleanField('Réservation hébergement reçue',
                                             default=False)
     notes = models.TextField(default='', blank=True)
-
+    caf = models.CharField("Je bénéficie d'une aide CAF ou VACAF", max_length=1,
+                           choices=[('O', 'Oui'), ('N', 'Non')], default='N')
+    
     def __unicode__(self):
         return '%s %s <%s>' % (self.nom, self.prenom, self.email)
 

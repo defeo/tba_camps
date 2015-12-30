@@ -13,7 +13,7 @@ automatiquement annulée.{% endblock %}
 {% block extrahead %}
 <style>
   #id_sexe li, #id_licencie li, #id_venu li, 
-  #id_navette_a li, #id_navette_r li { display: inline; }
+  #id_navette_a li, #id_navette_r li, #id_caf li { display: inline; }
 
   #id_formule { font-weight: bold }
   #id_formule .prix { float: right }
@@ -159,6 +159,7 @@ automatiquement annulée.{% endblock %}
   <div id="notes-data" class="fieldgroup">
     <h3>Commentaire</h3>
     
+    {{ form.caf | cgroup }}
     {{ form.notes | cgroup }}
   </div>
 

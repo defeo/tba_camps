@@ -69,6 +69,7 @@ class InscriptionForm(forms.ModelForm):
             'licencie' :  widgets.RadioSelect,
             'venu' :  widgets.RadioSelect,
             'notes': widgets.Textarea(attrs={'rows' : 5}),
+            'caf' :  widgets.RadioSelect,
         }
         help_texts = {
             'licence': u'<a target="_blank" href="http://www.ffbb.com/jouer/recherche-avancee">Chercher sur ffbb.com</a>',
