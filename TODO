@@ -6,7 +6,7 @@
 
 [] Utiliser templates dans les chaînes markdownifiées de Hebergement
 
-[] sauvegardes BD
+[X] sauvegardes BD
 
 [] Mail de notif: infos dans expe + sujet
 
@@ -31,7 +31,7 @@
 - [ ] Ajouter case "nom du club" pour les licenciés
 - [ ] Châlet club: accompagnateur obligatoire
 - [ ] Enregistrer date de validation
-- [ ] Basculer modification annulés
+- [x] Basculer modification annulés
 - [x] Age au 1er Janvier
 
 ## Fiche inscription (admin) 
