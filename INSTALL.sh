@@ -47,7 +47,7 @@ export HOST_NAME=
 # On crée les tables dans la base de données. Cette commande va
 # demander de créer l'administrateur du site Django. Accepter et créer
 # l'administrateur.
-./manage.py syncdb
+./manage.py migrate
 
 # On charge des données par défaut dans les tables
 ./manage.py loaddata tba_camps/fixtures/*json
