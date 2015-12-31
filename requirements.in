@@ -21,3 +21,4 @@ dj-database-url
 
 # For Heroku
 django-toolbelt
+djrill
