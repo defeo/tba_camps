@@ -48,6 +48,7 @@ $(function() {
 		prix       : formule.data('prix') * nsemaines,
 		cotisation : formule.data('cotisation'),
 		taxe       : formule.data('taxe'),
+		taxe_gym   : formule.data('taxe_gym') * nsemaines,
 		assurance  : $('#id_assurance input:checked').val(),
 		navette    : parseInt($('#id_navette_a input:checked').val()) 
 		             + parseInt($('#id_navette_r input:checked').val()),
@@ -55,7 +56,7 @@ $(function() {
 	    }
 	    
 	    var total = 0, acompte = 0, sum = $('#cost-summary');
-	    sum.find('.prix, .cotisation, .taxe, .assurance, .train, .navette')
+	    sum.find('.prix, .cotisation, .taxe, .taxe_gym, .assurance, .train, .navette')
 		.each(function() {
 		    var $this = $(this);
 		    var clas = $this.attr('class');

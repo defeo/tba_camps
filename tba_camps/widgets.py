@@ -36,9 +36,8 @@ class FormuleChoiceInput(FullModelChoiceInput):
             self.attrs['data-assurance'] = '1'
         if self.choice_obj.affiche_mode:
             self.attrs['data-mode'] = '1'
-        self.attrs['data-prix'] = self.choice_obj.prix
-        self.attrs['data-cotisation'] = self.choice_obj.cotisation
-        self.attrs['data-taxe'] = self.choice_obj.taxe
+        for field, (val, _, _) in self.choice_obj.costs().items():
+            self.attrs['data-%s' % field.name] = val
         return format_html(u'''<label>
 <input type="radio" name="{name}" value="{value}"{attrs}/> {nom}
 <span class="prix">{prix}</span>

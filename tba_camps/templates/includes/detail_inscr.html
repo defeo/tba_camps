@@ -5,36 +5,14 @@
 </ul>
 
 <p>aux conditions de la formule <b>{{ object.formule }}</b>
-  ({{ object.formule.prix.strip }}€), avec les options suivantes :</p>
+  ({{ object.formule.prix.strip }}€), avec
+  {% if object.hebergement %}
+  hébergement en <b>{{ object.hebergement }}</b>, et
+  {% endif %}
+  les options suivantes :</p>
 
 <table>
-  <tr><td>Cotisation TBA {{ settings.ANNEEE }}</td><td class="price">{{ object.formule.cotisation }}€</td></tr>
-  {% if object.assurance %}
-  <tr><td>Assurance annulation</td><td class="price">{{ object.assurance }}€</td></tr>
-  {% endif %}
-  {% if object.train %}
-  <tr><td>Trajet en train accompagné de Paris</td><td class="price">{{ object.train }}€</td></tr>
-  {% endif %}
-  {% if object.navette_a %}
-  <tr><td>Navette aller</td><td class="price">{{ object.navette_a }}€</td></tr>
-  {% endif %}
-  {% if object.navette_r %}
-  <tr><td>Navette retour</td><td class="price">{{ object.navette_r }}€</td></tr>
-  {% endif %}
-  {% if object.hebergement %}
-  <tr><td>Hébergement en <b>{{ object.hebergement }}</b></td>
-    {% if object.prix_hebergement %}
-    <td class="price">{{ object.prix_hebergement }}€</td>
-    {% endif %}
-  </tr>
-  {% endif %}
-  {% if object.formule.taxe %}
-  <tr><td>Taxe ménage</td><td class="price">{{ object.formule.taxe }}€</td></tr>
-  {% endif %}
-  {% if object.supplement %}
-  <tr><td>{{ object.motif | default:"Supplément" }}</td><td class="price">{{ object.supplement }}€</td></tr>
-  {% endif %}
-  {% if object.remise %}
-  <tr><td>{{ object.motif_rem | default:"Remise" }}</td><td class="price">-{{ object.remise }}€</td></tr>
-  {% endif %}
+  {% for cost in object.desc_costs %}
+  <tr><td>{{ cost.desc | capfirst }}</td><td class="price">{{ cost.cost }}€</td></tr>
+  {% endfor %}
 </table>

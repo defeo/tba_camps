@@ -40,11 +40,11 @@ class SemaineAdmin(admin.ModelAdmin):
 admin.site.register(Semaine, SemaineAdmin)
 
 class FormuleAdmin(OrderedModelAdmin):
-    list_display = ('groupe', 'nom', 'description', 'prix', 'taxe', 'cotisation', 'affiche_train',
+    list_display = ('groupe', 'nom', 'description', 'prix', 'taxe', 'taxe_gym', 'cotisation', 'affiche_train',
                     'affiche_hebergement', 'affiche_chambre', 'affiche_navette',
                     'affiche_assurance', 'affiche_mode', 'publique', 'move_up_down_links')
     list_display_links = ('nom',)
-    list_editable = ('prix', 'taxe', 'cotisation', 'affiche_train', 'affiche_hebergement', 
+    list_editable = ('prix', 'taxe', 'taxe_gym', 'cotisation', 'affiche_train', 'affiche_hebergement', 
                      'affiche_chambre', 'affiche_navette', 'affiche_assurance', 'affiche_mode',
                      'publique')
     formfield_overrides = {

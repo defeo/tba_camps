@@ -79,9 +79,10 @@ class Hebergement(OrderedModel):
 class Formule(OrderedModel):
     groupe = models.CharField(max_length=255, blank=True, default='')
     nom = models.CharField(max_length=255)
-    description = models.TextField()    
-    prix = models.DecimalField(max_digits=10, decimal_places=2)
-    taxe = models.DecimalField('Taxe menage', default=0, max_digits=10, decimal_places=2)
+    description = models.TextField()
+    prix = models.DecimalField('Prix formule', max_digits=10, decimal_places=2)
+    taxe = models.DecimalField('Taxe ménage', default=0, max_digits=10, decimal_places=2)
+    taxe_gym = models.DecimalField('Taxe gymnase', default=0, max_digits=10, decimal_places=2)
     cotisation = models.DecimalField('Cotisation TBA', default=15, max_digits=10, decimal_places=2)
     affiche_train = models.BooleanField("Opt. train", default=False)
     affiche_hebergement = models.BooleanField("Opt. hébergement", 
@@ -102,11 +103,14 @@ class Formule(OrderedModel):
     def __unicode__(self):
         return self.nom
 
-    def total(self, semaines):
-        return self.prix*semaines + self.taxe + self.cotisation
+    def costs(self):
+        return {
+            Formule._meta.get_field('prix')       : (self.prix, True, 2),
+            Formule._meta.get_field('taxe_gym')   : (self.taxe_gym, True, 2),
+            Formule._meta.get_field('taxe')       : (self.taxe, False, 1),
+            Formule._meta.get_field('cotisation') : (self.cotisation, False, 1)
+            }
 
-    def avance(self, semaines):
-        return self.prix*semaines // 2 + self.taxe + self.cotisation
 
 PREINSCRIPTION = 'P'
 VALID = 'V'
@@ -165,7 +169,7 @@ class Inscription(models.Model):
                                     max_digits=10, decimal_places=2,
                                     choices=[(Decimal('0.00'), 'Non'),
                                              (Decimal('6.00'), u'Oui (6€)')])
-    assurance = models.DecimalField(default=Decimal('6.00'),
+    assurance = models.DecimalField('Assurance annulation', default=Decimal('6.00'),
                                     max_digits=10, decimal_places=2,
                                     choices=[(Decimal('0.00'), 'Non'), 
                                              (Decimal('6.00'), u'Avec assurance (6€)')])
@@ -222,21 +226,46 @@ class Inscription(models.Model):
             return settings.ANNEE - self.naissance.year
         else:
             return 0
+        
+    def costs_formule(self):
+        sem = self.semaines.count()
+        costs = {k: (val, sem**by_sem, frac)
+                 for k, (val, by_sem, frac) in self.formule.costs().items()}
+        return costs
+    
+    def costs(self):
+        costs = self.costs_formule()
+        costs.update({
+            Inscription._meta.get_field('train')            : (self.train, 1, 2),
+            Inscription._meta.get_field('assurance')        : (self.assurance, 1, 1),
+            Inscription._meta.get_field('navette_a')        : (self.navette_a, 1, 1),
+            Inscription._meta.get_field('navette_r')        : (self.navette_r, 1, 1),
+            Inscription._meta.get_field('prix_hebergement') : (self.prix_hebergement, 1, 3),
+            Inscription._meta.get_field('remise')           : (self.remise, -1, None),
+            Inscription._meta.get_field('supplement')       : (self.supplement, 1, None),
+            })
+        return costs
 
+    def desc_costs(self):
+        for field, (val, mul, _) in self.costs().items():
+            if val * mul:
+                yield {
+                    'desc' : field.verbose_name,
+                    'short': field.name,
+                    'cost' : val*mul,
+                    }
+    
     def prix_formule(self):
-        return self.formule.total(self.semaines.count())
+        return sum(val * count for (val, count, _) in self.costs_formule().values())
         
     def prix(self):
-        return (self.formule.total(self.semaines.count()) + self.train
-                + self.assurance + self.navette_a + self.navette_r + self.prix_hebergement
-                - self.remise + self.supplement)
+        return sum(val * count for (val, count, _) in self.costs().values())
     prix.short_description = u'Total'
 
     def avance(self):
-        return min(self.formule.avance(self.semaines.count()) + self.train // 2
-                   + self.assurance + self.navette_a + self.navette_r
-                   + self.prix_hebergement * 3 // 10,
-                   self.prix())
+        return min(sum(val * count // frac
+                       for (val, count, frac) in self.costs().values() if frac is not None),
+                    self.prix())
 
     def reste(self):
         return self.prix() - self.acompte
