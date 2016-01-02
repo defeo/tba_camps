@@ -42,7 +42,7 @@ class InscriptionResource(resources.ModelResource):
         export_base = ['nom', 'prenom', 'email', 'tel', 'sexe', 'naissance', 'age', 'taille', 
                         'lieu', 'adresse', 'cp', 'ville', 'pays', 'licence', 'venu',
                         'formule', 'etat', 'train', 'navette_a', 'navette_r', 'assurance', 
-                        'prix', 'acompte', 'mode', 'du',
+                        'prix', 'acompte', 'mode', 'mode_solde', 'du',
                         'hebergement', 'chambre', 'nom_parrain', 'adr_parrain', 'date', 'notes',
                         'caf', 'lien']
         widgets = {

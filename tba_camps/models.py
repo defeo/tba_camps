@@ -174,6 +174,7 @@ class Inscription(models.Model):
                                     choices=[(Decimal('0.00'), 'Non'), 
                                              (Decimal('6.00'), u'Avec assurance (6€)')])
     mode = models.CharField('Mode de règlement', max_length=1023, default='', blank=True)
+    mode_solde = models.CharField('Règlement solde', max_length=1023, default='', blank=True)    
     etat = models.CharField("État de l'inscription", max_length=1, default=VALID,
                             choices=[(PREINSCRIPTION, 'Pré-inscription'),
                                      (VALID, 'Validé'),
