@@ -88,6 +88,7 @@ class InscriptionAdmin(ExportMixin, admin.ModelAdmin):
     list_filter    = ('date', CanceledFilter, 'semaines')
     search_fields  = ('nom', 'prenom', 'email')
     readonly_fields = ('age', 'prix', 'prix_formule', 'reste')
+    save_on_top = True
     fields  = (
         ('etat', 'venu'),
         ('nom', 'prenom', 'mode_solde'),

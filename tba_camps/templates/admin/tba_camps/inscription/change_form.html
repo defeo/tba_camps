@@ -1,6 +1,12 @@
 {% extends "admin/change_form.html" %}
 
 {% block extrahead %}{{ block.super }}
+<style>
+  .form-row.field-nom label, .form-row.field-nom input,
+  .form-row.field-prenom label, .form-row.field-prenom input {
+    font-size: 130%;
+  }
+</style>
 <script>
   function send_mail() {
     if (window.confirm("ATTENTION ! Voulez-vous vraiment envoyer un nouvel email à l'utilisateur ?")) {
