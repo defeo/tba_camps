@@ -29,7 +29,7 @@
   annulé ?
 - [ ] Différencier mail accompagnateur
 - [ ] Ajouter case "nom du club" pour les licenciés
-- [ ] Châlet club: accompagnateur obligatoire
+- [X] Châlet club: accompagnateur obligatoire
 - [ ] Enregistrer date de validation
 - [x] Basculer modification annulés
 - [x] Age au 1er Janvier

@@ -8,6 +8,9 @@ $(function() {
 	$('#id_chambre').trigger($this.data('chambre')
 				 ? 'show.formule'
 				 : 'hide.formule');
+	$('#id_accompagnateur').trigger($this.data('accompagnateur')
+					? 'show.formule'
+					: 'hide.formule');
 	$('#id_train').trigger($this.data('train')
 			       ? 'show.formule'
 			       : 'hide.formule');
@@ -21,7 +24,7 @@ $(function() {
 			      ? 'show.formule'
 			      : 'hide.formule');
     });
-    $('#id_hebergement, #id_train, #id_chambre, #id_navette_a, #id_navette_r, #id_assurance, #id_mode').parent()
+    $('#id_hebergement, #id_accompagnateur, #id_train, #id_chambre, #id_navette_a, #id_navette_r, #id_assurance, #id_mode').parent()
 	.hide()
 	.on('show.formule hide.formule', function(e, speed) {
 	    $(this)[e.type]('slow');

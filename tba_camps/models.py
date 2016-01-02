@@ -95,6 +95,8 @@ class Formule(OrderedModel):
                                             default=True)
     affiche_mode = models.BooleanField("Opt. mode réglément",
                                        default=True)
+    affiche_accompagnateur = models.BooleanField("Opt. accompagnateur",
+                                                 default=False)
     publique = models.BooleanField("Tout publique", default=True)
 
     class Meta(OrderedModel.Meta):
@@ -146,6 +148,7 @@ class Inscription(models.Model):
         RegexValidator(regex='^\+?[\d -\.]{10,}$', message='Numéro invalide')])
     semaines = models.ManyToManyField(Semaine)
     formule = models.ForeignKey(Formule)
+    accompagnateur = models.CharField("Nom de l'accompagnateur", max_length=255, blank=True)
     train = models.DecimalField('Supplément train depuis Paris (inclut les navettes aller et retour)',
                                 max_digits=10, decimal_places=2,
                                 default=Decimal('0.00'),

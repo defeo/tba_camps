@@ -113,6 +113,11 @@ class InscriptionForm(forms.ModelForm):
                 cleaned_data['navette_a'] = cleaned_data['navette_r'] = 0
             if not formule.affiche_assurance:
                 cleaned_data['assurance'] = 0
+                
+            if not formule.affiche_accompagnateur:
+                cleaned_data['accompagnateur'] = ''
+            elif not cleaned_data.get('accompagnateur'):
+                self.add_error('accompagnateur', self.error_class([_('This field is required.')]))
         if email != email2:
             self.add_error('email2', self.error_class([u'Emails différents.']))
         return cleaned_data

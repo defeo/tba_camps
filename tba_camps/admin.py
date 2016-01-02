@@ -42,11 +42,11 @@ admin.site.register(Semaine, SemaineAdmin)
 class FormuleAdmin(OrderedModelAdmin):
     list_display = ('groupe', 'nom', 'description', 'prix', 'taxe', 'taxe_gym', 'cotisation', 'affiche_train',
                     'affiche_hebergement', 'affiche_chambre', 'affiche_navette',
-                    'affiche_assurance', 'affiche_mode', 'publique', 'move_up_down_links')
+                    'affiche_assurance', 'affiche_mode', 'affiche_accompagnateur', 'publique', 'move_up_down_links')
     list_display_links = ('nom',)
     list_editable = ('prix', 'taxe', 'taxe_gym', 'cotisation', 'affiche_train', 'affiche_hebergement', 
                      'affiche_chambre', 'affiche_navette', 'affiche_assurance', 'affiche_mode',
-                     'publique')
+                     'affiche_accompagnateur', 'publique')
     formfield_overrides = {
         models.DecimalField: {'widget': widgets.NumberInput(attrs={'style' : 'width: 6em'})},
     }
@@ -102,7 +102,7 @@ class InscriptionAdmin(ExportMixin, admin.ModelAdmin):
         ('navette_a', 'navette_r'),
         ('prix', 'acompte', 'mode', 'reste'),
         ('hebergement', 'prix_hebergement'),
-        ('chambre'),
+        ('chambre', 'accompagnateur'),
         ('email', 'tel'),
         ('adresse', 'cp', 'ville', 'pays'),
         ('lieu'),

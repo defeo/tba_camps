@@ -24,6 +24,8 @@ class FullModelChoiceInput(forms.widgets.ChoiceInput):
 
 class FormuleChoiceInput(FullModelChoiceInput):
     def render(self):
+        if self.choice_obj.affiche_accompagnateur:
+            self.attrs['data-accompagnateur'] = '1'
         if self.choice_obj.affiche_train:
             self.attrs['data-train'] = '1'
         if self.choice_obj.affiche_hebergement:
