@@ -90,7 +90,7 @@ class InscriptionAdmin(ExportMixin, admin.ModelAdmin):
     readonly_fields = ('age', 'prix', 'prix_formule', 'reste')
     save_on_top = True
     fields  = (
-        ('etat', 'venu'),
+        ('etat', 'venu', 'date_valid'),
         ('nom', 'prenom', 'mode_solde'),
         ('age', 'naissance'),
         ('semaines', 'sexe', 'taille'),

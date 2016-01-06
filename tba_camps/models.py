@@ -197,6 +197,7 @@ class Inscription(models.Model):
     nom_parrain = models.CharField('NOM Prénom parrain', max_length=255, blank=True)
     adr_parrain = models.CharField('Adresse parrain', max_length=255, blank=True)
     date = models.DateTimeField('Date inscription', auto_now_add=True)
+    date_valid = models.DateField('Date validation', null=True, blank=True)
     slug = models.SlugField(max_length=22, blank=True, editable=False)
     fiche_inscr = FileField("Fiche d'inscription", blank=True, null=True)
     fiche_inscr_snail = models.BooleanField("Fiche d'inscription reçue",
@@ -292,9 +293,14 @@ class Inscription(models.Model):
                 self.fiche_hotel_snail = True
             if (self.certificat or self.licence):
                 self.certificat_snail = True
-            # Si l'inscription a été validée, envoie email de confirmation
+            # Si l'inscription a été validée, enregistre la date
+            if self.etat == VALID != orig.etat:
+                self.date_valid = datetime.datetime.now()
+
+            #envoie email de confirmation
             #if (self.etat in (VALID, PAID) and orig.etat == PREINSCRIPTION):
             #    self.send_mail()
+            
             # Efface les vieux fichiers
             for f in upload_fields:
                 of, nf = getattr(orig, f), getattr(self, f)
@@ -302,6 +308,8 @@ class Inscription(models.Model):
                     of.delete(save=False)
         else:
             super(Inscription, self).save(*args, **kwds)
+
+        # Crée le slug et termine
         if not kwds.get('force_insert'):
             cipher = AES.new(settings.SECRET_KEY[:16], AES.MODE_ECB)
             self.slug = base64.b64encode(cipher.encrypt("{:0>16X}".format(self.pk)), '_-')[:-2]
