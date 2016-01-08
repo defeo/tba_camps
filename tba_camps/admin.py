@@ -147,7 +147,7 @@ class InscriptionAdmin(ExportMixin, admin.ModelAdmin):
     
     def get_urls(self):
         urls = super(InscriptionAdmin, self).get_urls()
-        my_url = url(r'^(.+)/send_mail$',  
+        my_url = url(r'^([0-9]+)/send_mail$',  
                      self.admin_site.admin_view(self.send_mail), 
                      name='tba_camps_inscription_send_mail')
         return [my_url] + urls 
