@@ -150,15 +150,14 @@ class Inscription(models.Model):
     formule = models.ForeignKey(Formule)
     accompagnateur = models.CharField("Nom de l'accompagnateur", max_length=255, blank=True)
     train = models.DecimalField('Supplément train depuis Paris (inclut les navettes aller et retour)',
-                                max_digits=10, decimal_places=2,
-                                default=Decimal('0.00'),
-                                choices=[(Decimal('0.00'), "Pas de supplément"),
-                                         (Decimal('160.00'), 'Aller-retour tarif normal (160€)'),
-                                         (Decimal('80.00'), 'Aller-retour moins de 12 ans (80€)'),
-                                         (Decimal('80.00'), 'Aller tarif normal (80€)'),
-                                         (Decimal('40.00'), 'Aller moins de 12 ans (40€)'),
-                                         (Decimal('80.00'), 'Retour tarif normal (80€)'),
-                                         (Decimal('40.00'), 'Retour moins de 12 ans (40€)')])
+                           max_digits=10, decimal_places=3, default=Decimal('0.000'),
+                           choices=[(Decimal('0.000'), "Pas de supplément"),
+                                    (Decimal('160.000'), 'Aller-retour tarif normal (160€)'),
+                                    (Decimal('80.000'), 'Aller-retour moins de 12 ans (80€)'),
+                                    (Decimal('80.001'), 'Aller tarif normal (80€)'),
+                                    (Decimal('40.000'), 'Aller moins de 12 ans (40€)'),
+                                    (Decimal('80.002'), 'Retour tarif normal (80€)'),
+                                    (Decimal('40.001'), 'Retour moins de 12 ans (40€)')])
     hebergement = models.ForeignKey(Hebergement, null=True, blank=True)
     prix_hebergement = models.DecimalField('Prix hébergement', default=0,
                                            max_digits=10, decimal_places=2)
@@ -241,7 +240,7 @@ class Inscription(models.Model):
     def costs(self):
         costs = self.costs_formule()
         costs.update({
-            Inscription._meta.get_field('train')            : (self.train, 1, 2),
+            Inscription._meta.get_field('train')            : (self.train.quantize(Decimal('0.00')), 1, 2),
             Inscription._meta.get_field('assurance')        : (self.assurance, 1, 1),
             Inscription._meta.get_field('navette_a')        : (self.navette_a, 1, 1),
             Inscription._meta.get_field('navette_r')        : (self.navette_r, 1, 1),
