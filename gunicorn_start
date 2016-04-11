@@ -21,6 +21,10 @@ export MAIL_HOST=smtp.camps-basket.com
 export MAIL_USER=username
 export MAIL_PASSWORD=password
 
+# Encodage du système de fichiers, changer si différent
+export LANG='fr_FR.UTF-8'
+export LC_ALL='fr_FR.UTF-8'
+
 exec ve/bin/gunicorn tba_camps.wsgi \
 	--bind 'localhost:8001' \
 	--workers 3
