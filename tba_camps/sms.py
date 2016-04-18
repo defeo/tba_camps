@@ -15,7 +15,7 @@ class SelectForm(forms.Form):
     semaines = forms.ModelChoiceField(queryset=Semaine.objects.all(),
                                       empty_label=None)
 
-@login_required(login_url='/admin/login')
+@login_required(login_url='/admin/login/')
 def sms(req):
     if req.method == 'POST':
         form = SelectForm(req.POST)
@@ -27,7 +27,7 @@ def sms(req):
             return JsonResponse({'nums': nums, 'semaine': s.ord(), 'formules': [x.nom for x in f]})
     return HttpResponseBadRequest()
 
-@login_required(login_url='/admin/login')
+@login_required(login_url='/admin/login/')
 def select(req):
     try:
         today = Semaine.objects.filter(debut__lte=datetime.now()).get(debut__gt=datetime.now()
