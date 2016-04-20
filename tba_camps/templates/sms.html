@@ -2,8 +2,14 @@
 <html>
   <head>
     <meta charset="utf-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Envoyer SMS</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="apple-touch-icon" href="{{ icon }}">
+    <link rel="icon" href="{{ icon }}">
+    <link rel="manifest" href="manifest">
+    
+    <title>SMS Camps TBA</title>
     <style>
       a, button {
         display: block;
@@ -37,12 +43,22 @@
         color: red;
         text-align: center;
       }
+      #sms { display: none; }
+      body.loggedin #sms { display: block; }
+      body.loggedin #login { display: none; }
     </style>
   </head>
-  <body>
+  <body {% if loggedin %}class="loggedin"{% endif %} >
     <div id="buttons"></div>
 
-    <form method="POST">
+    <form id="login" method="POST" action="login">
+      {% csrf_token %}
+      <input type="text" name="user" placeholder="login" required>
+      <input type="password" name="pwd" placeholder="mot de passe" required>
+      <button>Connexion</button>
+    </form>
+    
+    <form id="sms" method="POST" action="json">
       {% csrf_token %}
       {{ form.semaines }}
       {{ form.formules }}
@@ -51,41 +67,64 @@
 
     <script>
 	  var $ = document.querySelector.bind(document);
+	  var $$ = document.querySelectorAll.bind(document);
 
+	  function get_sms(res) {
+	      var bs = '';
+	      if (res && res.nums && res.nums.length > 0) {
+		  var howmany = res.nums.length / 100;
+		  for (var i = 0; i < howmany; i++) {
+		      var n = res.nums.splice(i*100, (i+1)*100);
+		      bs += '<a href="sms:' + n.join(',') + '?body=Camps%20basket%20TBA:">Envoyer SMS<small> ('
+			  + (i+1) + '-' + (i+n.length)
+			  + ')<br>S' + res.semaine + ': ' + res.formules.join(', ')
+			  + '</small></a>';
+		  }
+		  if (howmany > 1)
+		      bs += '<p class="error">Attention: plus de 100 numéros. Vous devez envoyer en plusieurs fois, cliquer sur chacun des boutons ci-dessus à la fois.</p>';
+	      } else {
+		  bs = '<p class="error">Pas de résultats !</p>';
+	      }
+	      $('#buttons').innerHTML = bs;
+	      window.scroll(0,0);
+	  }
+
+	  function login(res, xhr) {
+	    if (res && res.ok) {
+	        document.body.className = "loggedin";
+	        Array.prototype.forEach.call($$('input[name="csrfmiddlewaretoken"]'), function(csrf) {
+	            csrf.value = res.csrf;
+	        });
+	        $('#buttons').innerHTML = "";
+	    } else {
+	        $('#buttons').innerHTML = '<p class="error">Mauvais login ou mot de passe</p>';
+	    }
+	  }
+	  
 	  /* We fetch number lists and display them as link buttons */
-	  $('button').addEventListener('click', function(e) {
-              e.target.disabled = true;
+	  Array.prototype.forEach.call($$('button'), function ($this) {
+	    $this.addEventListener('click', function(e) {
+	      var $form = $this.parentElement;
+              $this.disabled = true;
               var xhr = new XMLHttpRequest();
-              xhr.open('post', 'json');
+              xhr.open('post', $form.action);
               //xhr.responseType = 'json';
               xhr.onload = function() {
-		  var bs = '';
-		  var res = xhr.responseText && JSON.parse(xhr.responseText);
-		  if (res && res.nums && res.nums.length > 0) {
-		      var howmany = res.nums.length / 100;
-		      for (var i = 0; i < howmany; i++) {
-			  var n = res.nums.splice(i*100, (i+1)*100);
-			  bs += '<a href="sms:' + n.join(',') + '?body=Camps%20basket%20TBA:">Envoyer SMS<small> ('
-			      + (i+1) + '-' + (i+n.length)
-			      + ')<br>S' + res.semaine + ': ' + res.formules.join(', ')
-			      + '</small></a>';
-		      }
-		      if (howmany > 1)
-			  bs += '<p class="error">Attention: plus de 100 numéros. Vous devez envoyer en plusieurs fois, cliquer sur chacun des boutons ci-dessus à la fois.</p>';
-		  } else {
-		      bs = '<p class="error">Pas de résultats !</p>';
-		  }
-		  $('#buttons').innerHTML = bs;
-		  window.scroll(0,0);
-		  e.target.disabled = false;
+	          var res = xhr.status == 200 && xhr.responseText && JSON.parse(xhr.responseText);
+	          if ($form.id == 'sms') {
+	              get_sms(res);
+	          } else {
+	              login(res, xhr);
+	          }
+	          $this.disabled = false;
+	      }
+              xhr.onerror = function(e) {
+	          console.log(e);
+		  $this.disabled = false;
               }
-              xhr.onerror = function() {
-		  e.target.disabled = false;
-              }
-              xhr.send(new FormData($('form')));
+              xhr.send(new FormData($form));
               e.preventDefault();
 	  });
-
 	  /* We erase sms buttons after click */
 	  $('#buttons').addEventListener('click', function(e) {
 	      var t = e.target;
@@ -94,6 +133,7 @@
 	      if (t !== e.currentTarget)
 		  t.style.display = 'none';
 	  });
+	});
     </script>
   </body>
 </html>
