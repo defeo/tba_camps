@@ -91,7 +91,8 @@ class InscriptionAdmin(ExportMixin, admin.ModelAdmin):
     save_on_top = True
     fields  = (
         ('etat', 'venu', 'date_valid'),
-        ('nom', 'prenom', 'mode_solde'),
+        ('nom', 'prenom'),
+        ('mode_solde', 'type_chambre', 'num_chambre'),
         ('age', 'naissance'),
         ('semaines', 'sexe', 'taille'),
         ('formule', 'prix_formule'),

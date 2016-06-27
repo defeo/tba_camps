@@ -163,6 +163,10 @@ class Inscription(models.Model):
                                            max_digits=10, decimal_places=2)
     chambre = models.CharField('En chambre avec', max_length=255,
                                default='', blank=True)
+    type_chambre = models.CharField('Type chambre', max_length=20,
+                                    choices=[('Chambre', 'Chambre'), ('Chalet', 'Châlet')],
+                                    default='', blank=True)
+    num_chambre = models.CharField('Numéro chambre', max_length=10, default='', blank=True)
     navette_a = models.DecimalField('Navette aller', default=Decimal('0.00'),
                                     max_digits=10, decimal_places=2,
                                     choices=[(Decimal('0.00'), 'Non'),

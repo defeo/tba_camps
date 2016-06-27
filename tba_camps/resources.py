@@ -43,7 +43,8 @@ class InscriptionResource(resources.ModelResource):
                         'lieu', 'adresse', 'cp', 'ville', 'pays', 'licence', 'venu',
                         'formule', 'etat', 'train', 'navette_a', 'navette_r', 'assurance', 
                         'prix', 'acompte', 'mode', 'mode_solde', 'du',
-                        'hebergement', 'chambre', 'accompagnateur', 'nom_parrain', 'adr_parrain',
+                        'hebergement', 'chambre', 'type_chambre', 'num_chambre', 'accompagnateur',
+                        'nom_parrain', 'adr_parrain',
                         'date', 'date_valid', 'notes', 'caf', 'lien']
         widgets = {
             'naissance' : { 'format' : '%x'},
