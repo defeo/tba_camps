@@ -63,6 +63,15 @@
       {% csrf_token %}
       {{ form.semaines }}
       {{ form.formules }}
+      <ul id="other">
+	{% for to in settings.SMS_RECIPIENTS %}
+	<li><label>
+	    <input id="to-{{ to.num }}" value="{{ to.num }}" type="checkbox"
+		   {% if to.check %} checked="checked" {% endif %} >
+	    {{ to.name }}
+	</label></li>
+	{% endfor %}
+      </ul>
       <button>Préparer SMS</button>
     </form>
 
@@ -73,9 +82,13 @@
 	  function get_sms(res) {
 	      var bs = '';
 	      if (res && res.nums && res.nums.length > 0) {
-		  var howmany = res.nums.length / 100;
+		  var nums = res.nums.concat(
+		      Array.prototype.map.call($$('#other input:checked'), function(i) {
+			  return i.value;
+		      }));
+		  var howmany = nums.length / 100;
 		  for (var i = 0; i < howmany; i++) {
-		      var n = res.nums.splice(i*100, (i+1)*100);
+		      var n = nums.splice(i*100, (i+1)*100);
 		      bs += '<a href="sms:' + n.join(',') + '?body=Camps%20basket%20TBA:">Envoyer SMS<small> ('
 			  + (i+1) + '-' + (i+n.length)
 			  + ')<br>S' + res.semaine + ': ' + res.formules.join(', ')

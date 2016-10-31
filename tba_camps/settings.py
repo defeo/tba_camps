@@ -142,3 +142,8 @@ USE_CAPTCHA = False
 PIECES = {
     # see settings_deploy.py
 }
+
+# Additional recipients for SMS
+SMS_RECIPIENTS = [
+    { "name" : "Centre sportif", "num" : "0606060606", "check" : True }
+    ]
