@@ -49,10 +49,10 @@ PIECES = {
     'sanitaire_pdf':         '/tba/pdf/Fiche-sanitaire-2016.pdf',
     'autorisation_doc':      '/tba/pdf/2016-autorisation-parentale.doc',
     'autorisation_pdf':      '/tba/pdf/2016-autorisation-parentale.pdf',
-    'margot':                '/tba/pdf/2016-Chalets-Margot-tarifs.pdf',
+    'margot':                '/tba/pdf/CHALETS-RESIDENCE-ETE-2017-PRIX-PUBLIC.pdf',
     'hameau_resa':           '/tba/pdf/Fiche-de-reservation-Hameau-du-Puy-2016.doc',
     'hameau_resa_pdf':       '/tba/pdf/Fiche-de-reservation-Hameau-du-Puy-2016.pdf',
     'hameau_tarif':          '/tba/pdf/tarif-hameau-du-puy-TBA-2016.docx',
     'hameau_tarif_pdf':      '/tba/pdf/tarif-hameau-du-puy-TBA-2016.pdf',
-    'devoluy' :              '/tba/pdf/RESERVATION-EN-DEVOLUY-TARIFS-PUBLICS-ETE-2016.pdf',
+    'devoluy' :              '/tba/pdf/RESERVATION-EN-DEVOLUY-TARIFS-PUBLICS-ETE-2017.pdf',
 }
