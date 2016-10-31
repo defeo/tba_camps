@@ -71,7 +71,7 @@
     {{ object.age }} ans,
     tél {{ object.tel }}, demande à être
     inscrit{% if object.sexe == 'F' %}e{% endif %} au 
-    stage du Superdévoluy les semaines</p>
+    stage de Superdévoluy les semaines</p>
 
   {% include "includes/detail_inscr.html" %}
 
@@ -90,7 +90,7 @@
                                                 Prénom</p>
     <p>Je soussigné, (père, mère, tuteur de) <b>{{ object.nom }} 
 	{{ object.prenom }}</b>, né(e) le <b>{{ object.naissance }}</b>, demande son
-      adhésion à l’association TBA et sa participation au stage de
+      adhésion à l’association TBA et sa participation au stage de Basket-ball organisé à
       SUPERDEVOLUY du {{ object.semaines.first.debut }} au {{ object.semaines.last.fin }}.</p>
     <p><em>Je déclare</em> que mon enfant répond aux conditions de santé exigées et que la fiche
       sanitaire de liaison qui me sera envoyée sera jointe à son dossier.</p>
@@ -99,7 +99,7 @@
       serez prévenu par un avertissement préliminaire.</p>
     <p><em>J’autorise</em> le responsable du séjour à lui faire donner tous les
       soins, traitements médicaux ou hospitalisations rendus
-      nécessaires.  Je m’engage à assurer le remboursement des frais
+      nécessaires.  <em>Je m’engage</em> à assurer le remboursement des frais
       avancés.</p>
     {% if not object.assurance %}
     <p><em>J’ai pris connaissance</em> qu’en cas d’annulation
@@ -108,8 +108,8 @@
       retenus.</p>  {% endif %}
     <p><em>J’autorise</em> que des photos ou films pris pendant les camps
       puissent être utilisés sur tout support diffusé par l’association
-      TBA (site Tba, facebook, Youtube, dépliants ou chaînes de
-      télévision, &hellip;)</p>
+      TBA (site Tba, Facebook, YouTube ou Dailymotion, dépliants ou chaînes de
+      télévision&hellip;)</p>
     <p>En cas <em>d’opposition (pour le droit à l’image)</em>, veuillez
       nous le signaler <em>par écrit</em> avant le début du séjour.</p>
   </div>
