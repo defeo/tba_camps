@@ -2,9 +2,9 @@
 
 from django.contrib import admin
 from ordered_model.admin import OrderedModelAdmin
-from models import Manager, Semaine, Formule, Hebergement, Inscription, CANCELED
+from .models import Manager, Semaine, Formule, Hebergement, Inscription, CANCELED
 from import_export.admin import ExportMixin
-from resources import InscriptionResource
+from .resources import InscriptionResource
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 from django.shortcuts import redirect
@@ -26,7 +26,7 @@ class MyUserAdmin(UserAdmin):
 
     def gets_notifs(self, obj):
         return obj.manager.notif
-    gets_notifs.short_description = u'Reçoit les notifications'
+    gets_notifs.short_description = 'Reçoit les notifications'
     gets_notifs.boolean = True
 admin.site.unregister(User)
 admin.site.register(User, MyUserAdmin)
@@ -57,7 +57,7 @@ class HebergementAdmin(OrderedModelAdmin):
 admin.site.register(Hebergement, HebergementAdmin)
 
 class CanceledFilter(admin.SimpleListFilter):
-    title = u'Montrer inscriptions annulées'
+    title = 'Montrer inscriptions annulées'
     parameter_name = 'canceled'
     template = 'filter_no_by.html'
     
@@ -128,8 +128,9 @@ class InscriptionAdmin(ExportMixin, admin.ModelAdmin):
         def yesno(val):
             return static('admin/img/icon-%s.svg' % ('yes' if val else 'no'))
         def link(field, str):
-            if getattr(obj, field):
-                return '<a href="%suploads/%s">%s</a>' % (obj.get_absolute_url(), field, str)
+            f = getattr(obj, field)
+            if f:
+                return '<a href="%s">%s</a>' % (f.url(), str)
             else:
                 return str
         
@@ -141,10 +142,10 @@ class InscriptionAdmin(ExportMixin, admin.ModelAdmin):
                                         link('certificat', 'certificat'))
         if obj.hebergement and obj.hebergement.managed:
             p += '<br><img src="%s">%s' % (yesno(obj.fiche_hotel_snail),
-                                            link('fiche_hotel', u'hébergement'))
+                                            link('fiche_hotel', 'hébergement'))
 
         return mark_safe(p)
-    pieces.short_description = u'Pièces'
+    pieces.short_description = 'Pièces'
     
     def get_urls(self):
         urls = super(InscriptionAdmin, self).get_urls()
@@ -156,7 +157,7 @@ class InscriptionAdmin(ExportMixin, admin.ModelAdmin):
     def send_mail(self, request, obj_id):
         obj = Inscription.objects.get(pk=obj_id)
         obj.send_mail()
-        messages.info(request, u"Email envoyé à <%s>." %obj.email )
+        messages.info(request, "Email envoyé à <%s>." %obj.email )
         return redirect('./')
 admin.site.register(Inscription, InscriptionAdmin)
 

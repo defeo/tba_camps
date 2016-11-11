@@ -6,6 +6,7 @@ from django.utils.safestring import mark_safe
 from django import forms
 from django.utils.encoding import force_text
 from django.core.urlresolvers import reverse
+from .templatetags.decimal import strip_cents
 
 class FullModelChoiceInput(forms.widgets.ChoiceInput):
     input_type = 'radio'
@@ -40,7 +41,7 @@ class FormuleChoiceInput(FullModelChoiceInput):
             self.attrs['data-mode'] = '1'
         for field, (val, _, _) in self.choice_obj.costs().items():
             self.attrs['data-%s' % field.name] = val
-        return format_html(u'''<label>
+        return format_html('''<label>
 <input type="radio" name="{name}" value="{value}"{attrs}/> {nom}
 <span class="prix">{prix}</span>
 <span class="description">{description}</span></label>''',
@@ -48,7 +49,7 @@ class FormuleChoiceInput(FullModelChoiceInput):
                            value=self.choice_value,
                            attrs=flatatt(self.attrs),
                            nom=force_text(self.choice_obj.nom),
-                           prix=format_html(u'({}€)', self.choice_obj.prix.strip()) * self.choice_obj.publique,
+                           prix=format_html('({}€)', strip_cents(self.choice_obj.prix)) * self.choice_obj.publique,
                            description=force_text(self.choice_obj.description))
 
 ### Formule widget
@@ -67,14 +68,14 @@ class FormuleRenderer(forms.widgets.ChoiceFieldRenderer):
                 if prev_group:
                     output.append('</ul></li>')
                 prev_group = group
-                output.append(format_html(u'<li><div>{0}</div><ul>', group))
+                output.append(format_html('<li><div>{0}</div><ul>', group))
             w = self.choice_input_class(self.name, self.value,
                                         self.attrs.copy(), choice, i)
-            output.append(format_html(u'<li>{0}</li>', force_text(w)))
+            output.append(format_html('<li>{0}</li>', force_text(w)))
         if prev_group:
             output.append('</ul>')
         output.append('</ul>')
-        return mark_safe(u'\n'.join(output))
+        return mark_safe('\n'.join(output))
 
 
 class FormuleWidget(forms.widgets.RendererMixin, forms.Select):
@@ -92,7 +93,7 @@ class FormuleWidget(forms.widgets.RendererMixin, forms.Select):
 
 class HebergementChoiceInput(FullModelChoiceInput):
     def render(self):
-        return format_html(u'''<label>
+        return format_html('''<label>
 <input type="radio" name="{name}" value="{value}"{attrs}/> {nom}
 {commentaire}</label>''',
                            name=self.name,
@@ -144,12 +145,12 @@ class DatePicker(forms.widgets.DateInput):
 ### Files
 
 class FileInput(forms.widgets.FileInput):
-    template = u'%(input)s <a href="%(url)s">%(text)s</a>'
+    template = '%(input)s <a href="%(url)s">%(text)s</a>'
 
     def render(self, name, value, attrs=None):
         s = {
             'input' : super(FileInput, self).render(name, value, attrs),
-            'url'   : value.url if hasattr(value, 'url') else '',
-            'text'  : (hasattr(value, 'name') and value.name and value.name.split('/')[-1]) or '',
+            'url'   : value.url() or '',
+            'text'  : value.name.split('/')[-1] or '',
         }
         return mark_safe(self.template % s)

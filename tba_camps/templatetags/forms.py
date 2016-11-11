@@ -13,5 +13,5 @@ def cgroup(field):
     return mark_safe('<div class="pure-control-group %s">%s%s%s</div>'
                      % (field.css_classes(),
                         field.label_tag(mark_safe(label), label_suffix=''),
-                        unicode(field),
+                        str(field),
                         field.errors))

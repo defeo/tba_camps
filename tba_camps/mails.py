@@ -7,7 +7,7 @@ from django.core.urlresolvers import reverse
 
 def get_managers():
     'Liste des administrateurs qui recoivent les notifications'
-    from models import Manager
+    from .models import Manager
     return [m.user.email for m in Manager.objects.filter(notif=True)]
 
 def send_mail(subject, recipients, template, obj, ctx=None):

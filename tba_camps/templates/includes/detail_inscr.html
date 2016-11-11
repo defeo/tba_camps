@@ -1,3 +1,4 @@
+{% load decimal %}
 <ul>
   {% for s in object.semaines.iterator %}
   <li>{{ s }},</li>
@@ -5,7 +6,7 @@
 </ul>
 
 <p>aux conditions de la formule <b>{{ object.formule }}</b>
-  ({{ object.formule.prix.strip }}€), avec
+  ({{ object.formule.prix | strip_cents }}€), avec
   {% if object.hebergement %}
   hébergement en <b>{{ object.hebergement }}</b>, et
   {% endif %}

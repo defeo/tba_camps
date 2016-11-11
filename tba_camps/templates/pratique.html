@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load decimal %}
 
 {% block content %}
 <article class="featured">
@@ -21,7 +22,7 @@
 	  {% if f.publique %}
 	  <tr>
 	    <td >{{ f.nom }}</td>
-	    <td align="right">{{ f.prix.strip }}&euro;</td>
+	    <td align="right">{{ f.prix | strip_cents }}&euro;</td>
 	  </tr>
 	  <tr><td colspan="2" style="font-weight:normal;padding-left:3ex"><p>{{ f.description }}</p></td></tr>
 	  {% endif %}

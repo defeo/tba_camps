@@ -10,13 +10,13 @@ from django.views.generic.base import TemplateView
 from django.template import TemplateDoesNotExist
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
-from models import Inscription, Formule, Hebergement, Semaine, PREINSCRIPTION, VALID, COMPLETE, CANCELED
+from .models import Inscription, Formule, Hebergement, Semaine, PREINSCRIPTION, VALID, COMPLETE, CANCELED
 from captcha.fields import ReCaptchaField
-import widgets as my_widgets
+from . import widgets as my_widgets
 from django.utils.translation import ugettext_lazy as _
 from easy_pdf.views import PDFTemplateResponseMixin
 from django.conf import settings
-import mails
+from . import mails
 
 class SemainesField(forms.ModelMultipleChoiceField):
     widget = widgets.CheckboxSelectMultiple
@@ -32,10 +32,10 @@ class InscriptionForm(forms.ModelForm):
     required_css_class = 'required'
 
     semaines = SemainesField(
-        help_text=u'Vous pouvez vous inscrire à plusieurs semaines avec la même formule. ' +
-        u'Pour vous inscrire avec plusieurs formules différentes, merci de remplir autant ' +
-        u"de bulletins d'inscription.")
-    email2 = forms.EmailField(label=u'Répéter email',
+        help_text='Vous pouvez vous inscrire à plusieurs semaines avec la même formule. ' +
+        'Pour vous inscrire avec plusieurs formules différentes, merci de remplir autant ' +
+        "de bulletins d'inscription.")
+    email2 = forms.EmailField(label='Répéter email',
                               widget=widgets.TextInput(attrs={'autocomplete' : 'off'}))
     formule = my_widgets.FullModelField(queryset=Formule.objects.all(),
                                         widget=my_widgets.FormuleWidget)
@@ -47,7 +47,7 @@ class InscriptionForm(forms.ModelForm):
     prix_hebergement = forms.Field(required=False, widget=forms.HiddenInput)
     remise = forms.Field(required=False, widget=forms.HiddenInput)
     supplement = forms.Field(required=False, widget=forms.HiddenInput)
-    licencie = forms.ChoiceField(label=u'Licencié dans un club',
+    licencie = forms.ChoiceField(label='Licencié dans un club',
                                  widget=widgets.RadioSelect,
                                  choices=[('O','Oui'), ('N','Non')])
     taille = forms.Field(required=True, widget=widgets.NumberInput)
@@ -72,8 +72,8 @@ class InscriptionForm(forms.ModelForm):
             'caf' :  widgets.RadioSelect,
         }
         help_texts = {
-            'licence': u'<a target="_blank" href="http://www.ffbb.com/jouer/recherche-avancee">Chercher sur ffbb.com</a>',
-            'notes': u"N'hésitez pas à nous signaler toute situation particulière.",
+            'licence': '<a target="_blank" href="http://www.ffbb.com/jouer/recherche-avancee">Chercher sur ffbb.com</a>',
+            'notes': "N'hésitez pas à nous signaler toute situation particulière.",
         }
 
     def clean_etat(self):
@@ -119,7 +119,7 @@ class InscriptionForm(forms.ModelForm):
             elif not cleaned_data.get('accompagnateur'):
                 self.add_error('accompagnateur', self.error_class([_('This field is required.')]))
         if email != email2:
-            self.add_error('email2', self.error_class([u'Emails différents.']))
+            self.add_error('email2', self.error_class(['Emails différents.']))
         return cleaned_data
 
 
@@ -129,7 +129,7 @@ class InscriptionFormView(SuccessMessageMixin, CreateView):
     """
     template_name = 'inscription.html'
     form_class = InscriptionForm
-    success_message = u"""<p><strong>Un mail de confirmation a été envoyé à
+    success_message = """<p><strong>Un mail de confirmation a été envoyé à
 %%(email)s.</strong></p>
 
 <p>Si vous n'avez rien reçu, veuillez attendre quelques minutes et
@@ -158,7 +158,7 @@ class InscriptionView(DetailView):
             return ConfirmationView.as_view()(req, *args, **kwds)
         return super(InscriptionView, self).dispatch(req, *args, **kwds)
 
-from models import upload_fields
+from .models import upload_fields
 
 class UploadForm(forms.ModelForm):
     class Meta:
@@ -169,8 +169,10 @@ class UploadForm(forms.ModelForm):
     def clean(self, *args, **kwds):
         cleaned_data = super(UploadForm, self).clean(*args, **kwds)
         for f in self.changed_data:
-            if cleaned_data[f].size > settings.MAX_FILE_SIZE * 10**6:
-                raise ValidationError(u"Les pièces jointes ne doivent pas excéder %dMo." 
+            if f not in cleaned_data:
+                raise ValidationError("Fichier vide. Veuillez vérifier son contenu.")
+            elif cleaned_data[f].size > settings.MAX_FILE_SIZE * 10**6:
+                raise ValidationError("Les pièces jointes ne doivent pas excéder %dMo." 
                                       % settings.MAX_FILE_SIZE)
         if not self.changed_data:
             raise ValidationError('Veuillez télécharger au moins un fichier.')
@@ -186,7 +188,7 @@ class PreinscriptionView(UpdateView):
 
     def form_valid(self, *args, **kwds):
         messages.info(self.request,
-                      u"Merci, vos modifications ont été prises en considération.")
+                      "Merci, vos modifications ont été prises en considération.")
         res = super(PreinscriptionView, self).form_valid(*args, **kwds)
         mails.inscr_modif(self.object)
         return res
@@ -212,7 +214,7 @@ class InscriptionPDFView(PDFTemplateResponseMixin, DetailView):
     model = Inscription
 
 class ReminderForm(forms.Form):
-    email = forms.EmailField(label=u'Email')
+    email = forms.EmailField(label='Email')
 
     def clean(self, *args, **kwds):
         cleaned_data = super(ReminderForm, self).clean(*args, **kwds)
@@ -237,7 +239,7 @@ class ReminderView(FormView):
         for i in inscr:
             i.send_mail()
             messages.info(self.request,
-                          u"%s %s, un mail de rappel vient de vous être envoyé."
+                          "%s %s, un mail de rappel vient de vous être envoyé."
                           % (i.prenom, i.nom))
         return res
 

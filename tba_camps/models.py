@@ -12,7 +12,7 @@ from django.conf import settings
 import datetime
 from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
-import mails
+from . import mails
 from django.template.loader import render_to_string
 from markdown import markdown
 from django.utils.safestring import mark_safe
@@ -40,11 +40,11 @@ class Semaine(models.Model):
 
     objects = SemaineQuerySet.as_manager()
     
-    def __unicode__(self):
+    def __str__(self):
         from datetime import timedelta
-        return u'S%d:  %s – %s' % (self.ord(),
-                                   self.debut.strftime('%d %b').decode('utf8'),
-                                   self.fin().strftime('%d %b %Y').decode('utf8'))
+        return 'S%d:  %s – %s' % (self.ord(),
+                                   self.debut.strftime('%d %b'),
+                                   self.fin().strftime('%d %b %Y'))
 
     def ord(self):
         return list(Semaine.objects.order_by('debut')).index(self) + 1
@@ -70,7 +70,7 @@ class Hebergement(OrderedModel):
     class Meta(OrderedModel.Meta):
         pass
 
-    def __unicode__(self):
+    def __str__(self):
         return self.nom
 
     def md_commentaire(self):
@@ -102,7 +102,7 @@ class Formule(OrderedModel):
     class Meta(OrderedModel.Meta):
         pass
 
-    def __unicode__(self):
+    def __str__(self):
         return self.nom
 
     def costs(self):
@@ -122,10 +122,11 @@ CANCELED = 'A'
 import django.db.models.fields.files as files
 
 class FieldFile(files.FieldFile):
-    def _get_url(self):
-        self._require_file()
-        return self.instance.get_absolute_url() + 'uploads/' + self.field.name
-    url = property(_get_url)
+    def url(self):
+        if not self:
+            return None
+        else:
+            return self.instance.get_absolute_url() + 'uploads/' + self.field.name
     
 class FileField(files.FileField):
     attr_class = FieldFile
@@ -170,15 +171,15 @@ class Inscription(models.Model):
     navette_a = models.DecimalField('Navette aller', default=Decimal('0.00'),
                                     max_digits=10, decimal_places=2,
                                     choices=[(Decimal('0.00'), 'Non'),
-                                             (Decimal('6.00'), u'Oui (6€)')])
+                                             (Decimal('6.00'), 'Oui (6€)')])
     navette_r = models.DecimalField('Navette retour', default=Decimal('0.00'),
                                     max_digits=10, decimal_places=2,
                                     choices=[(Decimal('0.00'), 'Non'),
-                                             (Decimal('6.00'), u'Oui (6€)')])
+                                             (Decimal('6.00'), 'Oui (6€)')])
     assurance = models.DecimalField('Assurance annulation', default=Decimal('6.00'),
                                     max_digits=10, decimal_places=2,
                                     choices=[(Decimal('0.00'), 'Non'), 
-                                             (Decimal('6.00'), u'Avec assurance (6€)')])
+                                             (Decimal('6.00'), 'Avec assurance (6€)')])
     mode = models.CharField('Mode de règlement', max_length=1023, default='', blank=True)
     mode_solde = models.CharField('Règlement solde', max_length=1023, default='', blank=True)    
     etat = models.CharField("État de l'inscription", max_length=1, default=VALID,
@@ -219,7 +220,7 @@ class Inscription(models.Model):
     caf = models.CharField("Je bénéficie d'une aide CAF ou VACAF", max_length=1,
                            choices=[('O', 'Oui'), ('N', 'Non')], default='N')
     
-    def __unicode__(self):
+    def __str__(self):
         return '%s %s <%s>' % (self.nom, self.prenom, self.email)
 
     def get_absolute_url(self):
@@ -268,7 +269,7 @@ class Inscription(models.Model):
         
     def prix(self):
         return sum(val * count for (val, count, _) in self.costs().values())
-    prix.short_description = u'Total'
+    prix.short_description = 'Total'
 
     def avance(self):
         return min(sum(val * count // frac
@@ -277,7 +278,7 @@ class Inscription(models.Model):
 
     def reste(self):
         return self.prix() - self.acompte
-    reste.short_description = u'Solde dû'
+    reste.short_description = 'Solde dû'
 
     def complete(self):
         return self.etat == COMPLETE or (self.fiche_inscr_snail
@@ -315,7 +316,7 @@ class Inscription(models.Model):
         # Crée le slug et termine
         if not kwds.get('force_insert'):
             cipher = AES.new(settings.SECRET_KEY[:16], AES.MODE_ECB)
-            self.slug = base64.b64encode(cipher.encrypt("{:0>16X}".format(self.pk)), '_-')[:-2]
+            self.slug = base64.b64encode(cipher.encrypt("{:0>16X}".format(self.pk)), b'_-')[:-2]
             super(Inscription, self).save(*args, **kwds)
         
     def send_mail(self):

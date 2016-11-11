@@ -1,6 +1,6 @@
 import functools
 from import_export import resources, fields, widgets
-from models import Inscription, Semaine
+from .models import Inscription, Semaine
 from django.conf import settings
 
 class ChoiceWidget(widgets.Widget):
@@ -32,7 +32,7 @@ class InscriptionResource(resources.ModelResource):
         for i, s in enumerate(Semaine.objects.all().order_by('debut')):
             label = 'S' + str(i+1)
             export_order.append(label)
-            newclass.fields[label] = SemaineField(semaine=s, column_name=unicode(s))
+            newclass.fields[label] = SemaineField(semaine=s, column_name=str(s))
         newclass._meta.export_order = newclass._meta.export_base + export_order
         return newclass
 

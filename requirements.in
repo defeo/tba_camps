@@ -7,15 +7,12 @@ pycrypto
 markdown
 django-downloadview
 django-recaptcha
-xhtml2pdf
+xhtml2pdf==0.1b3
 django-easy-pdf
-
-# For testing
-pysqlite
 
 # For production
 gunicorn
-mysql-python
+mysqlclient
 dj-static
 dj-database-url
 

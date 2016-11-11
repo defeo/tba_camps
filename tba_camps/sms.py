@@ -1,6 +1,6 @@
 # -:- encoding: utf-8
 
-from models import Inscription, Formule, Semaine
+from .models import Inscription, Formule, Semaine
 #import widgets as my_widgets
 from django import forms
 from django.forms import widgets

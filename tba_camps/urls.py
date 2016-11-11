@@ -1,6 +1,6 @@
 from django.conf.urls import include, url
 from django.views.generic import RedirectView
-import views, models, sms
+from . import views, models, sms
 from django.contrib import admin
 admin.autodiscover()
 

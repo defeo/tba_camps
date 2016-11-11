@@ -1,7 +1,7 @@
 # Settings specifiques pour deployment sur heroku
 #    DJANGO_SETTINGS_MODULE = tba_camps.settings_heroku
 
-from settings import *
+from .settings import *
 import dj_database_url
 
 DEBUG = False
@@ -13,11 +13,11 @@ if 'DATABASE_URL' in os.environ:
     DATABASES['default'] =  dj_database_url.config()
 else:
     DATABASES = {}
-    print 'Warning: no database configured. Set DATABASE_URL environment variable.'
+    print('Warning: no database configured. Set DATABASE_URL environment variable.')
 
 SECRET_KEY = os.environ.get('SECRET_KEY') or 'PULCINELLA'
 if SECRET_KEY == 'PULCINELLA':
-    print 'Warning: SECRET_KEY not configured. Your website is vulnerable!'
+    print('Warning: SECRET_KEY not configured. Your website is vulnerable!')
 
 STATIC_ROOT = BASE_DIR + '/static/django/'
 MEDIA_ROOT = BASE_DIR + '/uploads/'

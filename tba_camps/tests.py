@@ -1,6 +1,6 @@
 from django.test import TestCase, Client
 from django.core import mail
-from models import Inscription, Formule, Semaine, Hebergement, VALID
+from .models import Inscription, Formule, Semaine, Hebergement, VALID
 
 class BasicTests(TestCase):
     fixtures = ['formules.json', 'hebergements.json', 'semaines.json']
