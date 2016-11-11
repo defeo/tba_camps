@@ -6,7 +6,7 @@ exit
 ########## CONFIGURATION DE L'ENVIRONNEMENT PYTHON
 
 # On commence par installer quelques dépendences
-apt-get install git python2.7 python-virtualenv python-pip python-dev libpq-dev libmysqlclient-dev 
+apt-get install git python3 python3-virtualenv python3-pip python3-dev libpq-dev libmysqlclient-dev 
 
 # On télécharge les sources du site.  Il faut avoir accès au repo
 # (privé) sur github.  Si vous lisez ce fichier, normalement vous
@@ -16,7 +16,7 @@ git clone git@github.com:defeo/tba_camps.git
 # On entre dans le dossier, on installe un environnement virtuel
 # python, et les dépendances du projet
 cd tba_camps
-virtualenv -p python2.7 ve
+virtualenv -p python3 ve
 . ve/bin/activate
 pip install -r requirements.txt
 
