@@ -1,5 +1,7 @@
 from django.test import TestCase, Client
 from django.core import mail
+from django.contrib.auth.models import User
+import json
 from .models import Inscription, Formule, Semaine, Hebergement, VALID
 
 class BasicTests(TestCase):
@@ -7,12 +9,15 @@ class BasicTests(TestCase):
     
     @classmethod
     def setUpTestData(cls):
-        Inscription.objects.create(nom='AAA',
-                                   prenom='aaa',
-                                   email='email@example.com',
-                                   naissance='2000-01-01',
-                                   formule=Formule.objects.get(pk=1),
-                                   slug='A'*22)
+        inscr = Inscription.objects.create(nom='AAA',
+                                               prenom='aaa',
+                                               email='email@example.com',
+                                               tel='0123456789',
+                                               naissance='2000-01-01',
+                                               formule=Formule.objects.get(pk=1),
+                                               slug='A'*22)
+        inscr.semaines.add(Semaine.objects.get(pk=4))
+        User.objects.create_user('toto', 'toto@toto.to', 'toto')
         
     def test_static(self):
         import os
@@ -30,3 +35,13 @@ class BasicTests(TestCase):
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].to[0], 'email@example.com')
 
+    def test_sms(self):
+        response = self.client.post('/sms/json', data={ 'semaines': 4, 'formules': [1] })
+        assert response.status_code == 403
+        self.client.login(username='toto', password='toto')
+        response = self.client.post('/sms/json', data={ 'semaines': 4, 'formules': [1] })
+        self.assertEqual(response.json(), {
+            'semaine': 1,
+            'formules': ['F1 Externe plein temps'],
+            'nums': ['0123456789']
+        })

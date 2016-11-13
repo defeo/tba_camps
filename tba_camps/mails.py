@@ -3,7 +3,7 @@
 from django.core import mail
 from django.conf import settings
 from django.template.loader import render_to_string
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 def get_managers():
     'Liste des administrateurs qui recoivent les notifications'

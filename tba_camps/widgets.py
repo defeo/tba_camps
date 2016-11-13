@@ -5,7 +5,6 @@ from django.forms.utils import flatatt
 from django.utils.safestring import mark_safe
 from django import forms
 from django.utils.encoding import force_text
-from django.core.urlresolvers import reverse
 from .templatetags.decimal import strip_cents
 
 class FullModelChoiceInput(forms.widgets.ChoiceInput):

@@ -19,7 +19,7 @@ class SelectForm(forms.Form):
                                       empty_label=None)
 
 def sms(req):
-    if not req.user.is_authenticated():
+    if not req.user.is_authenticated:
         return HttpResponseForbidden()
     if not req.method == 'POST':
         return HttpResponseBadRequest()
@@ -50,7 +50,7 @@ def select(req):
         today = 0
     return render(req, 'sms.html', {
         'icon' : icon,
-        'loggedin' : req.user.is_authenticated(),
+        'loggedin' : req.user.is_authenticated,
         'form' : SelectForm(initial={
             'semaines': today,
             'formules': [x.pk for x in Formule.objects.filter(taxe=0, publique=True)]

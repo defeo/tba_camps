@@ -4,7 +4,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from ordered_model.models import OrderedModel
 from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from Crypto.Cipher import AES
 from django.conf import settings
 import base64
@@ -20,7 +20,7 @@ from decimal import Decimal
 
 class Manager(models.Model):
     'Options en plus pour les utilisateurs'
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     notif = models.BooleanField('Reçoit une notification à chaque action des utilisateurs',
                                 default=True)
 
@@ -148,7 +148,7 @@ class Inscription(models.Model):
     tel = models.CharField('Téléphone', max_length=20, validators=[
         RegexValidator(regex='^\+?[\d -\.]{10,}$', message='Numéro invalide')])
     semaines = models.ManyToManyField(Semaine)
-    formule = models.ForeignKey(Formule)
+    formule = models.ForeignKey(Formule, on_delete=models.CASCADE)
     accompagnateur = models.CharField("Nom de l'accompagnateur", max_length=255, blank=True)
     train = models.DecimalField('Supplément train depuis Paris (inclut les navettes aller et retour)',
                            max_digits=10, decimal_places=3, default=Decimal('0.000'),
@@ -159,7 +159,7 @@ class Inscription(models.Model):
                                     (Decimal('40.000'), 'Aller moins de 12 ans (40€)'),
                                     (Decimal('80.002'), 'Retour tarif normal (80€)'),
                                     (Decimal('40.001'), 'Retour moins de 12 ans (40€)')])
-    hebergement = models.ForeignKey(Hebergement, null=True, blank=True)
+    hebergement = models.ForeignKey(Hebergement, null=True, blank=True, on_delete=models.CASCADE)
     prix_hebergement = models.DecimalField('Prix hébergement', default=0,
                                            max_digits=10, decimal_places=2)
     chambre = models.CharField('En chambre avec', max_length=255,
