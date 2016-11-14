@@ -6,15 +6,16 @@ from django.forms import widgets, ValidationError
 from django.shortcuts import render, redirect
 from django.views.generic import DetailView
 from django.views.generic.edit import CreateView, UpdateView, ModelFormMixin, FormView
-from django.views.generic.base import TemplateView
 from django.template import TemplateDoesNotExist
+from django.template.response import TemplateResponse
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from .models import Inscription, Formule, Hebergement, Semaine, PREINSCRIPTION, VALID, COMPLETE, CANCELED
 from captcha.fields import ReCaptchaField
 from . import widgets as my_widgets
 from django.utils.translation import ugettext_lazy as _
-from easy_pdf.views import PDFTemplateResponseMixin
+import weasyprint
+from unidecode import unidecode
 from django.conf import settings
 from . import mails
 
@@ -209,9 +210,27 @@ class ConfirmationView(PreinscriptionView):
     """
     template_name = 'inscription_sommaire.html'
 
-class InscriptionPDFView(PDFTemplateResponseMixin, DetailView):
-    template_name = "inscription-pdf.html"
+class PDFTemplateResponse(TemplateResponse):
+    def __init__(self, filename='document.pdf', *args, **kwds):
+        kwds['content_type'] = 'application/pdf'
+        super().__init__(*args, **kwds)
+        self['Content-Disposition'] = 'filename="%s"' % filename
+
+    @property
+    def rendered_content(self):
+        html = super().rendered_content
+        pdf = weasyprint.HTML(string=html).write_pdf()
+        return pdf
+
+class InscriptionPDFView(DetailView):
+    template_name = 'inscription-pdf.html'
+    response_class = PDFTemplateResponse
     model = Inscription
+
+    def render_to_response(self, *args, **kwds):
+        kwds['filename'] = 'TBA-%s-%s.pdf' % (unidecode(self.object.nom),
+                                                  unidecode(self.object.prenom))
+        return super().render_to_response(*args, **kwds)
 
 class ReminderForm(forms.Form):
     email = forms.EmailField(label='Email')

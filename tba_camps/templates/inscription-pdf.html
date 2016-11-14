@@ -1,127 +1,126 @@
-{% extends "easy_pdf/base.html" %}
-
-{% block layout_style %}
-<style type="text/css">
-  @page {
-    size: A4;
-    margin-left: 1.5cm;
-    margin-right: 1.5cm;
-    margin-top: 1cm;
-    margin-bottom: 2cm;
-
-    @frame footer {
-      -pdf-frame-content: page-footer;
-      bottom: 0.5cm;
+<!Doctype html>
+<html lang="fr">
+  <head>
+    <title>Bulletin d’inscription TBA {{ settings.ANNEE }} – {{ object.nom | upper }} {{ object.prenom | capfirst }}</title>
+    <style>
+      html {
+      -weasy-hyphens: auto;
+      font-size: 14px;
+      font-family: DejaVu Sans, sans;
+      }
+      
+      @page {
+      size: A4;
       margin-left: 1cm;
       margin-right: 1cm;
-      height: 1.2cm;
-    }
-  }
-</style>
-{% endblock %}
-{% block extra_style %}
-<style>
-  body {
-    font-size: 12pt;
-  }
-  #page-footer {
-      font-size: 10pt;
-  }
-  #content h1 {
-    text-align: center;
-    font-size: 20pt;
-  }
-  .price {
-    text-align: right;
-  }
-  em {
-    font-style: normal;
-    font-weight: bold;
-    text-decoration: underline;
-  }
-  #auth p {
-    font-size: 10pt;
-    margin: 0;
-  }
-  #auth ul {
-    font-size: 10pt;
-    list-style-type: none;
-    margin-left: 4em;
-  }
-  #auth h2 {
-    font-size: 12pt;
-    margin-bottom: 1ex;
-  }
-  #sig {
-    font-size: 10pt;
-    text-align: right;
-    margin: 2ex;
-  }
-</style>
-{% endblock %}
+      margin-top: 1cm;
+      margin-bottom: 1cm;
+      }
 
+      h1 {
+      text-align: center;
+      font-size: 2em;
+      }
+      table {
+      width: 100%;
+      border-collapse: collapse;
+      }
+      .price {
+      text-align: right;
+      }
+      em {
+      font-style: normal;
+      font-weight: bold;
+      text-decoration: underline;
+      }
+      small {
+      font-size: 0.8em;
+      }
+      
+      #auth p {
+      font-size: 0.8em;
+      text-align: justify;
+      }
+      #auth ul {
+      list-style-type: none;
+      }
+      #auth h2 {
+      font-size: 1em;
+      text-align: center;
+      margin: 4ex 0 1ex 0;
+      }
+      #sig {
+      font-size: 0.8em;
+      text-align: right;
+      margin: 2ex;
+      }
 
-{% block content %}
-<div id="content">
-  <h1>BULLETIN D’INSCRIPTION {{ settings.ANNEE }}</h1>
+      footer {
+      position: absolute;
+      width: 100%;
+      bottom: 0;
+      text-align: right;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>BULLETIN D’INSCRIPTION TBA {{ settings.ANNEE }}</h1>
 
-  <p><b>{{ object.nom | upper }} {{ object.prenom | capfirst }}</b>, 
-    né{% if object.sexe == 'F' %}e{% endif %} le {{ object.naissance }}
-    à {{ object.lieu }}, agé{% if object.sexe == 'F' %}e{% endif %} de
-    {{ object.age }} ans,
-    tél {{ object.tel }}, demande à être
-    inscrit{% if object.sexe == 'F' %}e{% endif %} au 
-    stage de Superdévoluy les semaines</p>
+    <p><b>{{ object.nom | upper }} {{ object.prenom | capfirst }}</b>, 
+      né{% if object.sexe == 'F' %}e{% endif %} le {{ object.naissance }}
+      à {{ object.lieu }}, agé{% if object.sexe == 'F' %}e{% endif %} de
+      {{ object.age }} ans,
+      tél {{ object.tel }}, demande à être
+      inscrit{% if object.sexe == 'F' %}e{% endif %} au 
+      stage de Superdévoluy les semaines</p>
 
-  {% include "includes/detail_inscr.html" %}
+    {% include "includes/detail_inscr.html" %}
 
-  <p class="price">Prix du stage : {{ object.prix }}€<br>
-    Acompte dû : <b>{{ object.avance }}€</b></p>
+    <p class="price">Prix du stage : {{ object.prix }}€</p>
+    <p class="price">Acompte dû : <b>{{ object.avance }}€</b></p>
 
-  <p><small>Votre acompte peut être réglé avec 2 ou 3 chèques que nous
-      encaissons à un mois d'intervalle. TBA accepte les chèques
-      vacances ainsi que les bons-vacances de certaines
-      C.A.F.</small></p>
+    <p><small>Votre acompte peut être réglé avec 2 ou 3 chèques que nous
+	encaissons à un mois d'intervalle. TBA accepte les chèques
+	vacances ainsi que les bons-vacances de certaines
+	C.A.F.</small></p>
 
-  <div id="auth">
-    <h2>AUTORISATION PARENTALE        ASSURANCE        DROIT À L’IMAGE</h2>
-    <p>A remplir par le responsable de l’enfant pour les mineurs</p>
-    <p>NOM (du responsable)
-                                                Prénom</p>
-    <p>Je soussigné, (père, mère, tuteur de) <b>{{ object.nom }} 
-	{{ object.prenom }}</b>, né(e) le <b>{{ object.naissance }}</b>, demande son
-      adhésion à l’association TBA et sa participation au stage de Basket-ball organisé à
-      SUPERDEVOLUY du {{ object.semaines.first.debut }} au {{ object.semaines.last.fin }}.</p>
-    <p><em>Je déclare</em> que mon enfant répond aux conditions de santé exigées et que la fiche
-      sanitaire de liaison qui me sera envoyée sera jointe à son dossier.</p>
-    <p><em>J’accepte</em> les conditions de sécurité imposées par le centre de
-      vacances et toute transgression pourra être cause de renvoi.  Vous
-      serez prévenu par un avertissement préliminaire.</p>
-    <p><em>J’autorise</em> le responsable du séjour à lui faire donner tous les
-      soins, traitements médicaux ou hospitalisations rendus
-      nécessaires.  <em>Je m’engage</em> à assurer le remboursement des frais
-      avancés.</p>
-    {% if not object.assurance %}
-    <p><em>J’ai pris connaissance</em> qu’en cas d’annulation
-      et <em>n’ayant pas souscrit l’assurance annulation (coût
-      6€)</em>, des frais de dossier de 10% du prix du séjour seront
-      retenus.</p>  {% endif %}
-    <p><em>J’autorise</em> que des photos ou films pris pendant les camps
-      puissent être utilisés sur tout support diffusé par l’association
-      TBA (site Tba, Facebook, YouTube ou Dailymotion, dépliants ou chaînes de
-      télévision&hellip;)</p>
-    <p>En cas <em>d’opposition (pour le droit à l’image)</em>, veuillez
-      nous le signaler <em>par écrit</em> avant le début du séjour.</p>
-  </div>
-  <p id="sig">Date et signature (précédées de la mention « lu et approuvé »)</p>
-</div>
-{% endblock %}
+    <div id="auth">
+      <h2>AUTORISATION PARENTALE        ASSURANCE        DROIT À L’IMAGE</h2>
+      <p>A remplir par le responsable de l’enfant pour les mineurs</p>
+      <p>NOM (du responsable)
+	                                          Prénom</p>
+      <p>Je soussigné, (père, mère, tuteur de) <b>{{ object.nom }} 
+	  {{ object.prenom }}</b>, né{% if object.sexe == 'F' %}e{% endif %}
+	le <b>{{ object.naissance }}</b>, demande son
+	adhésion à l’association TBA et sa participation au stage de Basket-ball organisé à
+	SUPERDEVOLUY du {{ object.semaines.first.debut }} au {{ object.semaines.last.fin }}.</p>
+      <p><em>Je déclare</em> que mon enfant répond aux conditions de santé exigées et que la fiche
+	sanitaire de liaison qui me sera envoyée sera jointe à son dossier.</p>
+      <p><em>J’accepte</em> les conditions de sécurité imposées par le centre de
+	vacances et toute transgression pourra être cause de renvoi.  Vous
+	serez prévenu par un avertissement préliminaire.</p>
+      <p><em>J’autorise</em> le responsable du séjour à lui faire donner tous les
+	soins, traitements médicaux ou hospitalisations rendus
+	nécessaires.  <em>Je m’engage</em> à assurer le remboursement des frais
+	avancés.</p>
+      {% if not object.assurance %}
+      <p><em>J’ai pris connaissance</em> qu’en cas d’annulation
+	et <em>n’ayant pas souscrit l’assurance annulation (coût
+	  6€)</em>, des frais de dossier de 10% du prix du séjour seront
+	retenus.</p>  {% endif %}
+      <p><em>J’autorise</em> que des photos ou films pris pendant les camps
+	puissent être utilisés sur tout support diffusé par l’association
+	TBA (site Tba, Facebook, YouTube ou Dailymotion, dépliants ou chaînes de
+	télévision&hellip;)</p>
+      <p>En cas <em>d’opposition (pour le droit à l’image)</em>, veuillez
+	nous le signaler <em>par écrit</em> avant le début du séjour.</p>
+    </div>
+    <p id="sig">Date et signature (précédées de la mention « lu et approuvé »)</p>
 
-{% block page_foot%}
-<table>
-  <tr>
-    <td>à retourner à :</td>
-    <td>{{ settings.ADRESSE }}</td>
-  </tr>
-</table>
-{% endblock %}
+    <footer>
+      <small>à retourner à :</small><br>
+      {{ settings.ADRESSE }}
+      </tr>
+    </footer>
+  </body>
+</html>

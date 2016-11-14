@@ -7,8 +7,8 @@ pycrypto
 markdown
 django-downloadview
 django-recaptcha
-xhtml2pdf==0.1b3
-django-easy-pdf
+WeasyPrint
+unidecode
 
 # For production
 gunicorn
