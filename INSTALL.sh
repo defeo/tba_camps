@@ -6,7 +6,7 @@ exit
 ########## CONFIGURATION DE L'ENVIRONNEMENT PYTHON
 
 # On commence par installer quelques dépendences
-apt-get install git python3 python3-virtualenv python3-pip python3-dev libpq-dev libmysqlclient-dev 
+apt-get install git python3 python3-virtualenv python3-pip python3-dev libcairo2 libpango1.0-0 libgdk-pixbuf2.0-0 shared-mime-info libpq-dev libmysqlclient-dev libffi-dev 
 
 # On télécharge les sources du site.  Il faut avoir accès au repo
 # (privé) sur github.  Si vous lisez ce fichier, normalement vous
