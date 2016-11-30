@@ -49,7 +49,8 @@
 
 ## Rencontre 21/9
 
-- [] Licencié oui → nom du club
+- [X] Licencié oui → nom du club
+- [X] Récup automatique n° licence/club de ffbb.com
 - [X] taille **en cm**
 - [X] Ajouter disclaimer 15€ avant calcul total
 - [] payement CB. Morning?

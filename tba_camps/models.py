@@ -210,6 +210,7 @@ class Inscription(models.Model):
     fiche_sanit_snail = models.BooleanField('Fiche sanitaire reçue',
                                             default=False)
     licence = models.CharField('Numéro de licence', max_length=31, blank=True)
+    club = models.CharField('Club', max_length=255, blank=True)
     certificat = FileField('Certificat médical', blank=True, null=True)
     certificat_snail = models.BooleanField('Certificat médical reçu',
                                            default=False)

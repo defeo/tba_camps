@@ -100,8 +100,10 @@ class InscriptionForm(forms.ModelForm):
         formule = cleaned_data.get('formule')
         email = cleaned_data.get('email')
         email2 = cleaned_data.get('email2')
-        if cleaned_data.get('licencie') == 'O' and not cleaned_data.get('licence'):
-            self.add_error('licence', self.error_class([_('This field is required.')]))
+        if cleaned_data.get('licencie') == 'O':
+            for f in ('licence', 'club'):
+                if not cleaned_data.get(f):
+                    self.add_error(f, self.error_class([_('This field is required.')]))
         if formule:
             hebergement = cleaned_data.get('hebergement')
             if formule.affiche_hebergement and not hebergement:

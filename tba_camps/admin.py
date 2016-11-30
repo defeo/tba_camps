@@ -110,7 +110,7 @@ class InscriptionAdmin(ExportMixin, admin.ModelAdmin):
         ('parrain', 'nom_parrain', 'adr_parrain'),
         ('fiche_inscr', 'fiche_inscr_snail'),
         ('fiche_sanit', 'fiche_sanit_snail'),
-        ('licence', 'certificat', 'certificat_snail'),
+        ('licence', 'club', 'certificat', 'certificat_snail'),
         ('fiche_hotel', 'fiche_hotel_snail'),
         ('notes', 'caf'),
      )
