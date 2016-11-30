@@ -51,7 +51,7 @@ class InscriptionForm(forms.ModelForm):
     licencie = forms.ChoiceField(label='Licencié dans un club',
                                  widget=widgets.RadioSelect,
                                  choices=[('O','Oui'), ('N','Non')])
-    taille = forms.Field(required=True, widget=widgets.NumberInput)
+    taille = forms.Field(label='Taille (cm)', required=True, widget=widgets.NumberInput)
     
     if settings.USE_CAPTCHA:
         captcha = ReCaptchaField(attrs={'theme' : 'clean'})
