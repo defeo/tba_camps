@@ -286,6 +286,10 @@ class Inscription(models.Model):
                                          and self.certificat_snail)
 
     def save(self, *args, **kwds):
+        # Capitalisations
+        self.nom = self.nom.upper()
+        self.prenom = self.prenom.title()
+
         if self.pk is not None:
             orig = self.__class__.objects.get(pk=self.pk)
             # Champs conditionnels

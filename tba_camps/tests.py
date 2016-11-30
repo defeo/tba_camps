@@ -9,8 +9,8 @@ class BasicTests(TestCase):
     
     @classmethod
     def setUpTestData(cls):
-        inscr = Inscription.objects.create(nom='AAA',
-                                               prenom='aaa',
+        inscr = Inscription.objects.create(nom='AaA',
+                                               prenom='aaa-bbb',
                                                email='email@example.com',
                                                tel='0123456789',
                                                naissance='2000-01-01',
@@ -31,7 +31,7 @@ class BasicTests(TestCase):
     def test_cherche(self):
         response = self.client.post('/tba/cherche.htm', follow=True,
                                     data={'email': 'email@example.com'})
-        self.assertContains(response, 'aaa AAA, un mail de rappel')
+        self.assertContains(response, 'Aaa-Bbb AAA, un mail de rappel')
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].to[0], 'email@example.com')
 
