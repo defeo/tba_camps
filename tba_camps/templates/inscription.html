@@ -59,6 +59,9 @@ automatiquement annulée.{% endblock %}
     padding: 0 1ex 0 6ex;
   }
   #cost-summary .total { font-weight: bold }
+  
+  .note { font-size: 80%; margin: 0.4ex }
+  .note:first-letter { font-size: 120% }
 </style>
 {% endblock %}
 
@@ -143,9 +146,9 @@ automatiquement annulée.{% endblock %}
       <table id="cost-summary">
 	<tbody>
 	<tr class="prix" data-acompte="50"><td>Formule</td><td></td><td></td></tr>
-	<tr class="cotisation" data-acompte="100"><td>Cotisation TBA</td><td></td><td></td></tr>
+	<tr class="cotisation" data-acompte="100"><td>Cotisation TBA¹</td><td></td><td></td></tr>
 	<tr class="taxe" data-acompte="100"><td>Taxe ménage</td><td></td><td></td></tr>
-	<tr class="taxe_gym" data-acompte="50"><td>Taxe gymnase</td><td></td><td></td></tr>
+	<tr class="taxe_gym" data-acompte="50"><td>Taxe gymnase²</td><td></td><td></td></tr>
 	<tr class="train" data-acompte="50"><td>Supplément train</td><td></td><td></td></tr>
 	<tr class="navette" data-acompte="100"><td>Navette</td><td></td><td></td></tr>
 	<tr class="assurance" data-acompte="100"><td>Assurance</td><td></td><td></td></tr>
@@ -156,6 +159,12 @@ automatiquement annulée.{% endblock %}
 	</tfoot>
       </table>
     </fieldset>
+
+    <p class="note">¹ Une cotisation de 15€ est demandée lors de toute
+      inscription.</p>
+    <p class="note">² Une taxe du centre Sportif de 1€ par jour (6€
+      par semaine) a été mise en place par la Mairie du Dévoluy. Elle
+      est rajoutée à votre solde dû.</p>
   </div>
 
   <div id="notes-data" class="fieldgroup">
