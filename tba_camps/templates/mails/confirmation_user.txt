@@ -1,4 +1,4 @@
-{% if obj.sexe == 'H' %}Cher{% else %}Chère{% endif %} {{ obj.nom }} {{ obj.prenom }},
+{% if obj.sexe == 'H' %}Cher{% else %}Chère{% endif %} {{ obj.prenom }} {{ obj.nom }},
 
 Tu viens de t’inscrire au camp de SUPERDEVOLUY pour les semaines
 {% for s in obj.semaines.iterator %}
