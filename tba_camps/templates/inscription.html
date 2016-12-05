@@ -41,8 +41,17 @@ automatiquement annulée.{% endblock %}
     -o-transition: max-height 2s;
   }
   #id_hebergement input:checked ~ p,
-  #id_hebergement li:hover p {
+  #id_hebergement li:hover label:not(.complet) p {
     max-height: 100ex;
+  }
+  #id_hebergement label.hidden {
+    display: none;
+  }
+  
+  #id_hebergement .complet,
+  #id_formule .complet {
+    color: #aaa;
+    text-decoration: line-through;
   }
 
   #pay-block { display: inline-block }

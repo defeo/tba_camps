@@ -42,7 +42,7 @@
 
 ## Gestion logements
 
-- Remplissage chalets: bloquer, prix
+- [X] Remplissage chalets: bloquer, ~prix~
 - Gestion par groupe?
 - Chambre avec?
 
@@ -54,5 +54,5 @@
 - [X] taille **en cm**
 - [X] Ajouter disclaimer 15€ avant calcul total
 - [] payement CB. Morning?
-- [] Ajouter relation Formule-Semaine-Places
+- [X] Ajouter relation Formule-Semaine-Places
 - [X] NOM prenom

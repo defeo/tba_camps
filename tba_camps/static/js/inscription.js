@@ -2,7 +2,7 @@ $(function() {
     // Show/hide dependent fields
     $('#id_formule').on('change', 'input:checked', function() {
 	var $this = $(this);
-	$('#id_hebergement').trigger($this.data('hebergement')
+	$('#id_hebergement').trigger(this.dataset.hebergements
 				     ? 'show.formule'
 				     : 'hide.formule');
 	$('#id_chambre').trigger($this.data('chambre')
@@ -41,6 +41,54 @@ $(function() {
 	    $(this)[e.type]('slow');
 	});
 
+    // Hebergement managemet
+    $('#id_semaines, #id_formule').on('change', function() {
+	// Get complet accomodations
+	var complet = [];
+	$('#id_semaines input:checked').each(function() {
+	    this.dataset.complet.split(',').forEach(function(h) {
+		if (h && complet.indexOf(h) < 0)
+		    complet.push(h);
+	    });
+	});
+	var applicable = String($('#id_formule input:checked').data('hebergements'));
+	applicable = applicable ? applicable.split(',') : [];
+	
+	// Function to disable options
+	var shutdown = function ($label, cond, clas) {
+	    $input = $label.find('input');
+	    if (cond) $input.prop('checked', false);
+	    $label.toggleClass(clas || 'complet', cond);
+	    $input.prop('disabled', cond);
+	    return cond;
+	};
+	// Disable complete accomodations
+	$('#id_hebergement label').each(function () {
+	    var $this = $(this);
+	    var $input = $this.find('input');
+	    shutdown($this, applicable.indexOf($input.val()) < 0, 'hidden');
+	    shutdown($this, complet.indexOf($input.val()) >= 0);
+	});
+	// Disable unavailable formules
+	// Select accomodation if unique
+	$('#id_formule label').each(function() {
+	    var $this = $(this);
+	    var $input = $(this).find('input');
+	    var h = String($input.data('hebergements'));
+	    if (h) {
+		var open = h.split(',').reduce(function(a,b) {
+		    return a.concat(complet.indexOf(b) >= 0 ? [] : [b]);
+		}, []);
+		
+		shutdown($this, open.length == 0);
+		
+		if (open.length == 1 && $input.is(':checked')) {
+		    $('#id_hebergement input[value=' + open[0] + ']').prop('checked', true);
+		}
+	    }
+	});
+    });
+    
     // Update cost table
     $('#id_semaines, #id_formule, #id_train, #id_assurance, #id_navette_a, #id_navette_r, #id_mode')
 	.on('change', function() {
@@ -80,7 +128,7 @@ $(function() {
 	});
     
     // Trigger events if dependee fields are checked
-    $('#id_formule input:checked').trigger('change');
+    $('#id_formule input:checked, #id_semaines input:checked').trigger('change');
     $('#id_licencie input:checked').trigger('change');
 
     // Async fetch license no from ffbb.com

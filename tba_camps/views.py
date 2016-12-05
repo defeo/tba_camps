@@ -19,12 +19,6 @@ from unidecode import unidecode
 from django.conf import settings
 from . import mails
 
-class SemainesField(forms.ModelMultipleChoiceField):
-    widget = widgets.CheckboxSelectMultiple
-
-    def __init__(self, *args, **kwds):
-        super(SemainesField, self).__init__(queryset=Semaine.objects.open(), *args, **kwds)
-
 class InscriptionForm(forms.ModelForm):
     """
     Formulaire d'inscription.    
@@ -32,7 +26,7 @@ class InscriptionForm(forms.ModelForm):
     error_css_class = 'error'
     required_css_class = 'required'
 
-    semaines = SemainesField(
+    semaines = my_widgets.SemainesField(
         help_text='Vous pouvez vous inscrire à plusieurs semaines avec la même formule. ' +
         'Pour vous inscrire avec plusieurs formules différentes, merci de remplir autant ' +
         "de bulletins d'inscription.")
@@ -95,21 +89,36 @@ class InscriptionForm(forms.ModelForm):
     def clean_supplement(self):
         return 0
 
+    def _clean_reservation(self, data):
+        '''
+        Sort out the data dependencies between weeks, formules and accomodation.
+        '''
+        semaines = data.get('semaines')
+        formule = data.get('formule')
+        hebergement = data.get('hebergement')
+        available = bool(formule) and set(formule.hebergements.iterator())
+        complet = bool(semaines) and {c for s in semaines for c in s.complet.iterator()}
+        if available and (not hebergement or hebergement not in available):
+            self.add_error('hebergement', self.error_class([_('This field is required.')]))
+        elif semaines and available and hebergement in complet:
+            self.add_error('hebergement', self.error_class(['Cet hébergement est complet pour les semaines indiquées.']))
+        elif formule and not available:
+            data['hebergement'] = None
+        
+        if semaines and available and not available.difference(complet):
+            self.add_error('formule', self.error_class(['Cette formule est complète pour les semaines indiquées.']))
+
+        return data
+    
     def clean(self):
         cleaned_data = super(InscriptionForm, self).clean()
-        formule = cleaned_data.get('formule')
-        email = cleaned_data.get('email')
-        email2 = cleaned_data.get('email2')
+        self._clean_reservation(cleaned_data)
         if cleaned_data.get('licencie') == 'O':
             for f in ('licence', 'club'):
                 if not cleaned_data.get(f):
                     self.add_error(f, self.error_class([_('This field is required.')]))
+        formule = cleaned_data.get('formule')
         if formule:
-            hebergement = cleaned_data.get('hebergement')
-            if formule.affiche_hebergement and not hebergement:
-                self.add_error('hebergement', self.error_class([_('This field is required.')]))
-            elif hebergement and not formule.affiche_hebergement:
-                cleaned_data['hebergement'] = None
             if not formule.affiche_train:
                 cleaned_data['train'] = 0
             if not formule.affiche_navette:
@@ -121,7 +130,7 @@ class InscriptionForm(forms.ModelForm):
                 cleaned_data['accompagnateur'] = ''
             elif not cleaned_data.get('accompagnateur'):
                 self.add_error('accompagnateur', self.error_class([_('This field is required.')]))
-        if email != email2:
+        if cleaned_data.get('email') != cleaned_data.get('email2'):
             self.add_error('email2', self.error_class(['Emails différents.']))
         return cleaned_data
 

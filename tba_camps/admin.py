@@ -20,6 +20,7 @@ class ManagerInline(admin.StackedInline):
     can_delete = False
     verbose_name_plural = 'Notifications email'
 
+# Define a new User admin
 class MyUserAdmin(UserAdmin):
     inlines = (ManagerInline, )
     list_display = UserAdmin.list_display + ('gets_notifs',)
@@ -32,29 +33,35 @@ admin.site.unregister(User)
 admin.site.register(User, MyUserAdmin)
 
 
-# Define a new User admin
+@admin.register(Semaine)
 class SemaineAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'commentaire', 'places', 'preinscrits',
-                    'inscrits', 'restantes', 'fermer')
+                    'inscrits', 'restantes', 'fermer', 'get_complet')
     list_editable = ('places', 'fermer')
-admin.site.register(Semaine, SemaineAdmin)
 
+    def get_complet(self, obj):
+        return ' ; '.join(map(str, obj.complet.iterator())) or '     —'
+    get_complet.short_description = 'Accomodations complètes'
+    
+@admin.register(Formule)
 class FormuleAdmin(OrderedModelAdmin):
-    list_display = ('groupe', 'nom', 'description', 'prix', 'taxe', 'taxe_gym', 'cotisation', 'affiche_train',
-                    'affiche_hebergement', 'affiche_chambre', 'affiche_navette',
-                    'affiche_assurance', 'affiche_mode', 'affiche_accompagnateur', 'publique', 'move_up_down_links')
+    list_display = ('groupe', 'nom', 'description', 'prix', 'taxe', 'taxe_gym', 'cotisation', 'heb_list',
+                    'affiche_train', 'affiche_chambre', 'affiche_navette', 'affiche_assurance',
+                    'affiche_mode', 'affiche_accompagnateur', 'publique', 'move_up_down_links')
     list_display_links = ('nom',)
-    list_editable = ('prix', 'taxe', 'taxe_gym', 'cotisation', 'affiche_train', 'affiche_hebergement', 
+    list_editable = ('prix', 'taxe', 'taxe_gym', 'cotisation', 'affiche_train',
                      'affiche_chambre', 'affiche_navette', 'affiche_assurance', 'affiche_mode',
                      'affiche_accompagnateur', 'publique')
     formfield_overrides = {
         models.DecimalField: {'widget': widgets.NumberInput(attrs={'style' : 'width: 6em'})},
     }
-admin.site.register(Formule, FormuleAdmin)
+    def heb_list(self, obj):
+        return ' ; '.join(map(str, obj.hebergements.iterator())) or '     —'
+    heb_list.short_description = 'Hébergements'
 
+@admin.register(Hebergement)
 class HebergementAdmin(OrderedModelAdmin):
     list_display = ('nom', 'md_commentaire', 'managed', 'move_up_down_links')
-admin.site.register(Hebergement, HebergementAdmin)
 
 class CanceledFilter(admin.SimpleListFilter):
     title = 'Montrer inscriptions annulées'
@@ -81,6 +88,7 @@ class CanceledFilter(admin.SimpleListFilter):
         else:
             return queryset.exclude(etat=CANCELED)
 
+@admin.register(Inscription)
 class InscriptionAdmin(ExportMixin, admin.ModelAdmin):
     list_display   = ('nom', 'prenom', 'sem_code', 'formule', 'prix', 'prix_hebergement', 'acompte', 'reste', 'parrain', 'pieces', 'etat', 'date')
     list_display_links = ('nom', 'prenom')
@@ -159,6 +167,3 @@ class InscriptionAdmin(ExportMixin, admin.ModelAdmin):
         obj.send_mail()
         messages.info(request, "Email envoyé à <%s>." %obj.email )
         return redirect('./')
-admin.site.register(Inscription, InscriptionAdmin)
-
-

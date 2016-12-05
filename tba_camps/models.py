@@ -32,11 +32,24 @@ class SemaineQuerySet(models.QuerySet):
         return self.filter(fermer=False).filter(models.Q(inscription__isnull=True)
                                                 | ~models.Q(inscription__etat=CANCELED)).annotate(models.Count('inscription')).filter(inscription__count__lt=models.F('places'))
     
+class Hebergement(OrderedModel):
+    nom = models.CharField(max_length=255)
+    commentaire = models.TextField("Commentaire affiché à l'inscription", blank=True)
+    managed = models.BooleanField("Envoyer fiche d'inscription à TBA", default=False)
+
+    def __str__(self):
+        return self.nom
+
+    def md_commentaire(self):
+        return mark_safe(markdown(self.commentaire))
+
 class Semaine(models.Model):
     debut = models.DateField('Début de la semaine', unique=True)
     commentaire = models.CharField('Commentaire affiché', max_length=255, blank=True)
     places = models.IntegerField('Nombre de places', default=0)
     fermer = models.BooleanField('Inscriptions fermées', default=False)
+    complet = models.ManyToManyField(Hebergement)
+    complet.help_text = "Solutions d'hébergement complètes pour cette semaine."
 
     objects = SemaineQuerySet.as_manager()
     
@@ -62,20 +75,6 @@ class Semaine(models.Model):
         return (self.places
                 - self.inscription_set.exclude(etat=CANCELED).count())
 
-class Hebergement(OrderedModel):
-    nom = models.CharField(max_length=255)
-    commentaire = models.TextField("Commentaire affiché à l'inscription", blank=True)
-    managed = models.BooleanField("Envoyer fiche d'inscription à TBA", default=False)
-    
-    class Meta(OrderedModel.Meta):
-        pass
-
-    def __str__(self):
-        return self.nom
-
-    def md_commentaire(self):
-        return mark_safe(markdown(self.commentaire))
-    
 class Formule(OrderedModel):
     groupe = models.CharField(max_length=255, blank=True, default='')
     nom = models.CharField(max_length=255)
@@ -84,9 +83,8 @@ class Formule(OrderedModel):
     taxe = models.DecimalField('Taxe ménage', default=0, max_digits=10, decimal_places=2)
     taxe_gym = models.DecimalField('Taxe gymnase', default=0, max_digits=10, decimal_places=2)
     cotisation = models.DecimalField('Cotisation TBA', default=15, max_digits=10, decimal_places=2)
+    hebergements = models.ManyToManyField(Hebergement)
     affiche_train = models.BooleanField("Opt. train", default=False)
-    affiche_hebergement = models.BooleanField("Opt. hébergement", 
-                                              default=False)
     affiche_chambre = models.BooleanField("Opt. 'chambre avec'",
                                           default=False)
     affiche_navette = models.BooleanField("Opt. navette",
@@ -148,7 +146,7 @@ class Inscription(models.Model):
     tel = models.CharField('Téléphone', max_length=20, validators=[
         RegexValidator(regex='^\+?[\d -\.]{10,}$', message='Numéro invalide')])
     semaines = models.ManyToManyField(Semaine)
-    formule = models.ForeignKey(Formule, on_delete=models.CASCADE)
+    formule = models.ForeignKey(Formule, on_delete=models.PROTECT)
     accompagnateur = models.CharField("Nom de l'accompagnateur", max_length=255, blank=True)
     train = models.DecimalField('Supplément train depuis Paris (inclut les navettes aller et retour)',
                            max_digits=10, decimal_places=3, default=Decimal('0.000'),
@@ -159,7 +157,7 @@ class Inscription(models.Model):
                                     (Decimal('40.000'), 'Aller moins de 12 ans (40€)'),
                                     (Decimal('80.002'), 'Retour tarif normal (80€)'),
                                     (Decimal('40.001'), 'Retour moins de 12 ans (40€)')])
-    hebergement = models.ForeignKey(Hebergement, null=True, blank=True, on_delete=models.CASCADE)
+    hebergement = models.ForeignKey(Hebergement, null=True, blank=True, on_delete=models.SET_NULL)
     prix_hebergement = models.DecimalField('Prix hébergement', default=0,
                                            max_digits=10, decimal_places=2)
     chambre = models.CharField('En chambre avec', max_length=255,

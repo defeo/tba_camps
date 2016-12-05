@@ -6,30 +6,28 @@ from django.utils.safestring import mark_safe
 from django import forms
 from django.utils.encoding import force_text
 from .templatetags.decimal import strip_cents
+from .models import Semaine
 
-class FullModelChoiceInput(forms.widgets.ChoiceInput):
-    input_type = 'radio'
+# Mixins and abstract classes for ChoiceInputs that hold a pointer
+# `choice_obj` to the model object.
 
+class FullModelMixin(object):
     def __init__(self, name, value, attrs, choice, index):
-        self.name = name
-        self.value = value
-        self.attrs = attrs
-        self.choice_value = force_text(choice[0])
         self.choice_obj = choice[1]
-        self.index = index
-        if 'id' in self.attrs:
-            self.attrs['id'] = '%s_%s' % (self.attrs['id'], self.index)
-        if self.value == self.choice_value:
-            self.attrs['checked'] = 'checked'
+        super().__init__(name, value, attrs, choice, index)
+class FullModelRadioChoiceInput(FullModelMixin, forms.widgets.RadioChoiceInput):
+    pass
+class FullModelCheckboxChoiceInput(FullModelMixin, forms.widgets.CheckboxChoiceInput):
+    pass
 
-class FormuleChoiceInput(FullModelChoiceInput):
+### Formule widget
+
+class FormuleChoiceInput(FullModelRadioChoiceInput):
     def render(self):
         if self.choice_obj.affiche_accompagnateur:
             self.attrs['data-accompagnateur'] = '1'
         if self.choice_obj.affiche_train:
             self.attrs['data-train'] = '1'
-        if self.choice_obj.affiche_hebergement:
-            self.attrs['data-hebergement'] = '1'
         if self.choice_obj.affiche_chambre:
             self.attrs['data-chambre'] = '1'
         if self.choice_obj.affiche_navette:
@@ -38,20 +36,16 @@ class FormuleChoiceInput(FullModelChoiceInput):
             self.attrs['data-assurance'] = '1'
         if self.choice_obj.affiche_mode:
             self.attrs['data-mode'] = '1'
+        self.attrs['data-hebergements'] = ','.join(str(h.pk) for h in self.choice_obj.hebergements.iterator())
         for field, (val, _, _) in self.choice_obj.costs().items():
             self.attrs['data-%s' % field.name] = val
-        return format_html('''<label>
-<input type="radio" name="{name}" value="{value}"{attrs}/> {nom}
+        return format_html('''<label>{input} {nom}
 <span class="prix">{prix}</span>
 <span class="description">{description}</span></label>''',
-                           name=self.name,
-                           value=self.choice_value,
-                           attrs=flatatt(self.attrs),
+                           input=self.tag(),
                            nom=force_text(self.choice_obj.nom),
                            prix=format_html('({}€)', strip_cents(self.choice_obj.prix)) * self.choice_obj.publique,
                            description=force_text(self.choice_obj.description))
-
-### Formule widget
 
 class FormuleRenderer(forms.widgets.ChoiceFieldRenderer):
     choice_input_class = FormuleChoiceInput
@@ -77,7 +71,7 @@ class FormuleRenderer(forms.widgets.ChoiceFieldRenderer):
         return mark_safe('\n'.join(output))
 
 
-class FormuleWidget(forms.widgets.RendererMixin, forms.Select):
+class FormuleWidget(forms.widgets.RadioSelect):
     renderer = FormuleRenderer
     
     class Media:
@@ -85,33 +79,59 @@ class FormuleWidget(forms.widgets.RendererMixin, forms.Select):
               'js/inscription.js')
 
     def id_for_label(self, _id):
-        return _id
+        return None
 
 
 ### Hebergement widget
 
-class HebergementChoiceInput(FullModelChoiceInput):
+class HebergementChoiceInput(FullModelRadioChoiceInput):
     def render(self):
-        return format_html('''<label>
-<input type="radio" name="{name}" value="{value}"{attrs}/> {nom}
-{commentaire}</label>''',
-                           name=self.name,
-                           value=self.choice_value,
-                           attrs=flatatt(self.attrs),
+        return format_html('''<label>{input} {nom} {commentaire}</label>''',
+                           input=self.tag(),
                            nom=force_text(self.choice_obj.nom),
                            commentaire=self.choice_obj.md_commentaire())
 
 class HebergementRenderer(forms.widgets.ChoiceFieldRenderer):
     choice_input_class = HebergementChoiceInput
 
-class HebergementWidget(forms.widgets.RendererMixin, forms.Select):
+class HebergementWidget(forms.widgets.RadioSelect):
     renderer = HebergementRenderer
 
     def id_for_label(self, _id):
-        return _id
+        return None
 
 
-### Field
+### Semaines widget
+
+class SemaineChoiceInput(FullModelCheckboxChoiceInput):
+    def render(self):
+        self.attrs['data-complet'] = ','.join(str(h.pk)
+                                                  for h in self.choice_obj.complet.iterator())
+        return super().render()
+
+class SemaineRenderer(forms.widgets.ChoiceFieldRenderer):
+    choice_input_class = SemaineChoiceInput
+
+class SemaineWidget(forms.widgets.CheckboxSelectMultiple):
+    renderer = SemaineRenderer
+
+    class Media:
+        js = ('//code.jquery.com/jquery-1.11.0.min.js', 
+              'js/inscription.js')
+
+    def id_for_label(self, _id):
+        return None
+
+### Fields carrying a pointer to their model object
+
+class SemainesField(forms.ModelMultipleChoiceField):
+    widget = SemaineWidget
+
+    def __init__(self, *args, **kwds):
+        super().__init__(queryset=Semaine.objects.open(), *args, **kwds)
+
+    def label_from_instance(self, obj):
+        return obj
 
 class FullModelField(forms.ModelChoiceField):
     widget = None
