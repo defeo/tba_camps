@@ -28,7 +28,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = (
-    'django.contrib.admin',
+    'tba_camps',
+    'django.contrib.admin.apps.SimpleAdminConfig',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -37,7 +38,6 @@ INSTALLED_APPS = (
     'captcha',
     'import_export',
     'ordered_model',
-    'tba_camps',
 )
 
 MIDDLEWARE = (
@@ -94,7 +94,6 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = BASE_DIR + '/uploads/'
 
 # Templates
-#TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',

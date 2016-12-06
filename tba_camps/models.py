@@ -49,7 +49,6 @@ class Semaine(models.Model):
     places = models.IntegerField('Nombre de places', default=0)
     fermer = models.BooleanField('Inscriptions fermées', default=False)
     complet = models.ManyToManyField(Hebergement)
-    complet.help_text = "Solutions d'hébergement complètes pour cette semaine."
 
     objects = SemaineQuerySet.as_manager()
     
@@ -65,11 +64,19 @@ class Semaine(models.Model):
     def fin(self):
         return datetime.timedelta(6) + self.debut
 
-    def inscrits(self):
-        return self.inscription_set.filter(etat__in=[VALID, COMPLETE]).count()
-        
-    def preinscrits(self):
-        return self.inscription_set.filter(etat=PREINSCRIPTION).count()
+    def inscrits(self, hebergement=None):
+        if hebergement is None:
+            return self.inscription_set.filter(etat__in=[VALID, COMPLETE]).count()
+        else:
+            return self.inscription_set.filter(etat__in=[VALID, COMPLETE],
+                                                   hebergement=hebergement).count()
+
+    def preinscrits(self, hebergement=None):
+        if hebergement is None:
+            return self.inscription_set.filter(etat=PREINSCRIPTION).count()
+        else:
+            return self.inscription_set.filter(etat=PREINSCRIPTION,
+                                                   hebergement=hebergement).count()
 
     def restantes(self):
         return (self.places

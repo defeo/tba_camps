@@ -1,8 +1,6 @@
 from django.conf.urls import include, url
-from django.views.generic import RedirectView
-from . import views, models, sms, ffbb_api
-from django.contrib import admin
-admin.autodiscover()
+from django.views.generic import RedirectView, TemplateView
+from . import views, models, sms, ffbb_api,admin
 
 urlpatterns = [
     url(r'^$', RedirectView.as_view(url='/tba/', permanent=True)),

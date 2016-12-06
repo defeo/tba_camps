@@ -6,7 +6,7 @@ from .models import Manager, Semaine, Formule, Hebergement, Inscription, CANCELE
 from import_export.admin import ExportMixin
 from .resources import InscriptionResource
 from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.shortcuts import redirect
 from django.conf.urls import url
 from django.utils.html import mark_safe
@@ -14,13 +14,67 @@ from django.contrib.admin.templatetags.admin_static import static
 from django.db import models
 from django.forms import widgets
 from django.contrib import messages
+from django.template.response import TemplateResponse
+from django.http import JsonResponse,  HttpResponseBadRequest
+from django.contrib.auth.decorators import permission_required
+from django.contrib.admin.views.decorators import staff_member_required
+from django.views.decorators.csrf import ensure_csrf_cookie
 
+class MyAdmin(admin.AdminSite):
+    def get_urls(self):
+        return super().get_urls() + [url(r'^complet/$', self.complet, name='complet')]
+
+    def complet(self, req):
+        context = self.each_context(req)
+        
+        @staff_member_required
+        @permission_required('tba_camps.change_semaine', raise_exception=True)
+        @ensure_csrf_cookie
+        def handler(req):
+            if not req.method == 'POST':
+                context['title'] = 'Gestion des accomodations'
+                sem = Semaine.objects.all()
+                heb = Hebergement.objects.all()
+                context['semaines'] = sem
+                context['hebergements'] = [{
+                    'heb' : h,
+                    'count' : [{ 'sem': s,
+                                    'complet': h in s.complet.iterator(),
+                                    'inscr': s.inscrits(h),
+                                    'preinscr': s.preinscrits(h),
+                                     } for s in sem]
+                    } for h in heb]
+                
+                return TemplateResponse(req, 'admin/complet.html', context)
+            else:
+                import json
+                try:
+                    j = json.loads(req.body.decode())
+                    heb = Hebergement.objects.get(pk=j['hebergement'])
+                    sem = Semaine.objects.get(pk=j['semaine'])
+                    on = j['on']
+                except:
+                    return HttpResponseBadRequest('Cannot parse')
+
+                if on:
+                    sem.complet.add(heb)
+                else:
+                    sem.complet.remove(heb)
+                return JsonResponse({ 'semaine': sem.pk,
+                                          'complet': [h.pk for h in sem.complet.iterator()] })
+
+        return handler(req)
+
+site = MyAdmin()
+site.register(Group)
+
+# Define a new User admin
 class ManagerInline(admin.StackedInline):
     model = Manager
     can_delete = False
     verbose_name_plural = 'Notifications email'
 
-# Define a new User admin
+@admin.register(User, site=site)
 class MyUserAdmin(UserAdmin):
     inlines = (ManagerInline, )
     list_display = UserAdmin.list_display + ('gets_notifs',)
@@ -29,21 +83,20 @@ class MyUserAdmin(UserAdmin):
         return obj.manager.notif
     gets_notifs.short_description = 'Reçoit les notifications'
     gets_notifs.boolean = True
-admin.site.unregister(User)
-admin.site.register(User, MyUserAdmin)
 
-
-@admin.register(Semaine)
+# Model Admins
+@admin.register(Semaine, site=site)
 class SemaineAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'commentaire', 'places', 'preinscrits',
                     'inscrits', 'restantes', 'fermer', 'get_complet')
     list_editable = ('places', 'fermer')
+    exclude = ('complet',)
 
     def get_complet(self, obj):
         return ' ; '.join(map(str, obj.complet.iterator())) or '     —'
     get_complet.short_description = 'Accomodations complètes'
     
-@admin.register(Formule)
+@admin.register(Formule, site=site)
 class FormuleAdmin(OrderedModelAdmin):
     list_display = ('groupe', 'nom', 'description', 'prix', 'taxe', 'taxe_gym', 'cotisation', 'heb_list',
                     'affiche_train', 'affiche_chambre', 'affiche_navette', 'affiche_assurance',
@@ -59,7 +112,7 @@ class FormuleAdmin(OrderedModelAdmin):
         return ' ; '.join(map(str, obj.hebergements.iterator())) or '     —'
     heb_list.short_description = 'Hébergements'
 
-@admin.register(Hebergement)
+@admin.register(Hebergement, site=site)
 class HebergementAdmin(OrderedModelAdmin):
     list_display = ('nom', 'md_commentaire', 'managed', 'move_up_down_links')
 
@@ -88,7 +141,7 @@ class CanceledFilter(admin.SimpleListFilter):
         else:
             return queryset.exclude(etat=CANCELED)
 
-@admin.register(Inscription)
+@admin.register(Inscription, site=site)
 class InscriptionAdmin(ExportMixin, admin.ModelAdmin):
     list_display   = ('nom', 'prenom', 'sem_code', 'formule', 'prix', 'prix_hebergement', 'acompte', 'reste', 'parrain', 'pieces', 'etat', 'date')
     list_display_links = ('nom', 'prenom')

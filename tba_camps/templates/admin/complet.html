@@ -1,0 +1,85 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+{% block title %}Gestion des accomodations{% endblock %}
+
+{% block extrahead %}
+<style>
+  tr:nth-child(even) {
+    background-color: #fafafa;
+  }
+  td, th {
+    text-align: center;
+  }
+  .closed {
+    opacity: 0.5;
+  }
+  input.error~span {
+    color: red;
+  }
+  input~span::after {
+    content: "fermer";
+  }
+  input:checked~span:after {
+    content: "complet";
+    font-weight: bold;
+  }
+  small {
+    color: #777;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<table>
+  <thead>
+    <tr>
+      <th></th>
+      {% for s in semaines %}
+      <th id="id_semaine_{{ s.pk }}" {% if s.fermer %}class="closed"{% endif %}>{{ s }}</th>
+      {% endfor %}
+    </tr>
+  </thead>
+  {% for h in hebergements %}
+  <tr>
+    <th id="id_hebergement_{{ h.heb.pk }}">{{ h.heb }}</th>
+    {% for c in h.count %}
+    <td>
+      <small>{{ c.inscr }}&nbsp;inscrits<br/>
+      {{ c.preinscr }}&nbsp;préinscrits<br/></small>
+      <input
+	id="id_complet_{{ h.heb.pk }}_{{ c.sem.pk }}"
+	type="checkbox"
+	data-hebergement="{{ h.heb.pk }}"
+	data-semaine="{{ c.sem.pk }}"
+	{% if c.complet %}checked{% endif %}
+	/><span>&nbsp;</span>
+    </td>
+    {% endfor %}
+  </tr>
+  {% endfor %}
+</table>
+
+<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<script>
+    $('table').on('change', 'input', function() {
+	$this = $(this);
+	var csrf =  document.cookie.split(';').find(function(c) {
+	    return c.trim().startsWith('csrftoken=');
+	}).substr('csrftoken='.length);
+	$.ajax({
+	    url: '',
+	    data: JSON.stringify({
+		hebergement: $this.data('hebergement'),
+		semaine: $this.data('semaine'),
+		on: $this.prop('checked') }),
+	    type: 'POST',
+	    contentType: 'application/json',
+	    beforeSend: function(xhr) {
+		xhr.setRequestHeader('X-CSRFToken', csrf);
+	    }
+	})
+	    .done(function() { $this.removeClass('error') })
+	    .fail(function() { $this.addClass('error') })
+    });
+</script>
+{% endblock %}
