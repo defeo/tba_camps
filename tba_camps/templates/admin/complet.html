@@ -63,9 +63,13 @@
 <script>
     $('table').on('change', 'input', function() {
 	$this = $(this);
-	var csrf =  document.cookie.split(';').find(function(c) {
-	    return c.trim().startsWith('csrftoken=');
-	}).substr('csrftoken='.length);
+	var csrf =  document.cookie.split(';').reduce(function(a, b) {
+	    if (a === null && 'csrftoken=' == b.trim().substr(0, 'csrftoken='.length)) {
+		return b.trim().substr('csrftoken='.length);
+	    } else {
+		return a;
+	    }
+	}, null);
 	$.ajax({
 	    url: '',
 	    data: JSON.stringify({
