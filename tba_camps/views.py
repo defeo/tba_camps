@@ -37,11 +37,6 @@ class InscriptionForm(forms.ModelForm):
     hebergement = my_widgets.FullModelField(queryset=Hebergement.objects.all(),
                                             widget=my_widgets.HebergementWidget,
                                             required=False)
-    etat = forms.Field(required=False, widget=forms.HiddenInput)
-    acompte = forms.Field(required=False, widget=forms.HiddenInput)
-    prix_hebergement = forms.Field(required=False, widget=forms.HiddenInput)
-    remise = forms.Field(required=False, widget=forms.HiddenInput)
-    supplement = forms.Field(required=False, widget=forms.HiddenInput)
     licencie = forms.ChoiceField(label='Licencié dans un club',
                                  widget=widgets.RadioSelect,
                                  choices=[('O','Oui'), ('N','Non')])
@@ -52,16 +47,19 @@ class InscriptionForm(forms.ModelForm):
 
     class Meta:
         model = Inscription
-        fields = '__all__'
+        fields = ['nom', 'prenom', 'email', 'adresse', 'cp', 'ville', 'pays',
+                      'tel', 'naissance', 'lieu', 'sexe', 'taille',
+                      'licence', 'club', 'venu', 'semaines', 'formule',
+                      'hebergement', 'chambre', 'accompagnateur', 'train',
+                      'navette_a', 'navette_r', 'assurance', 'mode', 'caf',
+                      'notes', 'nom_parrain', 'adr_parrain']
         widgets = {
-            'email' : widgets.EmailInput,
             'sexe' : widgets.RadioSelect,
             'adresse' : widgets.Textarea(attrs={'rows' : 3}),
             'naissance' : my_widgets.DatePicker,
             'navette_a' : widgets.RadioSelect,
             'navette_r' : widgets.RadioSelect,
             'assurance' : widgets.RadioSelect,
-            'licencie' :  widgets.RadioSelect,
             'venu' :  widgets.RadioSelect,
             'notes': widgets.Textarea(attrs={'rows' : 5}),
             'caf' :  widgets.RadioSelect,
@@ -70,24 +68,6 @@ class InscriptionForm(forms.ModelForm):
             'licence': '<a target="_blank" href="http://www.ffbb.com/jouer/recherche-avancee">Chercher sur ffbb.com</a>',
             'notes': "N'hésitez pas à nous signaler toute situation particulière.",
         }
-
-    def clean_etat(self):
-        '''
-        Ceci est une preinscription par defaut
-        '''
-        return PREINSCRIPTION
-
-    def clean_acompte(self):
-        return 0
-
-    def clean_prix_hebergement(self):
-        return 0
-
-    def clean_remise(self):
-        return 0
-
-    def clean_supplement(self):
-        return 0
 
     def _clean_reservation(self, data):
         '''
@@ -149,7 +129,10 @@ vérifier dans votre boîte à SPAM. Ajoutez %s à votre carnet d'adresses
 pour être sûrs de toujours reçevoir nos emails.</p>""" % settings.FROM_EMAIL
 
     def form_valid(self, form):
+        # This is always a pré-inscription
+        form.instance.etat = PREINSCRIPTION
         res = super(InscriptionFormView, self).form_valid(form)
+        # Send out emails
         mails.preinscr(self.object)
         return res
 
