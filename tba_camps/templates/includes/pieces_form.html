@@ -27,7 +27,7 @@
     </div>
     {% endif %}
 
-    {% if object.hebergement and object.hebergement.managed %}
+    {% if object.hebergement and object.hebergement.managed == 'M' %}
     <div class="pure-control-group">
       <label for="{{ form.fiche_hotel.name }}">{{ form.fiche_hotel.label }}</label>
       {{ form.fiche_hotel }}

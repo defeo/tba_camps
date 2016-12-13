@@ -12,6 +12,18 @@
 
 <hr>
 
+{% if object.etat != 'C' %}
+
+{% include "includes/manquantes.html" %}
+{% include "includes/pieces_form.html" %}
+
+<h4>Adresse postale pour l’envoi des pièces :</h4>
+
+<blockquote class="adress">{{ settings.ADRESSE }}</blockquote>
+
+<hr>
+{% endif %}
+
 <p>Trouve tous les
   <a href="{{ settings.PIECES.renseignements_pdf }}">renseignements pratiques</a>
   sur le camp de SUPERDEVOLUY

@@ -1,29 +1,25 @@
-<h3>Merci d'envoyer, avant une semaine, votre règlement par courrier à l'adresse</h3>
+<h3>Merci d’envoyer, avant 8 jours, votre règlement par courrier à l’adresse</h3>
 
 <blockquote class="adress">{{ settings.ADRESSE }}</blockquote>
 
 <p>Il peut être réglé avec 2 ou 3 chèques que nous encaissons à un
-  mois d'intervalle. Veuillez noter au verso votre nom, numéro de
-  semaine, et la date d'encaissement désirée. Si vous voulez faire un
-  virement, demandez notre RIB.</p>
-<p>TBA accepte les chèques vacances ainsi que les bons-vacances de
-  certaines C.A.F. Joindre votre attestation CAF au moment de
-  l'inscription ou le plus rapidement possible, et impérativement deux
-  semaines avant le début du séjour, sous peine de ne pas pouvoir la
-  prendre en compte.</p>
-<p>Merci de joindre</p>
+  mois d’intervalle. Veuillez noter au verso votre nom, numéro de
+  semaine, et la date d’encaissement désirée. Pour un virement plus
+  rapide, demandez notre RIB.</p>
+<p>TBA accepte les Chèques Vacances ainsi que les bons vacances de
+  certaines CAF et les bons AVE du dispositif VACAF. Joindre votre
+  attestation CAF au moment de l’inscription ou le plus rapidement
+  possible, et impérativement deux semaines avant le début du séjour,
+  sous peine de ne pouvoir le prendre en compte.</p>
+<p>Merci de joindre, si vous ne les avez pas téléchargés :</p>
 <ul>
-<li>le cas échéant, la fiche d'inscription, la fiche sanitaire, le
-  certificat médical (ou la photocopie ou le n° de licence FFBB){% if object.hebergement and object.hebergement.managed %}, et la fiche de
-  réservation du logement{% endif %}.
+<li>le bulletin d’inscription {{ settings.ANNEE }}, la fiche
+  sanitaire, et votre certificat médical (ou photocopie de la licence
+  FFBB){% if object.hebergement and object.hebergement.managed == 'M' %},
+  et la fiche de réservation du logement{% endif %}.
 </li>
 </ul>
 
-{% if object.hebergement and not object.hebergement.managed %}
-<p>Pour la réservation en <b>{{ object.hebergement }}</b></p>
-<ul><li>{{ object.hebergement.md_commentaire }}</li></ul>
-{% endif %}
-
-<p>Dès réception de votre règlement nous vous enverrons le dossier de
-  confirmation d'inscription par mail.</p>
+<p>Dès réception de votre règlement vous recevrez une confirmation
+  d’inscription par email.</p>
 

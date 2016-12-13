@@ -1,7 +1,9 @@
 <p>{% if obj.sexe == 'H' %}Cher{% else %}Chère{% endif %} {{ obj.prenom }} {{ obj.nom }},</p>
 
 <p>Merci de votre demande d'inscription. Pour suivre l'état de votre
-  demande, veuillez cliquer sur le bouton ci-dessous.</p>
+  demande, veuillez cliquer sur le bouton ci-dessous. <b>Tous les
+  détails de votre inscription sont sur votre bulletin d’inscription
+  TBA 2017 que vous devez télécharger et signer.</b></p>
 
 <p style="text-align:centered">
   <a href="{{ obj.get_full_url }}" style="text-decoration:none;color:white;font-weight:bold">
@@ -14,9 +16,11 @@
 <p>Vous pouvez également copier-coller le lien ci-dessous.</p>
 <p><a href="{{ obj.get_full_url }}">{{ obj.get_full_url }}</a></p>
 
-<h3>Merci de compléter les pièces jointes et de les joindre à votre
-  règlement, ou de les scanner et nous les envoyer à l'aide de
-  votre <a href="{{ obj.get_full_url }}">page de suivi</a>.</h3>
+<h3>Merci de compléter les pièces jointes que vous pouvez soit
+  <a href="{{ obj.get_full_url }}">télécharger directement dans votre
+    dossier</a>, soit nous envoyer par courrier avec votre règlement,
+    soit nous envoyer par email
+    à <a href="tba@camps-basket.com">tba@camps-basket.com</a>.</h3>
 
 {% include "includes/pieces.html" with object=obj %}
 

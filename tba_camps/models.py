@@ -31,11 +31,18 @@ class SemaineQuerySet(models.QuerySet):
         '''
         return self.filter(fermer=False).filter(models.Q(inscription__isnull=True)
                                                 | ~models.Q(inscription__etat=CANCELED)).annotate(models.Count('inscription')).filter(inscription__count__lt=models.F('places'))
-    
+
+INCLUDED='I'
+MANAGED='M'
+EXTERNAL='E'
+
 class Hebergement(OrderedModel):
     nom = models.CharField(max_length=255)
     commentaire = models.TextField("Commentaire affiché à l'inscription", blank=True)
-    managed = models.BooleanField("Envoyer fiche d'inscription à TBA", default=False)
+    managed = models.CharField("Mode réservation", max_length=1, default=INCLUDED, choices=[
+        (INCLUDED, 'Géré par TBA'),
+        (MANAGED, 'Géré par TBA, payement séparé'),
+        (EXTERNAL, 'Réservé par le client')])
 
     def __str__(self):
         return self.nom

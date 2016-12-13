@@ -115,6 +115,7 @@ class FormuleAdmin(OrderedModelAdmin):
 @admin.register(Hebergement, site=site)
 class HebergementAdmin(OrderedModelAdmin):
     list_display = ('nom', 'md_commentaire', 'managed', 'move_up_down_links')
+    list_editable = ('managed',)
 
 class CanceledFilter(admin.SimpleListFilter):
     title = 'Montrer inscriptions annulées'
