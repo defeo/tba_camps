@@ -118,8 +118,10 @@
     <p id="sig">Date et signature (précédées de la mention « lu et approuvé »)</p>
 
     <footer>
-      <small>à retourner à :</small><br>
-      {{ settings.ADRESSE }}
+      <small>compléter et téléverser dans
+	<a href="{{ object.get_full_url }}">votre dossier en
+	  ligne</a>,<br> ou retourner par courrier avec votre acompte
+	  à&nbsp;:</small><br> {{ settings.ADRESSE }}
       </tr>
     </footer>
   </body>

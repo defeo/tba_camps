@@ -12,7 +12,7 @@ toutes les informations pratiques sur le camp à l'adresse
 {{ obj.get_full_url }}
 
 Acompte donné :      {{ obj.acompte }}€
-Solde dû sur place : {{ obj.reste }}€
+Solde dû : {{ obj.reste }}€
 
 Sportivement,
 
