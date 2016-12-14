@@ -8,7 +8,8 @@
   <li><a href="{{ host }}{% url 'inscription_pdf_view' object.slug %}"><b>Le
 	bulletin d’inscription TBA {{ settings.ANNEE }}</b></a> (avec
 	l’autorisation parentale et le droit à l’image).</li>
-  
+
+  {% if not object.formule.adulte %}
   <li>La fiche sanitaire de liaison (télécharger 
     <a href="{{ host }}{{ settings.PIECES.sanitaire_doc }}" target="_blank">ici en word</a>
     et <a href="{{ host }}{{ settings.PIECES.sanitaire_pdf }}" target="_blank">ici en pdf</a>).</li>
@@ -16,6 +17,7 @@
   {% if not object.licence %}
   <li>Joindre un certificat médical d’aptitude ou la photocopie de
     votre licence FFBB.</li>
+  {% endif %}
   {% endif %}
   
   {% if object.hebergement and object.hebergement.managed == 'M' %}

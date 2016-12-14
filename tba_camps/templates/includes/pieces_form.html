@@ -15,6 +15,7 @@
       {{ form.fiche_inscr }}
     </div>
 
+    {% if not object.formule.adulte %}
     <div class="pure-control-group">
       <label for="{{ form.fiche_sanit.name }}">{{ form.fiche_sanit.label }}</label>
       {{ form.fiche_sanit }}
@@ -25,6 +26,7 @@
       <label for="{{ form.certificat.name }}">{{ form.certificat.label }}</label>
       {{ form.certificat }}
     </div>
+    {% endif %}
     {% endif %}
 
     {% if object.hebergement and object.hebergement.managed == 'M' %}

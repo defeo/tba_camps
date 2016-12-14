@@ -110,6 +110,7 @@ class Formule(OrderedModel):
     affiche_accompagnateur = models.BooleanField("Opt. accompagnateur",
                                                  default=False)
     publique = models.BooleanField("Tout publique", default=True)
+    adulte = models.BooleanField("Adulte", default=False)
 
     class Meta(OrderedModel.Meta):
         pass
@@ -215,7 +216,7 @@ class Inscription(models.Model):
     date = models.DateTimeField('Date inscription', auto_now_add=True)
     date_valid = models.DateField('Date validation', null=True, blank=True)
     slug = models.SlugField(max_length=22, blank=True, editable=False)
-    fiche_inscr = FileField("Fiche d'inscription", blank=True, null=True)
+    fiche_inscr = FileField("Bulletin d'inscription", blank=True, null=True)
     fiche_inscr_snail = models.BooleanField("Fiche d'inscription reçue",
                                             default=False)
     fiche_sanit = FileField('Fiche sanitaire', blank=True, null=True)
