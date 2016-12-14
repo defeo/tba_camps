@@ -25,7 +25,8 @@ informations pratiques sur le camp.</p>
   </a>
 </p>
 
-<p>À ton arrivée t’attendent des cadeaux et plein de surprises.</p>
+<p>À ton arrivée TBA te donne un maillot réversible, un short et une
+  gourde.</p>
 
 <table>
   <tr><td>Acompte donné</td><td style="text-align:right;padding-left:1ex">{{ obj.acompte }}€</td></tr>
@@ -34,6 +35,8 @@ informations pratiques sur le camp.</p>
 
 <p>Tu peux également copier-coller le lien ci-dessous.</p>
 <p><a href="{{ obj.get_full_url }}">{{ obj.get_full_url }}</a></p>
+
+{% include "includes/parrainage.html" %}
 
 <p>Sportivement,</p>
 <h3>Team Basket Association</h3>
