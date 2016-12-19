@@ -1,6 +1,21 @@
 {% extends "base.html" %}
 {% load decimal %}
 
+{% block extrahead %}
+<style>
+  .groupe td {
+  font-size: 110%;
+  background-color: #cc6600;
+  color: white;
+  padding: 5px;
+  }
+  .desc td {
+  font-weight:normal;
+  padding-left:3ex;
+  }
+</style>
+{% endblock %}
+
 {% block content %}
 <article class="featured">
   
@@ -27,11 +42,14 @@
 	<table cellspacing="0" cellpadding="0" width="588" height="181" style="font-weight:bold">
 	  {% for f in formules %}
 	  {% if f.publique %}
+	  {% if f.groupe %}
+	  <tr class="groupe"><td colspan="2">{{ f.groupe }}</td></tr>
+	  {% endif %}
 	  <tr>
 	    <td >{{ f.nom }}</td>
 	    <td align="right">{{ f.prix | strip_cents }}&euro;</td>
 	  </tr>
-	  <tr><td colspan="2" style="font-weight:normal;padding-left:3ex"><p>{{ f.description }}</p></td></tr>
+	  <tr class="desc"><td colspan="2"><p>{{ f.description }}</p></td></tr>
 	  {% endif %}
 	  {% endfor %}
         </table>

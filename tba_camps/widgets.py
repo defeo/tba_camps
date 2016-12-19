@@ -57,11 +57,11 @@ class FormuleRenderer(forms.widgets.ChoiceFieldRenderer):
         prev_group = ''
         for i, choice in enumerate(self.choices):
             group = choice[1].groupe
-            if group and group != prev_group:
+            if group:
                 if prev_group:
                     output.append('</ul></li>')
                 prev_group = group
-                output.append(format_html('<li><div>{0}</div><ul>', group))
+                output.append(format_html('<li><div class="group">{0}</div><ul>', group))
             w = self.choice_input_class(self.name, self.value,
                                         self.attrs.copy(), choice, i)
             output.append(format_html('<li>{0}</li>', force_text(w)))
