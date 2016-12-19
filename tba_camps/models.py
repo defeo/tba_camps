@@ -97,7 +97,7 @@ class Formule(OrderedModel):
     taxe = models.DecimalField('Taxe ménage', default=0, max_digits=10, decimal_places=2)
     taxe_gym = models.DecimalField('Taxe gymnase', default=0, max_digits=10, decimal_places=2)
     cotisation = models.DecimalField('Cotisation TBA', default=15, max_digits=10, decimal_places=2)
-    hebergements = models.ManyToManyField(Hebergement)
+    hebergements = models.ManyToManyField(Hebergement, blank=True)
     affiche_train = models.BooleanField("Opt. train", default=False)
     affiche_chambre = models.BooleanField("Opt. 'chambre avec'",
                                           default=False)
