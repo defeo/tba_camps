@@ -4,15 +4,15 @@
 
 [] effacer inscription avec fichier disparu, ou pas?
 
-[] Utiliser templates dans les chaînes markdownifiées de Hebergement
+[X] Utiliser templates dans les chaînes markdownifiées de Hebergement
 
 [X] sauvegardes BD
 
 [] Mail de notif: infos dans expe + sujet
 
-[] template first week in index
+[] ~template first week in index~
 
-[] No licences non obligatoire?
+[] ~No licences non obligatoire?~
 
 
 # ListViews
@@ -27,7 +27,7 @@
 
 - [ ] Traiter différemment préinscription -> annulé et validé ->
   annulé ?
-- [ ] Différencier mail accompagnateur
+- [X] Différencier mail accompagnateur
 - [X] Ajouter case "nom du club" pour les licenciés
 - [X] Châlet club: accompagnateur obligatoire
 - [X] Enregistrer date de validation

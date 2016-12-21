@@ -8,12 +8,12 @@ from django.urls import reverse
 from Crypto.Cipher import AES
 from django.conf import settings
 import base64
-from django.conf import settings
 import datetime
 from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 from . import mails
 from django.template.loader import render_to_string
+from django.template import Context, Template
 from markdown import markdown
 from django.utils.safestring import mark_safe
 from decimal import Decimal
@@ -48,7 +48,7 @@ class Hebergement(OrderedModel):
         return self.nom
 
     def md_commentaire(self):
-        return mark_safe(markdown(self.commentaire))
+        return mark_safe(markdown(Template(self.commentaire).render(Context(settings.PIECES))))
 
 class Semaine(models.Model):
     debut = models.DateField('Début de la semaine', unique=True)
