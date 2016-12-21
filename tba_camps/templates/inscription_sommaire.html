@@ -7,8 +7,11 @@
 
 {% include "includes/detail_inscr.html" %}
 
-<p class="price">Acompte donné : {{ object.acompte }}€<br>
-  Solde dû : <b>{{ object.reste }}€</b></p>
+<table>
+  <tr><td class="total">Total du camp :</td><td class="price">{{ object.prix }}€</td></tr>
+  <tr><td class="total">Acompte donné :</td><td class="price">{{ object.acompte }}€</td></tr>
+  <tr><td class="total">Solde dû :</td><td class="price"><b>{{ object.reste }}€</b></td></tr>
+</table>
 
 <hr>
 

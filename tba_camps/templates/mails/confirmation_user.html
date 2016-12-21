@@ -1,7 +1,6 @@
 <p>{% if obj.sexe == 'H' %}Cher{% else %}Chère{% endif %} {{ obj.prenom }} {{ obj.nom }},</p>
 
-<p>Tu viens de t’inscrire au camp de SUPERDEVOLUY pour les
-  semaines</p>
+<p>Tu t’es inscrit au camp de SUPERDEVOLUY pour les semaines</p>
 
 <ul>
 {% for s in obj.semaines.iterator %}
@@ -29,8 +28,9 @@ informations pratiques sur le camp.</p>
   gourde.</p>
 
 <table>
+  <tr><td>Total du camp</td><td style="text-align:right;padding-left:1ex">{{ obj.prix }}€</td></tr>
   <tr><td>Acompte donné</td><td style="text-align:right;padding-left:1ex">{{ obj.acompte }}€</td></tr>
-  <tr><td>Solde dû</td><td style="text-align:right;padding-left:1ex">{{ obj.reste }}€</td></tr>
+  <tr><td>Solde dû</td><td style="text-align:right;padding-left:1ex"><b>{{ obj.reste }}€</b></td></tr>
 </table>
 
 <p>Tu peux également copier-coller le lien ci-dessous.</p>

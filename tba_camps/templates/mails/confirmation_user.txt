@@ -1,6 +1,6 @@
 {% if obj.sexe == 'H' %}Cher{% else %}Chère{% endif %} {{ obj.prenom }} {{ obj.nom }},
 
-Tu viens de t’inscrire au camp de SUPERDEVOLUY pour les semaines
+Tu t’es inscrit au camp de SUPERDEVOLUY pour les semaines
 {% for s in obj.semaines.iterator %}
 - {{ s }}
 {% endfor %}
@@ -11,8 +11,9 @@ toutes les informations pratiques sur le camp à l'adresse
 
 {{ obj.get_full_url }}
 
-Acompte donné :      {{ obj.acompte }}€
-Solde dû : {{ obj.reste }}€
+Total du camp : {{ obj.prix | rjust:"8" }}€
+Acompte donné : {{ obj.acompte | rjust:"8" }}€
+Solde dû :      {{ obj.reste | rjust:"8" }}€
 
 Sportivement,
 

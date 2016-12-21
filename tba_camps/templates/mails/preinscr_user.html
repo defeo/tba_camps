@@ -16,11 +16,16 @@
 <p>Vous pouvez également copier-coller le lien ci-dessous.</p>
 <p><a href="{{ obj.get_full_url }}">{{ obj.get_full_url }}</a></p>
 
-<h3>Merci de compléter les pièces jointes que vous pouvez soit
-  <a href="{{ obj.get_full_url }}">télécharger directement dans votre
-    dossier</a>, soit nous envoyer par courrier avec votre règlement,
-    soit nous envoyer par email
-    à <a href="tba@camps-basket.com">tba@camps-basket.com</a>.</h3>
+<div style="font-size:110%">
+<p><b>Merci de compléter les pièces jointes, que vous pouvez</b></p>
+<ul>
+  <li><b>soit <a href="{{ obj.get_full_url }}">télécharger directement
+      dans votre dossier</a>,</b></li>
+  <li><b>soit nous envoyer par email
+    à <a href="tba@camps-basket.com">tba@camps-basket.com</a>,</b></li>
+  <li><b>soit nous envoyer par courrier avec votre règlement.</b></li>
+</ul>
+</div>
 
 {% include "includes/pieces.html" with object=obj %}
 
