@@ -7,7 +7,6 @@ urlpatterns = [
     url(r'^index-tba.htm$', RedirectView.as_view(url='/tba/presentation.htm', permanent=True)),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^sms/', include(sms.urls)),
-    url(r'^api/ffbb/', include(ffbb_api.urls)),
     url(r'^tba/inscriptions\.htm$', views.InscriptionFormView.as_view(), name='inscription_form'),
     url(r'^tba/inscriptions\.htm/(?P<slug>[\w-]{22})/', include([
         url(r'^$', views.InscriptionView.as_view(), name='inscription_view'),
