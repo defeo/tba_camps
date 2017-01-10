@@ -303,18 +303,19 @@ class Inscription(models.Model):
         # Capitalisations
         self.nom = self.nom.upper()
         self.prenom = self.prenom.title()
+        # Champs conditionnels
+        if (self.fiche_inscr):
+            self.fiche_inscr_snail = True
+        if (self.fiche_sanit):
+            self.fiche_sanit_snail = True
+        if (self.fiche_hotel):
+            self.fiche_hotel_snail = True
+        if (self.certificat or self.licence):
+            self.certificat_snail = True
 
+        # S'il s'agit d'une mise à jour
         if self.pk is not None:
             orig = self.__class__.objects.get(pk=self.pk)
-            # Champs conditionnels
-            if (self.fiche_inscr):
-                self.fiche_inscr_snail = True
-            if (self.fiche_sanit):
-                self.fiche_sanit_snail = True
-            if (self.fiche_hotel):
-                self.fiche_hotel_snail = True
-            if (self.certificat or self.licence):
-                self.certificat_snail = True
             # Si l'inscription a été validée, enregistre la date
             if self.etat == VALID != orig.etat:
                 self.date_valid = datetime.datetime.now()
@@ -328,14 +329,18 @@ class Inscription(models.Model):
                 of, nf = getattr(orig, f), getattr(self, f)
                 if of != nf:
                     of.delete(save=False)
+        # S'il s'agit d'une création, sauver pour obtenir un id
         else:
             super(Inscription, self).save(*args, **kwds)
 
-        # Crée le slug et termine
-        if not kwds.get('force_insert'):
-            cipher = AES.new(settings.SECRET_KEY[:16], AES.MODE_ECB)
-            self.slug = base64.b64encode(cipher.encrypt("{:0>16X}".format(self.pk)), b'_-')[:-2]
-            super(Inscription, self).save(*args, **kwds)
+        # Maintenant que nous sommes sûrs d'avoir une clef primaire définie,
+        # nous pouvons créer le slug
+        cipher = AES.new(settings.SECRET_KEY[:16], AES.MODE_ECB)
+        self.slug = base64.b64encode(cipher.encrypt("{:0>16X}".format(self.pk)), b'_-')[:-2]
+        # On sauvegarde, en forçant l'update
+        kwds['force_insert'] = False
+        kwds['force_update'] = True
+        super(Inscription, self).save(*args, **kwds)
         
     def send_mail(self):
         if self.email:
