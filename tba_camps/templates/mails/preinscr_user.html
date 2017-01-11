@@ -1,9 +1,19 @@
 <p>{% if obj.sexe == 'H' %}Cher{% else %}Chère{% endif %} {{ obj.prenom }} {{ obj.nom }},</p>
 
-<p>Merci de votre demande d'inscription. Pour suivre l'état de votre
-  demande, veuillez cliquer sur le bouton ci-dessous. <b>Tous les
-  détails de votre inscription sont sur votre bulletin d’inscription
-  TBA 2017 que vous devez télécharger et signer.</b></p>
+<p>Merci de votre demande d'inscription pour les semaines</p>
+
+<ul>
+{% for s in obj.semaines.iterator %}
+  <li>{{ s }}</li>
+{% endfor %}
+</ul>
+
+<p>aux conditions de la formule <b>{{ obj.formule }}</b>.</p>
+
+<p>Pour suivre l'état de votre demande, veuillez cliquer sur le bouton
+  ci-dessous. <b>Tous les détails de votre inscription sont sur votre
+  bulletin d’inscription TBA 2017 que vous devez télécharger et
+  signer.</b></p>
 
 <p style="text-align:centered">
   <a href="{{ obj.get_full_url }}" style="text-decoration:none;color:white;font-weight:bold">
