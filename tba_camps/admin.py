@@ -202,7 +202,7 @@ class InscriptionAdmin(ExportMixin, admin.ModelAdmin):
                                       link('fiche_sanit', 'sanitaire'))
         p += '<br><img src="%s">%s' % (yesno(obj.certificat_snail),
                                         link('certificat', 'certificat'))
-        if obj.hebergement and obj.hebergement.managed:
+        if obj.hebergement and obj.hebergement.managed == 'M':
             p += '<br><img src="%s">%s' % (yesno(obj.fiche_hotel_snail),
                                             link('fiche_hotel', 'hébergement'))
 
