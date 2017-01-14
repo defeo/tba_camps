@@ -192,7 +192,7 @@ class InscriptionAdmin(ExportMixin, admin.ModelAdmin):
         def link(field, str):
             f = getattr(obj, field)
             if f:
-                return '<a href="%s">%s</a>' % (f.url(), str)
+                return '<a href="%s">%s</a>' % (f.url, str)
             else:
                 return str
         

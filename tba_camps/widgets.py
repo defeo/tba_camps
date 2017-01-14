@@ -169,7 +169,7 @@ class FileInput(forms.widgets.FileInput):
     def render(self, name, value, attrs=None):
         s = {
             'input' : super(FileInput, self).render(name, value, attrs),
-            'url'   : value.url() or '',
+            'url'   : value.url or '',
             'text'  : value.name.split('/')[-1] or '',
         }
         return mark_safe(self.template % s)

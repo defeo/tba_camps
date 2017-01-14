@@ -135,6 +135,7 @@ CANCELED = 'A'
 import django.db.models.fields.files as files
 
 class FieldFile(files.FieldFile):
+    @property
     def url(self):
         if not self:
             return None
