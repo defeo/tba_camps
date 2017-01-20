@@ -24,8 +24,10 @@ informations pratiques sur le camp.</p>
   </a>
 </p>
 
+{% if not obj.formule.adulte %}
 <p>À ton arrivée TBA te donne un maillot réversible, un short et une
   gourde.</p>
+{% endif %}
 
 <table>
   <tr><td>Total du camp</td><td style="text-align:right;padding-left:1ex">{{ obj.prix }}€</td></tr>

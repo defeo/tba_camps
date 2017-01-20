@@ -30,15 +30,19 @@
 <p>Trouve tous les
   <a href="{{ settings.PIECES.renseignements_pdf }}">renseignements pratiques</a>
   sur le camp de SUPERDEVOLUY
-  <a href="{{ settings.PIECES.renseignements_pdf }}">ICI</a>. À ton
-    arrivée au camp nous t’offrons <strong>TROIS
-    CADEAUX :</strong></p>
+  <a href="{{ settings.PIECES.renseignements_pdf }}">ICI</a>.
+  {% if not object.formule.adulte %}
+  À ton  arrivée au camp nous t’offrons <strong>TROIS CADEAUX :</strong>
+  {% endif %}
+</p>
 
+{% if not object.formule.adulte %}
 <ul class="cadeaux">
 <li>Un maillot réversible,</li>
 <li>Un short,</li>
 <li>Une gourde.</li>
 </ul>
+{% endif %}
   
 <p>À la fin du stage nous t’offrons la photo souvenir de ton camp.</p>
 

@@ -297,8 +297,12 @@ class Inscription(models.Model):
 
     def complete(self):
         return self.etat == COMPLETE or (self.fiche_inscr_snail
-                                         and self.fiche_sanit_snail
-                                         and self.certificat_snail)
+                                         and (not self.hebergement
+                                              or not self.hebergement.managed == 'M'
+                                              or self.fiche_hotel_snail)
+                                         and (self.formule.adulte
+                                              or (self.fiche_sanit_snail
+                                                  and self.certificat_snail)))
 
     def save(self, *args, **kwds):
         # Capitalisations
