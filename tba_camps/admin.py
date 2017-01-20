@@ -144,7 +144,7 @@ class CanceledFilter(admin.SimpleListFilter):
 
 @admin.register(Inscription, site=site)
 class InscriptionAdmin(ExportMixin, admin.ModelAdmin):
-    list_display   = ('nom', 'prenom', 'sem_code', 'formule', 'prix', 'prix_hebergement', 'acompte', 'reste', 'parrain', 'pieces', 'etat', 'date')
+    list_display   = ('nom', 'prenom', 'sem_code', 'formule', 'prix', 'prix_hebergement', 'acompte', 'reste', 'parrain', 'pieces', 'etat', 'date', 'date_valid')
     list_display_links = ('nom', 'prenom')
     list_editable  = ('prix_hebergement', 'acompte', 'parrain', 'etat')
     list_filter    = ('date', CanceledFilter, 'semaines')
