@@ -56,3 +56,7 @@
 - [] payement CB. Morning?
 - [X] Ajouter relation Formule-Semaine-Places
 - [X] NOM prenom
+
+## Installation bugs
+
+- Py3.6/tablib issue: https://github.com/kennethreitz/tablib/issues/267

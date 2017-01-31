@@ -7,11 +7,11 @@ class ChoiceWidget(widgets.Widget):
     def __init__(self, choices):
         self.choices = dict(choices)
 
-    def render(self, value):
-         if value is None:
-             return ''
-         return self.choices.get(value)
-         
+    def render(self, value, obj=None):
+        if value is None:
+            return ''
+        return self.choices.get(value)
+
 class SemaineField(fields.Field):
     def __init__(self, semaine, *args, **kwds):
         super(SemaineField, self).__init__(*args, **kwds)

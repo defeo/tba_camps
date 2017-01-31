@@ -19,7 +19,9 @@ class BasicTests(TestCase):
         self.slug = inscr.slug.decode()
         inscr.semaines.add(Semaine.objects.get(pk=4))
         inscr.save()
-        User.objects.create_user('toto', 'toto@toto.to', 'toto')
+        u = User.objects.create_user('toto', 'toto@toto.to', 'toto')
+        u.is_staff = True
+        u.save()
         
     def test_static(self):
         import os
@@ -73,3 +75,10 @@ class BasicTests(TestCase):
         self.assertFalse(inscr.fiche_sanit_snail)
         self.assertEqual(inscr.etat, PREINSCRIPTION)
         assert Semaine.objects.get(pk=4) in inscr.semaines.all()
+
+    def test_export(self):
+        self.client.login(username='toto', password='toto')
+        response = self.client.post('/admin/tba_camps/inscription/export/',
+                                        data={ 'file_format': '1' })
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Content-Type'], "application/vnd.ms-excel")
