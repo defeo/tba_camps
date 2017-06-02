@@ -58,6 +58,13 @@ class InscriptionResource(resources.ModelResource):
             result = functools.partial(ChoiceWidget, choices=f.choices)
         return result
 
+    # Hack around bad xlsx export
+    def dehydrate_tel(self, inscr):
+        return " %s" % inscr.tel
+    
+    def dehydrate_cp(self, inscr):
+        return " %s" % inscr.cp
+    
     def dehydrate_prix(self, inscr):
         return inscr.prix()
 
