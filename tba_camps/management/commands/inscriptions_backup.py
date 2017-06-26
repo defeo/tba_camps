@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand, CommandError
 from django.core import serializers
-import tarfile
+import tarfile, io
 from datetime import datetime
 from tba_camps.models import Inscription, Semaine, Hebergement, Formule
 from django.conf import settings
@@ -32,9 +32,9 @@ class Command(BaseCommand):
             serializer.serialize(model.objects.all())
             tarinfo = tarfile.TarInfo('%s-%s.json' %
                                       (datetime.now().date(), model.__name__.lower()))
-            tarinfo.size = serializer.stream.len
-            serializer.stream.seek(0)
-            tar.addfile(tarinfo, serializer.stream)
+            data = serializer.stream.getvalue()
+            tarinfo.size = len(data)
+            tar.addfile(tarinfo, io.BytesIO(data.encode()))
         
         self.stdout.write('Saving models... ', ending='')
         with tarfile.open(opts['filename'], 'w:%s' % compression) as out:
