@@ -8,7 +8,7 @@
     <meta name="description" content="{% block description %}Le premier camp de basket de SUPERDEVOLUY a vu le jour en 1984, c'est le plus grand camp de Basket de France avec 8 terrains de basket. Sa renommé et sa réputation, il les doit aux milliers de stagiaires qui ont participé aux camps TBA  et parmi eux certains sont devenus des stars comme Aymeric JEANNEAU, Eric MICOUD, Laure SAVASTA… et le futur grand Edwin JACKSON{% endblock %}">    
     <link rel="stylesheet" type="text/css" href="{% static "css/styles.css" %}"  media="screen" />
     <link rel="stylesheet" type="text/css" href="{% static "css/print.css" %}" media="print" />
-    <link rel="stylesheet" href="http://yui.yahooapis.com/combo?pure/0.4.2/forms-min.css&pure/0.4.2/buttons-min.css">
+    <link rel="stylesheet" href="{% static "css/pure-forms+buttons.css" %}">
     {{ form.media.css }}
     {% block extrahead %}{% endblock %}
   </head>
