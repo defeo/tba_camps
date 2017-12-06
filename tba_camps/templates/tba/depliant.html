@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
-{% block title %} Le dépliant TBA 2015{% endblock %}
+{% block title %} Le dépliant TBA {{ settings.ANNEE }}{% endblock %}
 
-{% block description %} Télécharger le dépliant et le bulletin d'inscription des camps de basket TBA 2015 {% endblock %}
+{% block description %} Télécharger le dépliant et le bulletin d'inscription des camps de basket TBA {{ settings.ANNEE }} {% endblock %}
 
 
 {% block content %}
@@ -16,9 +16,9 @@
     
     
     
-    <img border="0" src="/tba/photo/depliant-2016-couverture.jpg" width="650" ></p>
+    <img border="0" src="/tba/photo/depliant-2017-couverture.jpg" width="650" ></p>
   <p align="center"><font color="#0000FF"><b><br>
-        Télécharger le</b></font> <a target="_blank" href="{{ settings.PIECES.TBA }}">  dépliant 2015</a>
+        Télécharger le</b></font> <a target="_blank" href="{{ settings.PIECES.TBA }}">  dépliant {{ settings.ANNEE }}</a>
   <p align="center">&nbsp;<b><font color="#0000FF">Télécharger renseignements pour la fiche d’inscription </font></b><a target="_blank" href="{{ settings.PIECES.inscription }}"> 
       ici.<br></a>
    On ne peux s’inscrire qu’en ligne dans la rubrique : INSCRIPTIONS

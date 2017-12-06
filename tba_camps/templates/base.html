@@ -44,17 +44,21 @@
             <li><a href="{% url 'pratique' %}">Dates, formules, prix et places disponibles</a></li>
 	    <li><a href="{% url 'inscription_form' %}">Inscriptions</a></li>
 	    <li><a href="{% url 'static_pages' 'arrivee-et-depart' %}">Vous êtes inscrit : Arrivée et départ</a></li>
+	    <li><a href="{% url 'static_pages' 'telechargements' %}">Les téléchargements </a></li>
 	    <li><a href="{% url 'inscription_reminder' %}">Chercher inscription</a></li>
 	    <li><a href="{% url 'static_pages' 'journee-type' %}">Une journée type</a></li>
+ 		<li><a href="{% url 'static_pages' 'projet-pedagogique' %}">Projet pédagogique</a></li>
+ 		<li><a href="{% url 'static_pages' 'projet-educatif' %}">Projet éducatif</a></li>
 	    <li><a href="{% url 'static_pages' 'location-parents' %}">Location Parents</a></li>
             <li><a href="{% url 'static_pages' 'special-club' %}">Spécial Club</a></li>
+            <li><a href="{% url 'static_pages' 'camp-special' %}">Camp spécial de 6 à 9 ans</a></li>
 	    <li><a href="{% url 'static_pages' 'infos-parents' %}">Infos Parents</a></li>
 	    <li><a href="{% url 'static_pages' 'depliant' %}">Le dépliant {{ settings.ANNEE }}</a></li>
 	    <li><a href="{% url 'static_pages' 'assurance-desistement' %}">Assurance désistement</a></li>
             <li><a href="{% url 'static_pages' 'cadre' %}">Les Cadres</a></li>
 	    <li><a href="{% url 'static_pages' 'partenaire' %}">Nos partenaires</a></li>
 	    <li><a href="{% url 'static_pages' 'photos' %}">Les photos</a></li>
-	    <li><a href="{% url 'static_pages' 'telechargements' %}">Les téléchargements </a></li>
+	    
             <li><a href="{% url 'static_pages' 'conseils-pratiques' %}">Conseils pratiques</a></li>
 	    <li><a href="{% url 'static_pages' 'boutique' %}">Boutique</a></li>
 	    <!--<li><a href="{% url 'static_pages' 'option-anglais' %}">Option Anglais en semaine N°1 et N°2</a></li>-->
@@ -99,14 +103,17 @@
     </div><!-- #wrapper -->
     <!-- Free template created by http://freehtml5templates.com -->
     {{ form.media.js }}
-    <script>
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+   
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
-      ga('create', 'UA-43373219-1', 'camps-basket.com');
-      ga('send', 'pageview');
-    </script>
+  ga('create', 'UA-91651427-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
   </body>
 </html>
