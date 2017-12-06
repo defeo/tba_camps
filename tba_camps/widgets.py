@@ -75,7 +75,7 @@ class FormuleWidget(forms.widgets.RadioSelect):
     renderer = FormuleRenderer
     
     class Media:
-        js = ('//code.jquery.com/jquery-1.11.0.min.js', 
+        js = ('//code.jquery.com/jquery-1.12.4.min.js', 
               'js/inscription.js')
 
     def id_for_label(self, _id):
@@ -116,7 +116,7 @@ class SemaineWidget(forms.widgets.CheckboxSelectMultiple):
     renderer = SemaineRenderer
 
     class Media:
-        js = ('//code.jquery.com/jquery-1.11.0.min.js', 
+        js = ('//code.jquery.com/jquery-1.12.4.min.js', 
               'js/inscription.js')
 
     def id_for_label(self, _id):
@@ -149,7 +149,7 @@ class FullModelField(forms.ModelChoiceField):
 class DatePicker(forms.widgets.DateInput):
     class Media:
         css = { 'all' : ('css/jquery-ui.min.css',) }
-        js = ('//code.jquery.com/jquery-1.11.0.min.js', 
+        js = ('//code.jquery.com/jquery-1.12.4.min.js', 
               'js/jquery-ui.min.js',
               'js/datepicker.js')
 
