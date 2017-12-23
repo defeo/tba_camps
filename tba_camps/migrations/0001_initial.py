@@ -90,8 +90,8 @@ class Migration(migrations.Migration):
                 ('fiche_hotel', tba_camps.models.FileField(upload_to=b'', null=True, verbose_name=b'R\xc3\xa9servation h\xc3\xa9bergement', blank=True)),
                 ('fiche_hotel_snail', models.BooleanField(default=False, verbose_name=b'R\xc3\xa9servation h\xc3\xa9bergement re\xc3\xa7ue')),
                 ('notes', models.TextField(default=b'', blank=True)),
-                ('formule', models.ForeignKey(to='tba_camps.Formule')),
-                ('hebergement', models.ForeignKey(blank=True, to='tba_camps.Hebergement', null=True)),
+                ('formule', models.ForeignKey(to='tba_camps.Formule', on_delete=models.PROTECT)),
+                ('hebergement', models.ForeignKey(blank=True, to='tba_camps.Hebergement', null=True, on_delete=models.SET_NULL)),
             ],
             options={
             },
@@ -102,7 +102,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('notif', models.BooleanField(default=True, verbose_name=b'Re\xc3\xa7oit une notification \xc3\xa0 chaque action des utilisateurs')),
-                ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL)),
+                ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
             options={
             },
