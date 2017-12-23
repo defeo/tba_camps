@@ -341,7 +341,7 @@ class Inscription(models.Model):
         # Maintenant que nous sommes sûrs d'avoir une clef primaire définie,
         # nous pouvons créer le slug
         cipher = AES.new(settings.SECRET_KEY[:16], AES.MODE_ECB)
-        self.slug = base64.b64encode(cipher.encrypt("{:0>16X}".format(self.pk)), b'_-')[:-2]
+        self.slug = base64.b64encode(cipher.encrypt("{:0>16X}".format(self.pk)), b'_-')[:-2].decode()
         # On sauvegarde, en forçant l'update
         kwds['force_insert'] = False
         kwds['force_update'] = True

@@ -16,7 +16,7 @@ class BasicTests(TestCase):
                                                tel='0123456789',
                                                naissance='2000-01-01',
                                                formule=Formule.objects.get(pk=1))
-        self.slug = inscr.slug.decode()
+        self.slug = inscr.slug
         inscr.semaines.add(Semaine.objects.get(pk=4))
         inscr.save()
         u = User.objects.create_user('toto', 'toto@toto.to', 'toto')
