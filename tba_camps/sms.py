@@ -70,5 +70,5 @@ def manifest(req):
         "orientation": "portrait"
     }, content_type="application/manifest+json");
 
-from django.conf.urls import url
-urls = [url('^$', select), url('^json$', sms), url('^login$', login), url('^manifest$', manifest)]
+from django.urls import path
+urls = [path('', select), path('json', sms), path('login', login), path('manifest', manifest)]

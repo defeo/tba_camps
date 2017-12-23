@@ -385,8 +385,8 @@ def delete_files(sender, instance, **kwargs):
             ff.delete(save=False)
 
 from django_downloadview import ObjectDownloadView
-from django.conf.urls import url
+from django.urls import path
 
 views = { f : ObjectDownloadView.as_view(model=Inscription, file_field=f)
             for f in upload_fields }
-urls = [ url(r'^uploads/%s' % f, v) for f, v in views.items() ]
+urls = [ path(r'uploads/%s' % f, v) for f, v in views.items() ]
