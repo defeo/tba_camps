@@ -50,6 +50,11 @@ class BasicTests(TestCase):
             'nums': ['0123456789']
         })
 
+
+    def test_form(self):
+        response = self.client.get('/tba/inscriptions.htm')
+        self.assertEqual(response.status_code, 200)
+        
     def test_inscr(self):
         response = self.client.post('/tba/inscriptions.htm', data={
             'nom' : 'nom', 'prenom' : 'prenom',
