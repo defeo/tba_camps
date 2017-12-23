@@ -26,17 +26,15 @@ class InscriptionForm(forms.ModelForm):
     error_css_class = 'error'
     required_css_class = 'required'
 
+    from django import forms
     semaines = my_widgets.SemainesField(
         help_text='Vous pouvez vous inscrire à plusieurs semaines avec la même formule. ' +
         'Pour vous inscrire avec plusieurs formules différentes, merci de remplir autant ' +
         "de bulletins d'inscription.")
     email2 = forms.EmailField(label='Répéter email',
                               widget=widgets.TextInput(attrs={'autocomplete' : 'off'}))
-    formule = my_widgets.FullModelField(queryset=Formule.objects.all(),
-                                        widget=my_widgets.FormuleWidget)
-    hebergement = my_widgets.FullModelField(queryset=Hebergement.objects.all(),
-                                            widget=my_widgets.HebergementWidget,
-                                            required=False)
+    formule = my_widgets.FormuleField()
+    hebergement = my_widgets.HebergementField(required=False)
     licencie = forms.ChoiceField(label='Licencié dans un club',
                                  widget=widgets.RadioSelect,
                                  choices=[('O','Oui'), ('N','Non')])

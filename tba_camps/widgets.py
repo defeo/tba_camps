@@ -6,143 +6,131 @@ from django.utils.safestring import mark_safe
 from django import forms
 from django.utils.encoding import force_text
 from .templatetags.decimal import strip_cents
-from .models import Semaine
+from .models import Hebergement, Semaine, Formule
 
-# Mixins and abstract classes for ChoiceInputs that hold a pointer
-# `choice_obj` to the model object.
+# The Formule-Semaine-Hebergement mess has a complicated logic and UI
+# We need custom fiedls and widgets that extract more custom
+# information from the mode.
+#
+# Django has no native system to do that, so we hack the "label" of
+# the various choice fields to hold more data than it is supposed to.
+#
+# This usually requires cooperation between the field and its widget
+# (only Hebergement is simpler), then uses the builtin django
+# templates.
 
-class FullModelMixin(object):
-    def __init__(self, name, value, attrs, choice, index):
-        self.choice_obj = choice[1]
-        super().__init__(name, value, attrs, choice, index)
-class FullModelRadioChoiceInput(FullModelMixin, forms.widgets.RadioChoiceInput):
-    pass
-class FullModelCheckboxChoiceInput(FullModelMixin, forms.widgets.CheckboxChoiceInput):
-    pass
+### Hebergement
 
-### Formule widget
+class HebergementField(forms.ModelChoiceField):
+    widget = forms.widgets.RadioSelect
 
-class FormuleChoiceInput(FullModelRadioChoiceInput):
-    def render(self):
-        if self.choice_obj.affiche_accompagnateur:
-            self.attrs['data-accompagnateur'] = '1'
-        if self.choice_obj.affiche_train:
-            self.attrs['data-train'] = '1'
-        if self.choice_obj.affiche_chambre:
-            self.attrs['data-chambre'] = '1'
-        if self.choice_obj.affiche_navette:
-            self.attrs['data-navette'] = '1'
-        if self.choice_obj.affiche_assurance:
-            self.attrs['data-assurance'] = '1'
-        if self.choice_obj.affiche_mode:
-            self.attrs['data-mode'] = '1'
-        self.attrs['data-hebergements'] = ','.join(str(h.pk) for h in self.choice_obj.hebergements.iterator())
-        for field, (val, _, _) in self.choice_obj.costs().items():
-            self.attrs['data-%s' % field.name] = val
-        return format_html('''<label>{input} {nom}
-<span class="prix">{prix}</span>
-<span class="description">{description}</span></label>''',
-                           input=self.tag(),
-                           nom=force_text(self.choice_obj.nom),
-                           prix=format_html('({}€)', strip_cents(self.choice_obj.prix)) * self.choice_obj.publique,
-                           description=force_text(self.choice_obj.description))
+    def __init__(self, *args, **kwds):
+        super().__init__(queryset=Hebergement.objects.all(), *args, **kwds)
+        self.empty_label = None
 
-class FormuleRenderer(forms.widgets.ChoiceFieldRenderer):
-    choice_input_class = FormuleChoiceInput
+    def label_from_instance(self, obj):
+        return format_html('''{nom} {commentaire}''',
+                               nom=force_text(obj.nom),
+                               commentaire=obj.md_commentaire())
 
-    def render(self):
-        id_ = self.attrs.get('id', None)
-        start_tag = format_html('<ul id="{0}">', id_) if id_ else '<ul>'
-        output = [start_tag]
-        prev_group = ''
-        for i, choice in enumerate(self.choices):
-            group = choice[1].groupe
-            if group:
-                if prev_group:
-                    output.append('</ul></li>')
-                prev_group = group
-                output.append(format_html('<li><div class="group">{0}</div><ul>', group))
-            w = self.choice_input_class(self.name, self.value,
-                                        self.attrs.copy(), choice, i)
-            output.append(format_html('<li>{0}</li>', force_text(w)))
-        if prev_group:
-            output.append('</ul>')
-        output.append('</ul>')
-        return mark_safe('\n'.join(output))
+### Semaines
 
+class SemainesWidget(forms.widgets.CheckboxSelectMultiple):
+    class Media:
+        js = ('//code.jquery.com/jquery-1.12.4.min.js', 
+              'js/inscription.js')
 
-class FormuleWidget(forms.widgets.RadioSelect):
-    renderer = FormuleRenderer
+    def create_option(self, *args, **kwds):
+        opt = super().create_option(*args, **kwds)
+        opt['attrs']['data-complet'] = opt['label']['complet']
+        opt['label'] = opt['label']['label']
+        return opt
     
-    class Media:
-        js = ('//code.jquery.com/jquery-1.12.4.min.js', 
-              'js/inscription.js')
-
-    def id_for_label(self, _id):
-        return None
-
-
-### Hebergement widget
-
-class HebergementChoiceInput(FullModelRadioChoiceInput):
-    def render(self):
-        return format_html('''<label>{input} {nom} {commentaire}</label>''',
-                           input=self.tag(),
-                           nom=force_text(self.choice_obj.nom),
-                           commentaire=self.choice_obj.md_commentaire())
-
-class HebergementRenderer(forms.widgets.ChoiceFieldRenderer):
-    choice_input_class = HebergementChoiceInput
-
-class HebergementWidget(forms.widgets.RadioSelect):
-    renderer = HebergementRenderer
-
-    def id_for_label(self, _id):
-        return None
-
-
-### Semaines widget
-
-class SemaineChoiceInput(FullModelCheckboxChoiceInput):
-    def render(self):
-        self.attrs['data-complet'] = ','.join(str(h.pk)
-                                                  for h in self.choice_obj.complet.iterator())
-        return super().render()
-
-class SemaineRenderer(forms.widgets.ChoiceFieldRenderer):
-    choice_input_class = SemaineChoiceInput
-
-class SemaineWidget(forms.widgets.CheckboxSelectMultiple):
-    renderer = SemaineRenderer
-
-    class Media:
-        js = ('//code.jquery.com/jquery-1.12.4.min.js', 
-              'js/inscription.js')
-
-    def id_for_label(self, _id):
-        return None
-
-### Fields carrying a pointer to their model object
-
 class SemainesField(forms.ModelMultipleChoiceField):
-    widget = SemaineWidget
+    widget = SemainesWidget
 
     def __init__(self, *args, **kwds):
         super().__init__(queryset=Semaine.objects.open(), *args, **kwds)
 
     def label_from_instance(self, obj):
-        return obj
+        return {
+            'label': str(obj),
+            'complet': ','.join(str(h.pk) for h in obj.complet.iterator())
+            }
 
-class FullModelField(forms.ModelChoiceField):
-    widget = None
+### Formules
 
+class FormuleWidget(forms.widgets.RadioSelect):
+    class Media:
+        js = ('//code.jquery.com/jquery-1.12.4.min.js', 
+              'js/inscription.js')
+            
+    def create_option(self, *args, **kwds):
+        opt = super().create_option(*args, **kwds)
+        opt['attrs'].update(opt['label']['attrs'])
+        opt['label'] = opt['label']['label']
+        return opt
+    
+class FormuleField(forms.ModelChoiceField):
+    widget = FormuleWidget
+    
     def __init__(self, *args, **kwds):
-        super(FullModelField, self).__init__(*args, **kwds)
+        super().__init__(queryset=Formule.objects.all(), *args, **kwds)
         self.empty_label = None
+        self.iterator = self
 
+    # Too lazy to implement a separate iterator class
+    def __call__(self, *args):
+        return self
+
+    def __len__(self):
+        return len(self.queryset)
+
+    # Transform a list of choices in a list of grouped choices
+    def __iter__(self):
+        subgroup = []
+        prev_group = ''
+        header = lambda g: format_html('<div class="group">{g}</div>', g=g)
+        for i, choice in enumerate(self.queryset.all()):
+            group = choice.groupe
+            if group:
+                if subgroup:
+                    yield (header(prev_group), subgroup)
+                subgroup = []
+                prev_group = group
+            subgroup.append((
+                self.prepare_value(choice),
+                self.label_from_instance(choice)
+                ))
+        if subgroup:
+            yield (header(prev_group), subgroup)
+    
     def label_from_instance(self, obj):
-        return obj
+        attrs = {}
+        if obj.affiche_accompagnateur:
+            attrs['data-accompagnateur'] = '1'
+        if obj.affiche_train:
+            attrs['data-train'] = '1'
+        if obj.affiche_chambre:
+            attrs['data-chambre'] = '1'
+        if obj.affiche_navette:
+            attrs['data-navette'] = '1'
+        if obj.affiche_assurance:
+            attrs['data-assurance'] = '1'
+        if obj.affiche_mode:
+            attrs['data-mode'] = '1'
+        attrs['data-hebergements'] = ','.join(str(h.pk) for h in obj.hebergements.iterator())
+        for field, (val, _, _) in obj.costs().items():
+            attrs['data-%s' % field.name] = val
 
+        return {
+            'label': format_html(
+    '''{nom} <span class="prix">{prix}</span> <span class="description">{description}</span>''',
+                nom=force_text(obj.nom),
+                prix=format_html('({}€)', strip_cents(obj.prix)) * obj.publique,
+                description=force_text(obj.description)),
+            'attrs': attrs,
+            }
 
 ### Date Picker
 
