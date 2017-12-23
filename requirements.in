@@ -1,4 +1,4 @@
-django>=1.8
+django>=2.0
 
 # Dependencies
 django-ordered-model
