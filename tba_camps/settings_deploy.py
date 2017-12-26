@@ -7,7 +7,8 @@ import dj_database_url
 DEBUG = False
 HOST_NAME = os.environ.get('HOST_NAME') or 'localhost'
 ALLOWED_HOSTS = [ HOST_NAME ]
-HOST = 'http://%s' % HOST_NAME
+HOST = 'https://%s' % HOST_NAME
+SESSION_COOKIE_SECURE = True
 
 if 'DATABASE_URL' in os.environ:
     DATABASES['default'] =  dj_database_url.config()

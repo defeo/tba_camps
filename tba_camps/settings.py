@@ -128,7 +128,7 @@ ANNEE = datetime.datetime.now().year
 ADRESSE = mark_safe("Laure SENEGAL — Camps TBA — 11 rue du verger<br>21200 Sainte Marie La Blanche")
 MAX_FILE_SIZE = 1
 FROM_EMAIL = 'Camps de basket TBA <tba@camps-basket.com>'
-HOST = 'http://www.camps-basket.com'
+HOST = 'https://www.camps-basket.com'
 USE_CAPTCHA = False
 
 
