@@ -2,9 +2,9 @@
 
 from django.contrib import admin
 from ordered_model.admin import OrderedModelAdmin
-from .models import Manager, Semaine, Formule, Hebergement, Inscription, CANCELED
+from .models import Manager, Semaine, Formule, Hebergement, Dossier, Stagiaire, CANCELED
 from import_export.admin import ExportMixin
-from .resources import InscriptionResource
+#from .resources import InscriptionResource
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User, Group
 from django.shortcuts import redirect
@@ -142,82 +142,86 @@ class CanceledFilter(admin.SimpleListFilter):
         else:
             return queryset.exclude(etat=CANCELED)
 
-@admin.register(Inscription, site=site)
-class InscriptionAdmin(ExportMixin, admin.ModelAdmin):
-    list_display   = ('nom', 'prenom', 'sem_code', 'formule', 'prix', 'prix_hebergement', 'acompte', 'reste', 'parrain', 'pieces', 'etat', 'date', 'date_valid')
-    list_display_links = ('nom', 'prenom')
-    list_editable  = ('prix_hebergement', 'acompte', 'parrain', 'etat')
-    list_filter    = ('date', CanceledFilter, 'semaines')
-    search_fields  = ('nom', 'prenom', 'email')
-    readonly_fields = ('age', 'prix', 'prix_formule', 'reste')
-    save_on_top = True
-    fields  = (
-        ('etat', 'venu', 'date_valid'),
-        ('nom', 'prenom'),
-        ('mode_solde', 'type_chambre', 'num_chambre'),
-        ('age', 'naissance'),
-        ('semaines', 'sexe', 'taille'),
-        ('formule', 'prix_formule'),
-        ('assurance'),
-        ('remise', 'motif_rem'),
-        ('supplement', 'motif'),
-        ('train'),
-        ('navette_a', 'navette_r'),
-        ('prix', 'acompte', 'mode', 'reste'),
-        ('hebergement', 'prix_hebergement'),
-        ('chambre', 'accompagnateur'),
-        ('email', 'tel'),
-        ('adresse', 'cp', 'ville', 'pays'),
-        ('lieu'),
-        ('parrain', 'nom_parrain', 'adr_parrain'),
-        ('fiche_inscr', 'fiche_inscr_snail'),
-        ('fiche_sanit', 'fiche_sanit_snail'),
-        ('licence', 'club', 'certificat', 'certificat_snail'),
-        ('fiche_hotel', 'fiche_hotel_snail'),
-        ('notes', 'caf'),
-     )
-    formfield_overrides = {
-        models.TextField: {'widget': widgets.Textarea(attrs={'rows' : 3})},
-        models.DecimalField: {'widget': widgets.NumberInput(attrs={'style' : 'width: 6em'})},
-    }
-    resource_class = InscriptionResource
+@admin.register(Dossier, site=site)
+class DossierAdmin(admin.ModelAdmin):
+    pass
 
-    def sem_code(self, obj):
-        return ', '.join('S%d' % s.ord() for s in obj.semaines.iterator())
-    sem_code.short_description = 'Semaines'
-    
-    def pieces(self, obj):
-        def yesno(val):
-            return static('admin/img/icon-%s.svg' % ('yes' if val else 'no'))
-        def link(field, str):
-            f = getattr(obj, field)
-            if f:
-                return '<a href="%s">%s</a>' % (f.url, str)
-            else:
-                return str
+@admin.register(Stagiaire, site=site)
+class StagiaireAdmin(admin.ModelAdmin):
+    pass
+
+# @admin.register(Inscription, site=site)
+# class InscriptionAdmin(ExportMixin, admin.ModelAdmin):
+#     list_display   = ('nom', 'prenom', 'sem_code', 'formule', 'prix', 'prix_hebergement', 'acompte', 'reste', 'parrain', 'pieces', 'etat', 'date', 'date_valid')
+#     list_display_links = ('nom', 'prenom')
+#     list_editable  = ('prix_hebergement', 'acompte', 'parrain', 'etat')
+#     list_filter    = ('date', CanceledFilter, 'semaines')
+#     search_fields  = ('nom', 'prenom', 'email')
+#     readonly_fields = ('age', 'prix', 'prix_formule', 'reste')
+#     save_on_top = True
+#     fields  = (
+#         ('etat', 'venu', 'date_valid'),
+#         ('nom', 'prenom'),
+#         ('mode_solde', 'type_chambre', 'num_chambre'),
+#         ('age', 'naissance'),
+#         ('semaines', 'sexe', 'taille'),
+#         ('formule', 'prix_formule'),
+#         ('assurance'),
+#         ('remise', 'motif_rem'),
+#         ('supplement', 'motif'),
+#         ('train'),
+#         ('navette_a', 'navette_r'),
+#         ('prix', 'acompte', 'mode', 'reste'),
+#         ('hebergement', 'prix_hebergement'),
+#         ('chambre', 'accompagnateur'),
+#         ('email', 'tel'),
+#         ('adresse', 'cp', 'ville', 'pays'),
+#         ('lieu'),
+#         ('parrain', 'nom_parrain', 'adr_parrain'),
+#         ('fiche_inscr', 'fiche_inscr_snail'),
+#         ('fiche_sanit', 'fiche_sanit_snail'),
+#         ('licence', 'club', 'certificat', 'certificat_snail'),
+#         ('fiche_hotel', 'fiche_hotel_snail'),
+#         ('notes', 'caf'),
+#      )
+#     formfield_overrides = {
+#         models.TextField: {'widget': widgets.Textarea(attrs={'rows' : 3})},
+#         models.DecimalField: {'widget': widgets.NumberInput(attrs={'style' : 'width: 6em'})},
+#     }
+#     resource_class = InscriptionResource
+
+#     def pieces(self, obj):
+#         def yesno(val):
+#             return static('admin/img/icon-%s.svg' % ('yes' if val else 'no'))
+#         def link(field, str):
+#             f = getattr(obj, field)
+#             if f:
+#                 return '<a href="%s">%s</a>' % (f.url, str)
+#             else:
+#                 return str
         
-        p = '<img src="%s">%s' % (yesno(obj.fiche_inscr_snail),
-                                   link('fiche_inscr', 'inscription'))
-        p += '<br><img src="%s">%s' % (yesno(obj.fiche_sanit_snail),
-                                      link('fiche_sanit', 'sanitaire'))
-        p += '<br><img src="%s">%s' % (yesno(obj.certificat_snail),
-                                        link('certificat', 'certificat'))
-        if obj.hebergement and obj.hebergement.managed == 'M':
-            p += '<br><img src="%s">%s' % (yesno(obj.fiche_hotel_snail),
-                                            link('fiche_hotel', 'hébergement'))
+#         p = '<img src="%s">%s' % (yesno(obj.fiche_inscr_snail),
+#                                    link('fiche_inscr', 'inscription'))
+#         p += '<br><img src="%s">%s' % (yesno(obj.fiche_sanit_snail),
+#                                       link('fiche_sanit', 'sanitaire'))
+#         p += '<br><img src="%s">%s' % (yesno(obj.certificat_snail),
+#                                         link('certificat', 'certificat'))
+#         if obj.hebergement and obj.hebergement.managed == 'M':
+#             p += '<br><img src="%s">%s' % (yesno(obj.fiche_hotel_snail),
+#                                             link('fiche_hotel', 'hébergement'))
 
-        return mark_safe(p)
-    pieces.short_description = 'Pièces'
+#         return mark_safe(p)
+#     pieces.short_description = 'Pièces'
     
-    def get_urls(self):
-        urls = super(InscriptionAdmin, self).get_urls()
-        my_url = url(r'^([0-9]+)/send_mail$',  
-                     self.admin_site.admin_view(self.send_mail), 
-                     name='tba_camps_inscription_send_mail')
-        return [my_url] + urls 
+#     def get_urls(self):
+#         urls = super(InscriptionAdmin, self).get_urls()
+#         my_url = url(r'^([0-9]+)/send_mail$',  
+#                      self.admin_site.admin_view(self.send_mail), 
+#                      name='tba_camps_inscription_send_mail')
+#         return [my_url] + urls 
 
-    def send_mail(self, request, obj_id):
-        obj = Inscription.objects.get(pk=obj_id)
-        obj.send_mail()
-        messages.info(request, "Email envoyé à <%s>." %obj.email )
-        return redirect('./')
+#     def send_mail(self, request, obj_id):
+#         obj = Inscription.objects.get(pk=obj_id)
+#         obj.send_mail()
+#         messages.info(request, "Email envoyé à <%s>." %obj.email )
+#         return redirect('./')

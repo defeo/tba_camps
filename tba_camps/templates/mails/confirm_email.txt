@@ -1,0 +1,8 @@
+Veuillez confirmer votre email en suivant ce lien:
+
+{{ obj.get_full_url }}
+
+Sportivement,
+
+--
+Team Basket Association

@@ -6,8 +6,8 @@ register = template.Library()
 @register.filter
 def cgroup(field):
     label = field.label
-    if field.field.required:
-        label += '*'
+#    if field.field.required:
+#        label += '*'
     if field.help_text:
         label += '<br><small>(%s)</small>' % field.help_text
     return mark_safe('<div class="pure-control-group %s">%s%s%s</div>'

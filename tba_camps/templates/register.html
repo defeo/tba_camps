@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}S'inscrire aux camps de Basket TBA{% endblock %}
+
+{% block description %}Inscription en ligne aux camps de Basket
+TBA. La réservation est définitive dès réception par TBA du chèque
+d'acompte.{% endblock %}
+
+{% block content %}
+
+<h2>Inscriptions TBA {{ settings.ANNEE }} : accédez à votre compte</h2>
+
+<p><big>Renseignez votre email, nous allons vous envoyer un lien pour
+    vous connecter.</big></p>
+
+<form action="" method="post" class="pure-form pure-form-aligned">
+  {% csrf_token %}
+  <label>Votre email: {{ form.email }}</label>
+  <button type="submit" class="pure-button pure-button-primary">Envoyer</button>
+</form>
+
+{% if form.errors %}
+<ul class="messages">
+  <li class="error">L'adresse email n'est pas valide</li>
+</ul>
+{% endif %}
+
+{% if messages %}
+<div class="messages">
+  {% for message in messages %}
+  <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+  {% endfor %}
+
+  <p><strong>Veuillez contrôler votre boîte email.</strong></p>
+  
+  <p>Si vous n'avez rien reçu, veuillez attendre quelques minutes et
+    vérifier dans votre boîte à
+    SPAM. Ajoutez <a href="mailto:{{settings.FROM_EMAIL}}">{{settings.FROM_EMAIL}}</a>
+    à votre carnet d'adresses pour être sûr de toujours reçevoir nos
+    emails.</p>
+</div>
+
+{% endif %}
+
+{% endblock %}
+

@@ -1,6 +1,6 @@
 # -:- encoding: utf-8
 
-from .models import Inscription, Formule, Semaine
+from .models import Stagiaire, Formule, Semaine
 #import widgets as my_widgets
 from django import forms
 from django.forms import widgets
@@ -27,7 +27,7 @@ def sms(req):
     if form.is_valid():
         s = form.cleaned_data['semaines']
         f = form.cleaned_data['formules']
-        inscr = Inscription.objects.filter(semaines=s, formule__in=f)
+        inscr = Stagiaire.objects.filter(semaines=s, formule__in=f)
         nums = list(set(str(i.tel).translate(str.maketrans('', '', '- .')) for i in inscr))
         return JsonResponse({'nums': nums, 'semaine': s.ord(), 'formules': [x.nom for x in f]})
 

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Inscriptions TBA {{ settings.ANNEE }}</h1>
+
+<div id="user">Bonjour,
+  <a href="{% url 'dossier_view' %}">
+    <strong>{% if dossier.prenom and dossier.nom %}{{ dossier.prenom }}
+      {{ dossier.nom }}{% else %}{{ dossier.email }}{% endif %}</strong>
+  </a>
+  <small>(<a href="{% url 'dossier_logout' %}" title="Se connecter avec une autre adresse">ce n'est pas vous ?</a>)</small>
+</div>
+
+{% block dossier_content %}{% endblock %}
+
+{% endblock %}
+

@@ -1,0 +1,30 @@
+{% extends "dossier_base.html" %}
+{% load static %}
+{% load forms %}
+
+{% block title %}Effacer stagiaire{% endblock %}
+
+{% block dossier_content %}
+
+<h2>Effacer fiche stagiaire</h2>
+  
+<p>
+  <strong>{{ object.prenom }} {{ object.nom }}</strong> est
+  inscrit{% if object.sexe == 'F' %}e{% endif %}
+  en formule <strong>{{ object.formule }}</strong> pour les semaines :</p>
+<ul>
+  {% for s in object.semaines.all %}
+  <li>{{ s }}{% if forloop.last %}.{% else %},{% endif %}</li>
+  {% endfor %}
+</ul>
+<p>Êtes-vous
+  sûr{% if dossier.titre == 'F' %}e{% elif dossier.titre is None %}.e{% endif %}
+  de voloir effacer son inscription ?</p>
+  
+<form action="" method="post" class="pure-form pure-form-aligned">
+  {% csrf_token %}
+  <button type="submit" class="pure-button pure-button-primary">Effacer</button>
+  <a href="{% url 'dossier_view' %}" class="pure-button">Annuler</a>
+</form>
+
+{% endblock %}

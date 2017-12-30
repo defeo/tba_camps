@@ -22,7 +22,7 @@ SECRET_KEY = '$8!01^omw4lywz^(7-&wl2bsem20alqkbs_^^&gg45foktztsc'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '10.0.2.2']
 
 
 # Application definition
@@ -130,6 +130,9 @@ MAX_FILE_SIZE = 1
 FROM_EMAIL = 'Camps de basket TBA <tba@camps-basket.com>'
 HOST = 'https://www.camps-basket.com'
 USE_CAPTCHA = False
+
+## Sessions
+SESSION_COOKIE_AGE = 3600*24*90
 
 
 # Pieces PDF, Word, etc.

@@ -42,10 +42,9 @@
 	  <ul>
 	    <li><a href="{% url 'static_pages' 'presentation' %}">Les nouvelles avant de s’inscrire</a></li>
             <li><a href="{% url 'pratique' %}">Dates, formules, prix et places disponibles</a></li>
-	    <li><a href="{% url 'inscription_form' %}">Inscriptions</a></li>
+	    <li><a href="{% url 'register_form' %}">Inscriptions</a></li>
 	    <li><a href="{% url 'static_pages' 'arrivee-et-depart' %}">Vous êtes inscrit : Arrivée et départ</a></li>
 	    <li><a href="{% url 'static_pages' 'telechargements' %}">Les téléchargements </a></li>
-	    <li><a href="{% url 'inscription_reminder' %}">Chercher inscription</a></li>
 	    <li><a href="{% url 'static_pages' 'journee-type' %}">Une journée type</a></li>
  		<li><a href="{% url 'static_pages' 'projet-pedagogique' %}">Projet pédagogique</a></li>
  		<li><a href="{% url 'static_pages' 'projet-educatif' %}">Projet éducatif</a></li>
@@ -83,7 +82,7 @@
 	    <aside class="footer-segment">
 	      <h4>Liens</h4>
 	      <ul>
-		<li><a href="{% url 'inscription_form' %}">S'inscrire à un camps de Basket TBA</a></li>
+		<li><a href="{% url 'register_form' %}">S'inscrire à un camps de Basket TBA</a></li>
 		<li><a href="{% url 'static_pages' 'depliant' %}">Télécharger le dépliant {{ settings.ANNEE }} de TBA</a></li>
 		<li><a href="{% url 'static_pages' 'photos' %}">Des images et des vidéos de TBA</a></li>
 	      </ul>
