@@ -78,10 +78,10 @@ USE_L10N = True
 
 USE_TZ = True
 
+import locale
 try:
-    import locale
     locale.setlocale(locale.LC_TIME, "fr_FR.utf8")
-except Error:
+except locale.Error:
     # TODO: log something
     pass
 
