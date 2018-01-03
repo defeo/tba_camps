@@ -42,8 +42,14 @@ class SemainesWidget(forms.widgets.CheckboxSelectMultiple):
 
     def create_option(self, *args, **kwds):
         opt = super().create_option(*args, **kwds)
-        opt['attrs']['data-complet'] = opt['label']['complet']
-        opt['label'] = opt['label']['label']
+        if opt['label']['off']:
+            opt['attrs']['disabled'] = True
+            hidden = '<input type="hidden" name="{}" value="{}">'.format(opt['name'], opt['value'])
+        else:
+            hidden = ''
+        opt['attrs']['data-formule_complet'] = opt['label']['formule_complet']
+        opt['attrs']['data-hbgt_complet'] = opt['label']['hbgt_complet']
+        opt['label'] = mark_safe(hidden + opt['label']['label'])
         return opt
     
 class SemainesField(forms.ModelMultipleChoiceField):
@@ -51,11 +57,17 @@ class SemainesField(forms.ModelMultipleChoiceField):
 
     def __init__(self, *args, **kwds):
         super().__init__(queryset=Semaine.objects.open(), *args, **kwds)
+        self._off = set()
 
+    def off(self, val):
+        self._off.add(val)
+    
     def label_from_instance(self, obj):
         return {
             'label': str(obj),
-            'complet': ','.join(str(h.pk) for h in obj.complet.iterator())
+            'off': obj.pk in self._off,
+            'formule_complet': ','.join(str(h.pk) for h in obj.formule_complet.iterator()),
+            'hbgt_complet': ','.join(str(h.pk) for h in obj.hbgt_complet.iterator()),
             }
 
 ### Formules
@@ -119,7 +131,6 @@ class FormuleField(forms.ModelChoiceField):
             attrs['data-assurance'] = '1'
         if obj.affiche_mode:
             attrs['data-mode'] = '1'
-        attrs['data-hebergements'] = ','.join(str(h.pk) for h in obj.hebergements.iterator())
         for field, (val, _, _) in obj.costs().items():
             attrs['data-%s' % field.name] = val
 
@@ -152,12 +163,35 @@ class DatePicker(forms.widgets.DateInput):
 ### Files
 
 class FileInput(forms.widgets.FileInput):
-    template = '%(input)s <a href="%(url)s">%(text)s</a>'
+    class Media:
+        js = ('//code.jquery.com/jquery-1.12.4.min.js', 
+              'js/uploads.js')
+            
+    template = '''
+<span class="fileinput {klass}">
+  <label>
+    {input}
+    <span class="pure-button" title="{command} fichier">{command}…</span>
+  </label>
+  <span class="filename">
+    <span class="uploading">{msg}</span>
+    <a href="{url}" target="_blank" title="télécharger {text}">{text_s}</a>
+  </span>
+</span>
+'''
 
     def render(self, name, value, attrs=None):
-        s = {
-            'input' : super(FileInput, self).render(name, value, attrs),
-            'url'   : value.url or '',
-            'text'  : value.name.split('/')[-1] or '',
-        }
-        return mark_safe(self.template % s)
+        t = value.name and value.name.split('/')[-1] or ''
+        trunc = lambda x,l: x[:l] + '…' * (len(x) > l)
+        attrs = attrs or {}
+        attrs['style'] = 'display:none'
+        return format_html(self.template,
+            klass   = bool(value.name) * 'has-file',
+            command = 'Changer' if value.name else 'Choisir',
+            input   = super(FileInput, self).render(name, value, attrs),
+            msg     = 'Pas de fichier sélectionné' * (not value.name),
+            url     = value.url or '',
+            text    = t,
+            text_s  = t and trunc(t, 30),
+        )
+

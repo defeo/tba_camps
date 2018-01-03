@@ -35,7 +35,9 @@
   </fieldset>
 
   <button type="submit" class="pure-button pure-button-primary">Mettre à jour</button>
+  {% if object.etat != '0' %}
   <a href="{% url 'dossier_view' %}" class="pure-button">Annuler</a>
+  {% endif %}
 </form>
 
 {% endblock %}

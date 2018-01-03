@@ -15,6 +15,7 @@ from django.template.loader import render_to_string
 from django.template import Context, Template
 from markdown import markdown
 from django.utils.safestring import mark_safe
+from django.utils.functional import cached_property
 from decimal import Decimal
 
 class Manager(models.Model):
@@ -31,30 +32,79 @@ class SemaineQuerySet(models.QuerySet):
         return self.filter(fermer=False).filter(models.Q(stagiaire__isnull=True)
                                                 | ~models.Q(stagiaire__dossier__etat=CANCELED)).annotate(models.Count('stagiaire')).filter(stagiaire__count__lt=models.F('places'))
 
-INCLUDED='I'
+    def debut(self):
+        return self.aggregate(models.Min('debut'))['debut__min']
+
+    def predebut(self):
+        return self.debut() + datetime.timedelta(-1)
+    
+    def fin(self):
+        return self.aggregate(models.Max('debut'))['debut__max'] + datetime.timedelta(6)
+    
 MANAGED='M'
 EXTERNAL='E'
 
 class Hebergement(OrderedModel):
     nom = models.CharField(max_length=255)
     commentaire = models.TextField("Commentaire affiché à l'inscription", blank=True)
-    managed = models.CharField("Mode réservation", max_length=1, default=INCLUDED, choices=[
-        (INCLUDED, 'Géré par TBA'),
-        (MANAGED, 'Géré par TBA, payement séparé'),
+    managed = models.CharField("Mode réservation", max_length=1, default=MANAGED, choices=[
+        (MANAGED, 'Géré par TBA'),
         (EXTERNAL, 'Réservé par le client')])
 
+    class Meta:
+        verbose_name = 'Hébergement'
+    
     def __str__(self):
         return self.nom
 
     def md_commentaire(self):
         return mark_safe(markdown(Template(self.commentaire).render(Context(settings.PIECES))))
 
+class Formule(OrderedModel):
+    groupe = models.CharField(max_length=255, blank=True, default='')
+    nom = models.CharField(max_length=255)
+    description = models.TextField()
+    prix = models.DecimalField('Prix formule', max_digits=10, decimal_places=2)
+    taxe = models.DecimalField('Taxe ménage', default=0, max_digits=10, decimal_places=2)
+    taxe_gym = models.DecimalField('Taxe gymnase', default=0, max_digits=10, decimal_places=2)
+    cotisation = models.DecimalField('Cotisation TBA', default=15, max_digits=10, decimal_places=2)
+    has_hebergement = models.BooleanField("Résa Hébergement", default=False)
+    affiche_train = models.BooleanField("Opt. train", default=False)
+    affiche_chambre = models.BooleanField("Opt. 'chambre avec'",
+                                          default=False)
+    affiche_navette = models.BooleanField("Opt. navette",
+                                          default=True)
+    affiche_assurance = models.BooleanField("Opt. assurance",
+                                            default=True)
+    affiche_mode = models.BooleanField("Opt. mode réglément",
+                                       default=True)
+    affiche_accompagnateur = models.BooleanField("Opt. accompagnateur",
+                                                 default=False)
+    publique = models.BooleanField("Tout publique", default=True)
+    adulte = models.BooleanField("Adulte", default=False)
+
+    class Meta(OrderedModel.Meta):
+        pass
+
+    def __str__(self):
+        return self.nom
+
+    def costs(self):
+        return {
+            Formule._meta.get_field('prix')       : (self.prix, True, 2),
+            Formule._meta.get_field('taxe_gym')   : (self.taxe_gym, True, 2),
+            Formule._meta.get_field('taxe')       : (self.taxe, False, 1),
+            Formule._meta.get_field('cotisation') : (self.cotisation, False, 1)
+            }
+
 class Semaine(models.Model):
     debut = models.DateField('Début de la semaine', unique=True)
     commentaire = models.CharField('Commentaire affiché', max_length=255, blank=True)
     places = models.IntegerField('Nombre de places', default=0)
     fermer = models.BooleanField('Inscriptions fermées', default=False)
-    complet = models.ManyToManyField(Hebergement)
+    hbgt_complet = models.ManyToManyField(Hebergement)
+    formule_complet = models.ManyToManyField(Formule)
+    formule_complet.short_description = 'Formules complètes'
 
     objects = SemaineQuerySet.as_manager()
     
@@ -88,43 +138,6 @@ class Semaine(models.Model):
         return (self.places
                 - self.stagiaire_set.exclude(dossier__etat=CANCELED).count())
 
-class Formule(OrderedModel):
-    groupe = models.CharField(max_length=255, blank=True, default='')
-    nom = models.CharField(max_length=255)
-    description = models.TextField()
-    prix = models.DecimalField('Prix formule', max_digits=10, decimal_places=2)
-    taxe = models.DecimalField('Taxe ménage', default=0, max_digits=10, decimal_places=2)
-    taxe_gym = models.DecimalField('Taxe gymnase', default=0, max_digits=10, decimal_places=2)
-    cotisation = models.DecimalField('Cotisation TBA', default=15, max_digits=10, decimal_places=2)
-    hebergements = models.ManyToManyField(Hebergement, blank=True)
-    affiche_train = models.BooleanField("Opt. train", default=False)
-    affiche_chambre = models.BooleanField("Opt. 'chambre avec'",
-                                          default=False)
-    affiche_navette = models.BooleanField("Opt. navette",
-                                          default=True)
-    affiche_assurance = models.BooleanField("Opt. assurance",
-                                            default=True)
-    affiche_mode = models.BooleanField("Opt. mode réglément",
-                                       default=True)
-    affiche_accompagnateur = models.BooleanField("Opt. accompagnateur",
-                                                 default=False)
-    publique = models.BooleanField("Tout publique", default=True)
-    adulte = models.BooleanField("Adulte", default=False)
-
-    class Meta(OrderedModel.Meta):
-        pass
-
-    def __str__(self):
-        return self.nom
-
-    def costs(self):
-        return {
-            Formule._meta.get_field('prix')       : (self.prix, True, 2),
-            Formule._meta.get_field('taxe_gym')   : (self.taxe_gym, True, 2),
-            Formule._meta.get_field('taxe')       : (self.taxe, False, 1),
-            Formule._meta.get_field('cotisation') : (self.cotisation, False, 1)
-            }
-
 CREATION = '0'
 CONFIRME = '1'
 PREINSCRIPTION = 'P'
@@ -140,7 +153,7 @@ class FieldFile(files.FieldFile):
         if not self:
             return None
         else:
-            return self.instance.get_absolute_url() + 'uploads/' + self.field.name
+            return self.instance.get_session_url() + 'uploads/' + self.field.name
     
 class FileField(files.FileField):
     attr_class = FieldFile
@@ -181,6 +194,14 @@ def delete_files(sender, instance, **kwargs):
 
 class Dossier(ModelWFiles):
     _file_fields = ('fiche_hotel',)
+    _etat_dict = {
+        CREATION: 'Email non confirmée',
+        CONFIRME: 'Pré-inscription incomplète',
+        PREINSCRIPTION: 'Pré-inscription',
+        VALID: 'Validé',
+        COMPLETE: 'Complet',
+        CANCELED: 'Annulé',
+        }
     
     email = models.EmailField('Adresse email', max_length=255, unique=True)
     secret = models.SlugField(max_length=22, blank=True, editable=False)
@@ -198,12 +219,7 @@ class Dossier(ModelWFiles):
     mode = models.CharField('Mode de règlement', max_length=1023, default='', blank=True)
     mode_solde = models.CharField('Règlement solde', max_length=1023, default='', blank=True)    
     etat = models.CharField("État du dossier", max_length=1, default=VALID,
-                            choices=[(CREATION, 'Email non confirmée'),
-                                     (CONFIRME, 'Pré-inscription incomplète'),
-                                     (PREINSCRIPTION, 'Pré-inscription'),
-                                     (VALID, 'Validé'),
-                                     (COMPLETE, 'Complet'),
-                                     (CANCELED, 'Annulé'),])
+                            choices=_etat_dict.items())
     acompte = models.DecimalField(default=0, max_digits=10, decimal_places=2)
     remise = models.DecimalField('Remise', default=0, max_digits=10, decimal_places=2)
     motif_rem = models.CharField('Motif de la remise', max_length=255, default='', blank=True)
@@ -211,11 +227,15 @@ class Dossier(ModelWFiles):
     motif = models.CharField('Motif du supplément', max_length=255, default='', blank=True)
     date = models.DateTimeField('Date inscription', auto_now_add=True)
     date_valid = models.DateField('Date validation', null=True, blank=True)
+    ###
+    semaines = models.ManyToManyField(Semaine)
+    hebergement = models.ForeignKey(Hebergement, null=True, on_delete=models.SET_NULL)
     prix_hebergement = models.DecimalField('Prix hébergement', default=0,
                                            max_digits=10, decimal_places=2)
     fiche_hotel = FileField('Réservation hébergement', blank=True, null=True)
     fiche_hotel_snail = models.BooleanField('Réservation hébergement reçue',
                                             default=False)
+    ###
     notes = models.TextField(default='', blank=True)
     caf = models.CharField("Je bénéficie d'une aide CAF ou VACAF", max_length=1,
                            choices=[('O', 'Oui'), ('N', 'Non')], default='N')
@@ -223,25 +243,47 @@ class Dossier(ModelWFiles):
     def __str__(self):
         return '%s %s <%s>' % (self.nom or '??', self.prenom or '??', self.email)
 
-#    def get_absolute_url(self):
-#        return reverse('dossier_view')
+    def get_session_url(self):
+        return reverse('dossier_view')
 
+    def get_absolute_url(self):
+        return reverse('dossier_redirect', kwargs={ 'pk' : self.pk , 'secret' : self.secret })
+    
     def get_full_url(self):
-        return (settings.HOST
-                    + reverse('dossier_redirect', kwargs={ 'pk' : self.pk , 'secret' : self.secret }))
+        return (settings.HOST + self.get_absolute_url())
 
     def is_editable(self):
         return self.etat in (CREATION, CONFIRME)
+
+    def is_empty(self):
+        return self.stagiaire_set.count() == 0
+
+    def is_complete(self):
+        return (not self.is_empty() and
+                    (not self.semaines_hebergement or
+                         (self.hebergement and
+                              not self.semaines_hebergement.exclude(pk__in=self.semaines.all()))))
+
+    def prix_stagiaires(self):
+        return sum(s.prix() for s in self.stagiaire_set.iterator())
+
+    def prix_total(self):
+        return self.prix_stagiaires() + self.prix_hebergement + self.supplement - self.remise
+
+    def reste(self):
+        return self.prix_total() - self.acompte
     
-    def complete(self):
-        return self.etat == COMPLETE
-    # or (self.fiche_inscr_snail
-    #                                      and (not self.hebergement
-    #                                           or not self.hebergement.managed == 'M'
-    #                                           or self.fiche_hotel_snail)
-    #                                      and (self.formule.adulte
-    #                                           or (self.fiche_sanit_snail
-    #                                               and self.certificat_snail)))
+    def accepts_uploads(self):
+        return self.etat in (PREINSCRIPTION, VALID)
+    
+    def semaines_str(self):
+        return ', '.join('S%d' % s.ord() for s in self.semaines.iterator())
+    semaines_str.short_description = 'Semaines'
+
+    @cached_property
+    def semaines_hebergement(self):
+        return Semaine.objects.filter(stagiaire__dossier=self,
+                                          stagiaire__formule__has_hebergement=True).distinct()
 
     def save(self, *args, **kwds):
         # Capitalisations
@@ -254,10 +296,6 @@ class Dossier(ModelWFiles):
             # Si l'inscription a été validée, enregistre la date
             if self.etat == VALID != orig.etat:
                 self.date_valid = datetime.datetime.now()
-
-            #envoie email de confirmation
-            #if (self.etat in (VALID, PAID) and orig.etat == PREINSCRIPTION):
-            #    self.send_mail()
             
         # S'il s'agit d'une création, on crée un token
         else:
@@ -268,7 +306,7 @@ class Dossier(ModelWFiles):
         super().save(*args, **kwds)
         
     def send_mail(self):
-        if self.etat == CREATION or self.etat == CONFIRME:
+        if self.etat == CREATION:
             mails.send_mail(
                 subject="Confirmez votre adresse email",
                 recipients=[ self.email ],
@@ -276,35 +314,19 @@ class Dossier(ModelWFiles):
                 obj=self,
                 ctx={ 'host' : settings.HOST }
             )
-        elif self.etat == PREINSCRIPTION:
+        elif self.etat in (CONFIRME, PREINSCRIPTION, VALID, COMPLETE):
             mails.send_mail(
-                subject="Merci de votre demande d'inscription",
+                subject="Inscriptions TBA %d" % settings.ANNEE,
                 recipients=[ self.email ],
-                template='preinscr_user',
-                obj=self,
-                ctx={ 'host' : settings.HOST }
-            )
-        elif self.etat == VALID:
-            mails.send_mail(
-                subject="Confirmation d'inscription",
-                recipients=[ self.email ],
-                template='confirmation_user',
-                obj=self,
-                ctx={ 'host' : settings.HOST }
-            )
-        elif self.etat == COMPLETE:
-            mails.send_mail(
-                subject="Dossier d'inscription complet",
-                recipients=[ self.email ],
-                template='confirmation_user',
+                template='user',
                 obj=self,
                 ctx={ 'host' : settings.HOST }
             )
 
 ### Stagiaire
-            
-class Stagiaire(models.Model):
-    _file_fields = ('fiche_inscr', 'fiche_sanit', 'certificat') 
+
+class Stagiaire(ModelWFiles):
+    _file_fields = ('auth_paren', 'fiche_sanit', 'certificat') 
 
     dossier = models.ForeignKey(Dossier, on_delete=models.CASCADE)
     ###
@@ -330,7 +352,6 @@ class Stagiaire(models.Model):
     ###
     semaines = models.ManyToManyField(Semaine)
     formule = models.ForeignKey(Formule, on_delete=models.PROTECT)
-    hebergement = models.ForeignKey(Hebergement, null=True, blank=True, on_delete=models.SET_NULL)
     accompagnateur = models.CharField("Nom de l'accompagnateur", max_length=255, blank=True)
     train = models.DecimalField('Supplément train depuis Paris (inclut les navettes aller et retour)',
                            max_digits=10, decimal_places=3, default=Decimal('0'),
@@ -362,8 +383,8 @@ class Stagiaire(models.Model):
     parrain = models.BooleanField("Parrain", default=False)
     nom_parrain = models.CharField('NOM Prénom parrain', max_length=255, blank=True)
     adr_parrain = models.CharField('Adresse parrain', max_length=255, blank=True)
-    fiche_inscr = FileField("Bulletin d'inscription", blank=True, null=True)
-    fiche_inscr_snail = models.BooleanField("Fiche d'inscription reçue",
+    auth_paren = FileField("Autorisation parentale", blank=True, null=True)
+    auth_paren_snail = models.BooleanField("Autorisation parentale reçue",
                                             default=False)
     fiche_sanit = FileField('Fiche sanitaire', blank=True, null=True)
     fiche_sanit_snail = models.BooleanField('Fiche sanitaire reçue',
@@ -375,13 +396,22 @@ class Stagiaire(models.Model):
     def __str__(self):
         return '%s %s' % (self.nom, self.prenom)
 
+    def get_session_url(self):
+        return reverse('stagiaire_modify', kwargs={ 'pk': self.pk })
+    
+    def get_absolute_url(self):
+        return self.dossier.get_absolute_url()
+
     def age(self):
         "Age (au 31 décembre de l'année en cours)"
         if self.naissance:
             return settings.ANNEE - self.naissance.year
         else:
             return 0
-        
+
+    def majeur(self):
+        return self.age() > 18
+    
     def semaines_str(self):
         return ', '.join('S%d' % s.ord() for s in self.semaines.iterator())
     semaines_str.short_description = 'Semaines'
@@ -398,13 +428,10 @@ class Stagiaire(models.Model):
     def costs(self):
         costs = self.costs_formule()
         costs.update({
-            Inscription._meta.get_field('train')            : (self.train.quantize(Decimal('0.00')), 1, 2),
-            Inscription._meta.get_field('assurance')        : (self.assurance, 1, 1),
-            Inscription._meta.get_field('navette_a')        : (self.navette_a, 1, 1),
-            Inscription._meta.get_field('navette_r')        : (self.navette_r, 1, 1),
-#            Inscription._meta.get_field('prix_hebergement') : (self.prix_hebergement, 1, 3),
-#            Inscription._meta.get_field('remise')           : (self.remise, -1, None),
-#            Inscription._meta.get_field('supplement')       : (self.supplement, 1, None),
+            Stagiaire._meta.get_field('train')            : (self.train.quantize(Decimal('0.00')), 1, 2),
+            Stagiaire._meta.get_field('assurance')        : (self.assurance, 1, 1),
+            Stagiaire._meta.get_field('navette_a')        : (self.navette_a, 1, 1),
+            Stagiaire._meta.get_field('navette_r')        : (self.navette_r, 1, 1),
             })
         return costs
 
@@ -429,21 +456,8 @@ class Stagiaire(models.Model):
                        for (val, count, frac) in self.costs().values() if frac is not None),
                     self.prix())
 
-    def reste(self):
-        return self.prix() - self.acompte
-    reste.short_description = 'Solde dû'
-
     def save(self, *args, **kwds):
         # Capitalisations
         self.nom = self.nom.upper()
         self.prenom = self.prenom.title()
         super().save(*args, **kwds)
-
-####
-
-from django_downloadview import ObjectDownloadView
-from django.urls import path
-
-# views = { f : ObjectDownloadView.as_view(model=Inscription, file_field=f)
-#             for f in upload_fields }
-urls = [ ] #path(r'uploads/%s' % f, v) for f, v in views.items() ]

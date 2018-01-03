@@ -4,7 +4,7 @@ from django.http import Http404, HttpResponseRedirect
 from django import forms
 from django.forms import widgets, ValidationError
 from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic import DetailView
+from django.views.generic import View, DetailView, TemplateView
 from django.views.generic.base import ContextMixin
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, ModelFormMixin, FormView
@@ -23,6 +23,8 @@ from unidecode import unidecode
 from django.conf import settings
 from . import mails
 from django.urls import reverse_lazy
+from django_downloadview import ObjectDownloadView
+from django.urls import path
 
 ### Register email
 
@@ -125,17 +127,27 @@ class DossierView(SessionDossierMixin, DetailView):
     model = Dossier
     template_name = 'dossier_view.html'
     
+    def get_context_data(self, **kwds):
+        stags = []
+        for s in self.object.stagiaire_set.iterator():
+            stags.append({
+                'object' : s,
+                'form' : StagiaireUploadForm(instance=s, prefix=s.pk),
+                })
+        context = dict(stagiaires=stags, **kwds)
+        if stags:
+            context['form'] = { 'media': stags[0]['form'].media }
+        return super().get_context_data(**context)
+        
     def get(self, *args, **kwds):
         obj = self.get_object()
-        # If this is an email confirmation, confirm and redirect to
+        # If this is an email confirmation, redirect to
         # account initialization
         if obj.etat == models.CREATION:
-            obj.etat = models.CONFIRME
-            obj.save()
             return redirect('dossier_modify')
         else:
             return super().get(self, *args, **kwds)
-    
+        
 class DossierForm(forms.ModelForm):
     '''
     Formulaire de modification des données personnelles
@@ -155,7 +167,63 @@ class DossierModify(SessionDossierMixin, UpdateView):
     model = Dossier
     form_class = DossierForm
     success_url = reverse_lazy('dossier_view')
+    
+    def form_valid(self, form):
+        # Confirm email if not done already
+        if form.instance.etat == models.CREATION:
+            form.instance.etat = models.CONFIRME
+        return super().form_valid(form)
 
+class DossierLastForm(forms.ModelForm):
+    '''
+    Formulaire de modification des données personnelles
+    '''
+    error_css_class = 'error'
+    required_css_class = 'required'
+
+    class Meta:
+        model = Dossier
+        fields = ['notes', 'caf']
+        widgets = {
+            'notes': widgets.Textarea(attrs={'rows' : 5}),
+            'caf' :  widgets.RadioSelect,
+            }
+        help_texts = {
+            'notes': "N'hésitez pas à nous signaler toute situation particulière.",
+        }
+    
+class DossierConfirm(SessionDossierMixin, UpdateView):
+    template_name = 'dossier_confirm.html'
+    model = Dossier
+    form_class = DossierLastForm
+    success_url = reverse_lazy('dossier_view')
+    
+    def is_not_confirmable(self):
+        if not self.dossier.is_complete():
+            messages.error(self.request, 'Dossier incomplet.')
+            return redirect('dossier_view')
+        elif not self.dossier.is_editable():
+            messages.error(self.request, 'Dossier déjà confirmé.')
+            return redirect('dossier_view')
+        else:
+            return None
+
+    def get(self, *args, **kwds):
+        return self.is_not_confirmable() or super().get(*args, **kwds)
+    
+    def post(self, *args, **kwds):
+        return self.is_not_confirmable() or super().post(*args, **kwds)
+        
+    def form_valid(self, form):
+        form.instance.etat = models.PREINSCRIPTION
+        res = super().form_valid(form)
+        mails.preinscr(self.dossier)
+        messages.info(self.request, format_html(
+            "Un récapitulatif a été envoyé à l'adresse {email}",
+            email=self.dossier.email))
+        return res
+    
+    
 ### Handle single stagiaire
 
 class StagiaireForm(forms.ModelForm):
@@ -170,7 +238,6 @@ class StagiaireForm(forms.ModelForm):
         'Pour vous inscrire avec plusieurs formules différentes, merci de créer autant ' +
         "d'inscriptions stagiaire.")
     formule = my_widgets.FormuleField()
-    hebergement = my_widgets.HebergementField(required=False)
     licencie = forms.ChoiceField(label='Licencié dans un club',
                                  widget=widgets.RadioSelect,
                                  choices=[('O','Oui'), ('N','Non')])
@@ -179,9 +246,9 @@ class StagiaireForm(forms.ModelForm):
     class Meta:
         model = Stagiaire
         fields = ['nom', 'prenom', 'naissance', 'lieu', 'sexe', 'taille',
-                      'niveau',
-                      'licence', 'club', 'venu', 'semaines', 'formule',
-                      'hebergement', 'chambre', 'accompagnateur', 'train',
+                      'niveau', 'licence', 'club', 'venu',
+                      'semaines', 'formule',
+                      'chambre', 'accompagnateur', 'train',
                       'navette_a', 'navette_r', 'assurance', 
                       'nom_parrain', 'adr_parrain']
         widgets = {
@@ -194,7 +261,7 @@ class StagiaireForm(forms.ModelForm):
         }
         help_texts = {
             'licence': '<a target="_blank" href="http://www.ffbb.com/jouer/recherche-avancee">Chercher sur ffbb.com</a>',
-            'notes': "N'hésitez pas à nous signaler toute situation particulière.",
+            'chambre': 'facultatif',
         }
 
     def __init__(self, *args, **kwds):
@@ -203,30 +270,21 @@ class StagiaireForm(forms.ModelForm):
         if lic is not None:
             self.initial['licencie'] = 'O' if lic else 'N'
 
-    def _clean_reservation(self, data):
-        '''
-        Sort out the data dependencies between weeks, formules and accomodation.
-        '''
-        semaines = data.get('semaines')
-        formule = data.get('formule')
-        hebergement = data.get('hebergement')
-        available = bool(formule) and set(formule.hebergements.iterator())
-        complet = bool(semaines) and {c for s in semaines for c in s.complet.iterator()}
-        if available and (not hebergement or hebergement not in available):
-            self.add_error('hebergement', self.error_class([_('This field is required.')]))
-        elif semaines and available and hebergement in complet:
-            self.add_error('hebergement', self.error_class(['Cet hébergement est complet pour les semaines indiquées.']))
-        elif formule and not available:
-            data['hebergement'] = None
+    def clean_formule(self):
+        formule = self.cleaned_data['formule']
+        semaines = self.cleaned_data.get('semaines')
+        if semaines and any(formule in s.formule_complet.iterator() for s in semaines):
+            raise ValidationError('Cette formule est complète pour les semaines indiquées.')
+        return formule
         
-        if semaines and available and not available.difference(complet):
-            self.add_error('formule', self.error_class(['Cette formule est complète pour les semaines indiquées.']))
-
-        return data
+    def clean_semaines(self):
+        semaines = self.cleaned_data['semaines']
+        if any(s.fermer for s in semaines):
+            raise ValidationError('Ces semaines sont fermées.')
+        return semaines
     
     def clean(self):
         cleaned_data = super().clean()
-        self._clean_reservation(cleaned_data)
         if cleaned_data.get('licencie') == 'O':
             for f in ('licence', 'club'):
                 if not cleaned_data.get(f):
@@ -283,7 +341,18 @@ class StagiaireCreate(DossierIsNotBlocked, CreateView):
     def put(self, *args, **kwds):
         return self.is_not_editable() or super().put(*args, **kwds)
 
-class StagiaireModify(DossierIsNotBlocked, UpdateView):
+
+class CheckDossierMixin(SingleObjectMixin, HasSessionMixin):
+    """
+    A SO mixin that checks whether the Stagiaire belongs to the dossier
+    """
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset=queryset)
+        if obj.dossier != self.dossier:
+            raise Http404
+        return obj
+    
+class StagiaireModify(DossierIsNotBlocked, CheckDossierMixin, UpdateView):
     """
     Presente le formulaire d'inscription stagiaire
     """
@@ -293,7 +362,7 @@ class StagiaireModify(DossierIsNotBlocked, UpdateView):
     extra_context = { 'view' : 'modify' }
     success_url = reverse_lazy('dossier_view')
 
-class StagiaireDelete(DossierIsNotBlocked, DeleteView):
+class StagiaireDelete(DossierIsNotBlocked, CheckDossierMixin, DeleteView):
     """
     Demande confirmation pour effacer un stagiaire
     """
@@ -303,89 +372,135 @@ class StagiaireDelete(DossierIsNotBlocked, DeleteView):
     
     def delete(self, *args, **kwds):
         return self.is_not_editable() or super().delete(*args, **kwds)
+
+########## PDF
+
+class PDFTemplateResponse(TemplateResponse):
+    def __init__(self, filename='document.pdf', *args, **kwds):
+        kwds['content_type'] = 'application/pdf'
+        super().__init__(*args, **kwds)
+        self['Content-Disposition'] = 'filename="%s"' % filename
+
+    @property
+    def rendered_content(self):
+        html = super().rendered_content
+        pdf = weasyprint.HTML(string=html).write_pdf()
+        return pdf
+
+class StagiairePDFView(CheckDossierMixin, DetailView):
+    template_name = 'stagiaire_pdf.html'
+    response_class = PDFTemplateResponse
+    model = Stagiaire
+
+    def render_to_response(self, *args, **kwds):
+        kwds['filename'] = 'TBA-autorisation-%s-%s.pdf' % (unidecode(self.object.nom),
+                                                               unidecode(self.object.prenom))
+        return super().render_to_response(*args, **kwds)
+
+########## Uploads
+
+class UploadForm(forms.ModelForm):
+    def clean(self, *args, **kwds):
+        cleaned_data = super().clean(*args, **kwds)
+        for f in self.changed_data:
+            if f not in cleaned_data:
+                raise ValidationError("Fichier vide. Veuillez vérifier son contenu.")
+            elif cleaned_data[f].size > settings.MAX_FILE_SIZE * 10**6:
+                raise ValidationError("Les pièces jointes ne doivent pas excéder %dMo." 
+                                      % settings.MAX_FILE_SIZE)
+        if not self.changed_data:
+            raise ValidationError('Veuillez téléverser au moins un fichier.')
+        return cleaned_data
+
+class StagiaireUploadForm(UploadForm):
+    class Meta:
+        model = Stagiaire
+        fields = Stagiaire._file_fields
+        widgets =  {f : my_widgets.FileInput for f in fields }
+
+class StagiaireUpload(CheckDossierMixin, ModelFormMixin, View):
+    """
+    Télécharge des pièces jointes pour un stagiaire
+    """
+    model = Stagiaire
+    form_class = StagiaireUploadForm
+    success_url = reverse_lazy('dossier_view')
+
+    def form_valid(self, *args, **kwds):
+        messages.info(self.request,
+                      "Merci, nous avons bien reçu les pièces pour {prenom} {nom}.".format(nom=self.object.nom, prenom=self.object.prenom))
+        res = super().form_valid(*args, **kwds)
+        mails.inscr_modif(self.object.dossier)
+        return res
+
+    def form_invalid(self, form):
+        """If the form is valid, redirect to the supplied URL."""
+        for e in form.non_field_errors():
+            messages.error(self.request, e)
+        
+        return HttpResponseRedirect(self.get_success_url())
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        # allow prefixed forms to call this edpoint
+        self.prefix = self.object.pk
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+stagiaire_up_views = { f : ObjectDownloadView.as_view(model=Stagiaire, file_field=f)
+                           for f in Stagiaire._file_fields }
+stagiaire_up_urls = [ path(r'%s' % f, v) for f, v in stagiaire_up_views.items() ]
+
+
+### Handle hebergement
+
+class HebergementForm(forms.ModelForm):
+    """
+    Formulaire de réservation hébergement
+    """
+    error_css_class = 'error'
     
-# class InscriptionView(DetailView):
-#     """
-#     Montre une inscription
-#     """
-#     model = Inscription
-#     template_name = 'inscription_erreur.html'
+    semaines = my_widgets.SemainesField(
+        help_text='''Vous pouvez sélectionner des semaines en plus 
+        des semaines d'inscription des stagiaires.''')
+    hebergement = my_widgets.HebergementField()
 
-#     def dispatch(self, req, *args, **kwds):
-#         etat = self.get_object().etat
-#         if etat == PREINSCRIPTION:
-#             return PreinscriptionView.as_view()(req, *args, **kwds)
-#         elif etat in [VALID, COMPLETE]:
-#             return ConfirmationView.as_view()(req, *args, **kwds)
-#         return super(InscriptionView, self).dispatch(req, *args, **kwds)
+    class Meta:
+        fields = ['semaines', 'hebergement']
+        model = Dossier
 
-# from .models import upload_fields
+    def __init__(self, *args, **kwds):
+        super().__init__(*args, **kwds)
+        self.initial['semaines'] = self.initial['semaines'] + list(self.instance.semaines_hebergement)
+        # Disable compulsory weeks
+        for s in self.instance.semaines_hebergement:
+            self.fields['semaines'].off(s.pk)
+    
+    def clean_semaines(self):
+        sems = self.cleaned_data['semaines']
+        for s in self.instance.semaines_hebergement:
+            if s not in sems:
+                raise ValidationError('Vous devez réserver en semaine %d.' % s.ord())
+        return sems
 
-# class UploadForm(forms.ModelForm):
-#     class Meta:
-#         model = Inscription
-#         fields = ('fiche_inscr', 'fiche_sanit', 'certificat', 'fiche_hotel') 
-#         widgets =  {f : my_widgets.FileInput for f in fields }
+    def clean_hebergement(self):
+        hbgt = self.cleaned_data['hebergement']
+        sems = self.cleaned_data.get('semaines')
+        if hbgt and any(hbgt in s.hbgt_complet.all() for s in sems):
+            raise ValidationError('Cet hébergement est complet pour les semaines demandées')
+        return hbgt
+    
+class HebergementView(DossierIsNotBlocked, SessionDossierMixin, UpdateView):
+    template_name = 'hebergement.html'
+    model = Dossier
+    form_class = HebergementForm
+    success_url = reverse_lazy('dossier_view')
 
-#     def clean(self, *args, **kwds):
-#         cleaned_data = super(UploadForm, self).clean(*args, **kwds)
-#         for f in self.changed_data:
-#             if f not in cleaned_data:
-#                 raise ValidationError("Fichier vide. Veuillez vérifier son contenu.")
-#             elif cleaned_data[f].size > settings.MAX_FILE_SIZE * 10**6:
-#                 raise ValidationError("Les pièces jointes ne doivent pas excéder %dMo." 
-#                                       % settings.MAX_FILE_SIZE)
-#         if not self.changed_data:
-#             raise ValidationError('Veuillez télécharger au moins un fichier.')
-#         return cleaned_data
-
-# class PreinscriptionView(UpdateView):
-#     """
-#     Page de confirmation de préinscription, avec possibilité de upload.
-#     """
-#     model = Inscription
-#     form_class = UploadForm
-#     template_name = 'inscription_preinscription.html'
-
-#     def form_valid(self, *args, **kwds):
-#         messages.info(self.request,
-#                       "Merci, vos modifications ont été prises en considération.")
-#         res = super(PreinscriptionView, self).form_valid(*args, **kwds)
-#         mails.inscr_modif(self.object)
-#         return res
-
-#     def form_invalid(self, form, *args, **kwds):
-#         messages.error(self.request, form.non_field_errors()[0])
-#         return HttpResponseRedirect(self.get_success_url())
-
-# class ConfirmationView(PreinscriptionView):
-#     """
-#     Page de confirmation d'inscription
-#     """
-#     template_name = 'inscription_sommaire.html'
-
-# class PDFTemplateResponse(TemplateResponse):
-#     def __init__(self, filename='document.pdf', *args, **kwds):
-#         kwds['content_type'] = 'application/pdf'
-#         super().__init__(*args, **kwds)
-#         self['Content-Disposition'] = 'filename="%s"' % filename
-
-#     @property
-#     def rendered_content(self):
-#         html = super().rendered_content
-#         pdf = weasyprint.HTML(string=html).write_pdf()
-#         return pdf
-
-# class InscriptionPDFView(DetailView):
-#     template_name = 'inscription-pdf.html'
-#     response_class = PDFTemplateResponse
-#     model = Inscription
-
-#     def render_to_response(self, *args, **kwds):
-#         kwds['filename'] = 'TBA-%s-%s.pdf' % (unidecode(self.object.nom),
-#                                                   unidecode(self.object.prenom))
-#         return super().render_to_response(*args, **kwds)
-
+    
+###
 
 ##########################################################################
 

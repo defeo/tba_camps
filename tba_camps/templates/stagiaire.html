@@ -4,76 +4,6 @@
 
 {% block title %}Fiche stagiaire TBA{% endblock %}
 
-{% block extrahead %}
-<style>
-  #id_sexe li, #id_licencie li, #id_venu li, 
-  #id_navette_a li, #id_navette_r li, #id_caf li { display: inline; }
-
-  #id_formule { font-weight: bold }
-  #id_formule .prix { float: right }
-  #id_formule .description { 
-    display: block;
-    font-weight: normal;
-    padding-left: 4ex;
-  }
-
-  #id_formule label, #id_hebergement label { width: 100% }
-  #id_formule > li:hover { background-color: inherit }
-  #id_formule > li > ul { margin: 1ex 0 2ex 2ex }
-  #id_formule > li > .group {
-    font-size: 110%;
-    font-weight: normal;
-    background-color: #cc6600;
-    color: white;
-    padding: 5px;
-  }
-
-  #id_hebergement {
-    font-weight: bold;
-  }
-  #id_hebergement p { 
-    font-weight: normal;
-    margin: 0.1ex 0 0.5ex 2ex;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 2s;
-    -webkit-transition: max-height 2s;
-    -o-transition: max-height 2s;
-  }
-  #id_hebergement input:checked ~ p,
-  #id_hebergement li:hover label:not(.complet) p {
-    max-height: 100ex;
-  }
-  #id_hebergement label.hidden {
-    display: none;
-  }
-  
-  #id_hebergement .complet,
-  #id_formule .complet {
-    color: #aaa;
-    text-decoration: line-through;
-  }
-
-  #pay-block { display: inline-block }
-  #cost-summary { 
-    display: inline-table;
-    vertical-align: middle;
-    border-collapse: collapse;
-    margin: 1em 0 0 4em;
-  }
-  #cost-summary tfoot { border-top : solid thin black }
-  #cost-summary td:nth-child(2) { 
-    width: 3em;
-    text-align: right;
-    padding: 0 1ex 0 6ex;
-  }
-  #cost-summary .total { font-weight: bold }
-  
-  .note { font-size: 80%; margin: 0.4ex }
-  .note:first-letter { font-size: 120% }
-</style>
-{% endblock %}
-
 {% block dossier_content %}
 
 {% if view == 'create' %}
@@ -97,7 +27,7 @@
   {% csrf_token %}
 
   <div id="personal-data" class="fieldgroup">
-    <h3>Données du stagiaire</small></h3>
+    <h3>Données du stagiaire</h3>
 
     <fieldset>
       {{ form.nom | cgroup }}
@@ -123,7 +53,6 @@
     <fieldset>
       {{ form.semaines | cgroup }}
       {{ form.formule | cgroup }}
-      {{ form.hebergement | cgroup }}
       {{ form.chambre | cgroup }}
       {{ form.accompagnateur | cgroup }}
       {{ form.train | cgroup }}
@@ -133,22 +62,6 @@
       <div id="pay-block">
       {{ form.assurance | cgroup }}
       </div>
-
-      <!--table id="cost-summary">
-	<tbody>
-	<tr class="prix" data-acompte="50"><td>Formule</td><td></td><td></td></tr>
-	<tr class="cotisation" data-acompte="100"><td>Cotisation TBA¹</td><td></td><td></td></tr>
-	<tr class="taxe" data-acompte="100"><td>Taxe ménage</td><td></td><td></td></tr>
-	<tr class="taxe_gym" data-acompte="50"><td>Taxe gymnase²</td><td></td><td></td></tr>
-	<tr class="train" data-acompte="50"><td>Supplément train</td><td></td><td></td></tr>
-	<tr class="navette" data-acompte="100"><td>Navette</td><td></td><td></td></tr>
-	<tr class="assurance" data-acompte="100"><td>Assurance</td><td></td><td></td></tr>
-	</tbody>
-	<tfoot>
-	<tr class="total"><td>Total</td><td></td></tr>
-	<tr class="acompte"><td>Acompte</td><td></td></tr>
-	</tfoot>
-      </table-->
     </fieldset>
 
     <p class="note">¹ Une cotisation de 15€ est demandée lors de toute

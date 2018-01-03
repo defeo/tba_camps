@@ -2,7 +2,8 @@
 
 from django.contrib import admin
 from ordered_model.admin import OrderedModelAdmin
-from .models import Manager, Semaine, Formule, Hebergement, Dossier, Stagiaire, CANCELED
+from .models import Manager, Semaine, Formule, Hebergement, Dossier, Stagiaire
+from .models import PREINSCRIPTION, VALID, COMPLETE
 from import_export.admin import ExportMixin
 #from .resources import InscriptionResource
 from django.contrib.auth.admin import UserAdmin
@@ -19,6 +20,7 @@ from django.http import JsonResponse,  HttpResponseBadRequest
 from django.contrib.auth.decorators import permission_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.urls import reverse_lazy
 
 class MyAdmin(admin.AdminSite):
     def get_urls(self):
@@ -65,7 +67,7 @@ class MyAdmin(admin.AdminSite):
 
         return handler(req)
 
-site = MyAdmin()
+site = admin.AdminSite()
 site.register(Group)
 
 # Define a new User admin
@@ -88,37 +90,44 @@ class MyUserAdmin(UserAdmin):
 @admin.register(Semaine, site=site)
 class SemaineAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'commentaire', 'places', 'preinscrits',
-                    'inscrits', 'restantes', 'fermer', 'get_complet')
+                    'inscrits', 'restantes', 'fermer', 'get_hbgt_complet',
+                    'get_formule_complet')
     list_editable = ('places', 'fermer')
-    exclude = ('complet',)
 
-    def get_complet(self, obj):
-        return ' ; '.join(map(str, obj.complet.iterator())) or '     —'
-    get_complet.short_description = 'Accomodations complètes'
+    formfield_overrides = {
+        models.ManyToManyField: {'widget': widgets.CheckboxSelectMultiple},
+    }
+
+    def get_hbgt_complet(self, obj):
+        return mark_safe('<br>'.join(map(str, obj.hbgt_complet.iterator())) or '     —')
+    get_hbgt_complet.short_description = 'Accomodations complètes'
+    
+    def get_formule_complet(self, obj):
+        return mark_safe('<br>'.join(map(str, obj.formule_complet.iterator())) or '     —')
+    get_formule_complet.short_description = 'Formules complètes'
+
     
 @admin.register(Formule, site=site)
 class FormuleAdmin(OrderedModelAdmin):
-    list_display = ('groupe', 'nom', 'description', 'prix', 'taxe', 'taxe_gym', 'cotisation', 'heb_list',
+    list_display = ('groupe', 'nom', 'description', 'prix', 'taxe', 'taxe_gym', 'cotisation',
+                    'has_hebergement',
                     'affiche_train', 'affiche_chambre', 'affiche_navette', 'affiche_assurance',
                     'affiche_mode', 'affiche_accompagnateur', 'publique', 'adulte', 'move_up_down_links')
     list_display_links = ('nom',)
-    list_editable = ('prix', 'taxe', 'taxe_gym', 'cotisation', 'affiche_train',
+    list_editable = ('prix', 'taxe', 'taxe_gym', 'cotisation', 'has_hebergement', 'affiche_train',
                      'affiche_chambre', 'affiche_navette', 'affiche_assurance', 'affiche_mode',
                      'affiche_accompagnateur', 'publique', 'adulte')
     formfield_overrides = {
         models.DecimalField: {'widget': widgets.NumberInput(attrs={'style' : 'width: 6em'})},
     }
-    def heb_list(self, obj):
-        return ' ; '.join(map(str, obj.hebergements.iterator())) or '     —'
-    heb_list.short_description = 'Hébergements'
 
 @admin.register(Hebergement, site=site)
 class HebergementAdmin(OrderedModelAdmin):
     list_display = ('nom', 'md_commentaire', 'managed', 'move_up_down_links')
     list_editable = ('managed',)
 
-class CanceledFilter(admin.SimpleListFilter):
-    title = 'Montrer inscriptions annulées'
+class DossierFilter(admin.SimpleListFilter):
+    title = 'Montrer dossiers annulées ou incomplets'
     parameter_name = 'canceled'
     template = 'filter_no_by.html'
     
@@ -140,88 +149,158 @@ class CanceledFilter(admin.SimpleListFilter):
         if self.value() == 'y':
             return queryset
         else:
-            return queryset.exclude(etat=CANCELED)
+            return queryset.filter(etat__in=(PREINSCRIPTION, VALID, COMPLETE))
 
 @admin.register(Dossier, site=site)
 class DossierAdmin(admin.ModelAdmin):
-    pass
+    list_display   = ('nom', 'prenom', 'semaines_str', 'hebergement', 'prix_hebergement', 'prix_total', 'acompte', 'reste', 'etat', 'date', 'date_valid')
+    list_display_links = ('nom', 'prenom')
+    list_editable  = ('prix_hebergement', 'acompte', 'etat')
+    list_filter    = ('date', DossierFilter, 'semaines')
+    search_fields  = ('nom', 'prenom', 'email')
+    readonly_fields = ('stagiaires', 'prix_total', 'reste')
+    save_on_top = True
+    fields  = (
+        ('etat', 'date_valid'),
+        ('nom', 'prenom'),
+        ('stagiaires',),
+        ('mode_solde',),
+        ('remise', 'motif_rem'),
+        ('supplement', 'motif'),
+        ('prix_total', 'acompte', 'mode', 'reste'),
+        ('hebergement', 'prix_hebergement'),
+        ('semaines',),
+        ('email', 'tel'),
+        ('adresse', 'cp', 'ville', 'pays'),
+        ('notes', 'caf'),
+     )
+    formfield_overrides = {
+        models.TextField: {'widget': widgets.Textarea(attrs={'rows' : 3})},
+        models.DecimalField: {'widget': widgets.NumberInput(attrs={'style' : 'width: 6em'})},
+    }
+#    resource_class = DossierResource
+
+    def get_urls(self):
+        urls = super().get_urls()
+        my_url = url(r'^([0-9]+)/send_mail$',  
+                     self.admin_site.admin_view(self.send_mail), 
+                     name='tba_camps_dossier_send_mail')
+        return [my_url] + urls 
+
+    def stagiaires(self, obj):
+        return mark_safe('<br>'.join('''<a href="{url}">{nom} {prenom}</a>
+        ({formule} – {sems})'''.format(
+            url=reverse_lazy('admin:tba_camps_stagiaire_change', args=(s.pk,)),
+            nom=s.nom,
+            prenom=s.prenom,
+            formule=s.formule,
+            sems=s.semaines_str(),
+            ) for s in obj.stagiaire_set.iterator()))
+    stagiaires.short_description = 'Inscriptions'
+    
+    def send_mail(self, request, obj_id):
+        obj = Dossier.objects.get(pk=obj_id)
+        obj.send_mail()
+        messages.info(request, "Email envoyé à <%s>." %obj.email )
+        return redirect('./')
+
+####
+
+class StagiaireFilter(admin.SimpleListFilter):
+    title = 'Montrer dossiers annulées ou incomplets'
+    parameter_name = 'canceled'
+    template = 'filter_no_by.html'
+    
+    def lookups(self, req, model):
+        return ( (None, 'Non',), ('y', 'Oui') )
+
+    # http://stackoverflow.com/questions/851636/default-filter-in-django-admin/3783930#3783930
+    def choices(self, cl):
+        for lookup, title in self.lookup_choices:
+            yield {
+                'selected': self.value() == lookup,
+                'query_string': cl.get_query_string({
+                    self.parameter_name: lookup,
+                }, []),
+                'display': title,
+            }
+    
+    def queryset(self, req, queryset):
+        if self.value() == 'y':
+            return queryset
+        else:
+            return queryset.filter(dossier__etat__in=(PREINSCRIPTION, VALID, COMPLETE))
 
 @admin.register(Stagiaire, site=site)
 class StagiaireAdmin(admin.ModelAdmin):
-    pass
+    list_display   = ('nom', 'prenom', 'dossier', 'semaines_str', 'formule', 'prix', 'parrain', 'pieces', 'etat')
+    list_display_links = ('nom', 'prenom')
+    list_editable  = ('parrain',)
+    list_filter    = (StagiaireFilter, 'semaines')
+    search_fields  = ('nom', 'prenom'),
+    readonly_fields = ('age', 'prix', 'prix_formule', 'email', 'etat', 'tel', 'dossier_link')
+    save_on_top = True
+    fields  = (
+        ('etat', 'venu'),
+        ('nom', 'prenom'),
+        ('dossier_link',),
+        ('type_chambre', 'num_chambre'),
+        ('age', 'naissance'),
+        ('semaines', 'sexe', 'taille'),
+        ('formule', 'prix_formule'),
+        ('assurance'),
+        ('train'),
+        ('navette_a', 'navette_r'),
+        ('prix',),
+        ('chambre', 'accompagnateur'),
+        ('email', 'tel'),
+        ('lieu'),
+        ('parrain', 'nom_parrain', 'adr_parrain'),
+        ('auth_paren', 'auth_paren_snail'),
+        ('fiche_sanit', 'fiche_sanit_snail'),
+        ('licence', 'club', 'certificat', 'certificat_snail'),
+     )
+    formfield_overrides = {
+        models.TextField: {'widget': widgets.Textarea(attrs={'rows' : 3})},
+        models.DecimalField: {'widget': widgets.NumberInput(attrs={'style' : 'width: 6em'})},
+    }
+    #resource_class = InscriptionResource
 
-# @admin.register(Inscription, site=site)
-# class InscriptionAdmin(ExportMixin, admin.ModelAdmin):
-#     list_display   = ('nom', 'prenom', 'sem_code', 'formule', 'prix', 'prix_hebergement', 'acompte', 'reste', 'parrain', 'pieces', 'etat', 'date', 'date_valid')
-#     list_display_links = ('nom', 'prenom')
-#     list_editable  = ('prix_hebergement', 'acompte', 'parrain', 'etat')
-#     list_filter    = ('date', CanceledFilter, 'semaines')
-#     search_fields  = ('nom', 'prenom', 'email')
-#     readonly_fields = ('age', 'prix', 'prix_formule', 'reste')
-#     save_on_top = True
-#     fields  = (
-#         ('etat', 'venu', 'date_valid'),
-#         ('nom', 'prenom'),
-#         ('mode_solde', 'type_chambre', 'num_chambre'),
-#         ('age', 'naissance'),
-#         ('semaines', 'sexe', 'taille'),
-#         ('formule', 'prix_formule'),
-#         ('assurance'),
-#         ('remise', 'motif_rem'),
-#         ('supplement', 'motif'),
-#         ('train'),
-#         ('navette_a', 'navette_r'),
-#         ('prix', 'acompte', 'mode', 'reste'),
-#         ('hebergement', 'prix_hebergement'),
-#         ('chambre', 'accompagnateur'),
-#         ('email', 'tel'),
-#         ('adresse', 'cp', 'ville', 'pays'),
-#         ('lieu'),
-#         ('parrain', 'nom_parrain', 'adr_parrain'),
-#         ('fiche_inscr', 'fiche_inscr_snail'),
-#         ('fiche_sanit', 'fiche_sanit_snail'),
-#         ('licence', 'club', 'certificat', 'certificat_snail'),
-#         ('fiche_hotel', 'fiche_hotel_snail'),
-#         ('notes', 'caf'),
-#      )
-#     formfield_overrides = {
-#         models.TextField: {'widget': widgets.Textarea(attrs={'rows' : 3})},
-#         models.DecimalField: {'widget': widgets.NumberInput(attrs={'style' : 'width: 6em'})},
-#     }
-#     resource_class = InscriptionResource
-
-#     def pieces(self, obj):
-#         def yesno(val):
-#             return static('admin/img/icon-%s.svg' % ('yes' if val else 'no'))
-#         def link(field, str):
-#             f = getattr(obj, field)
-#             if f:
-#                 return '<a href="%s">%s</a>' % (f.url, str)
-#             else:
-#                 return str
-        
-#         p = '<img src="%s">%s' % (yesno(obj.fiche_inscr_snail),
-#                                    link('fiche_inscr', 'inscription'))
-#         p += '<br><img src="%s">%s' % (yesno(obj.fiche_sanit_snail),
-#                                       link('fiche_sanit', 'sanitaire'))
-#         p += '<br><img src="%s">%s' % (yesno(obj.certificat_snail),
-#                                         link('certificat', 'certificat'))
-#         if obj.hebergement and obj.hebergement.managed == 'M':
-#             p += '<br><img src="%s">%s' % (yesno(obj.fiche_hotel_snail),
-#                                             link('fiche_hotel', 'hébergement'))
-
-#         return mark_safe(p)
-#     pieces.short_description = 'Pièces'
+    def etat(self, obj):
+        return Dossier._etat_dict[obj.dossier.etat]
+    etat.short_description = "État"
     
-#     def get_urls(self):
-#         urls = super(InscriptionAdmin, self).get_urls()
-#         my_url = url(r'^([0-9]+)/send_mail$',  
-#                      self.admin_site.admin_view(self.send_mail), 
-#                      name='tba_camps_inscription_send_mail')
-#         return [my_url] + urls 
+    def email(self, obj):
+        return obj.dossier.email
+    
+    def tel(self, obj):
+        return obj.dossier.tel
+    tel.short_description = "Téléphone"
 
-#     def send_mail(self, request, obj_id):
-#         obj = Inscription.objects.get(pk=obj_id)
-#         obj.send_mail()
-#         messages.info(request, "Email envoyé à <%s>." %obj.email )
-#         return redirect('./')
+    def dossier_link(self, obj):
+        return mark_safe('<a href="{url}">{dossier} &lt;{email}&gt;</a>'.format(
+            url=reverse_lazy('admin:tba_camps_dossier_change', args=(obj.dossier.pk,)),
+            dossier=obj.dossier,
+            email=obj.dossier.email,
+            ))
+    dossier_link.short_description = "Dossier d'inscription"
+    
+    def pieces(self, obj):
+        def yesno(val):
+            return static('admin/img/icon-%s.svg' % ('yes' if val else 'no'))
+        def link(field, str):
+            f = getattr(obj, field)
+            if f:
+                return '<a href="%s">%s</a>' % (f.url, str)
+            else:
+                return str
+        
+        p = '<img src="%s">%s' % (yesno(obj.auth_paren_snail),
+                                   link('auth_paren', 'inscription'))
+        p += '<br><img src="%s">%s' % (yesno(obj.fiche_sanit_snail),
+                                      link('fiche_sanit', 'sanitaire'))
+        p += '<br><img src="%s">%s' % (yesno(obj.certificat_snail),
+                                        link('certificat', 'certificat'))
+
+        return mark_safe(p)
+    pieces.short_description = 'Pièces'

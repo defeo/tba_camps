@@ -30,6 +30,7 @@ margin-bottom: 20px;
 border: 3px solid #888;
 background: #F0EDD8;
 /* curved border radius */
+border-radius: 10px;
 -moz-border-radius: 10px;
 -webkit-border-radius: 10px;
 }
@@ -229,6 +230,7 @@ float: left;
 width: 200px;
 height: 200px;
 /* curved border radius */
+border-radius: 10px;
 -moz-border-radius: 10px;
 -webkit-border-radius: 10px;
 }
@@ -251,6 +253,7 @@ float: right;
 width: 80px;
 height: 80px;
 /* curved border radius */
+border-radius: 10px;
 -moz-border-radius: 10px;
 -webkit-border-radius: 10px;
 }
@@ -315,6 +318,8 @@ font-size: 90%;
 padding: 18px 0;
 overflow: hidden;
 /* curved border radius */
+border-bottom-right-radius: 8px;
+border-bottom-left-radius: 8px;
 -moz-border-radius-bottomright: 8px;
 -moz-border-radius-bottomleft: 8px;
 -webkit-border-bottom-left-radius: 8px;
@@ -358,6 +363,16 @@ color: #faf0e6;
     padding: 0 2em;
 }
 
+.centered {
+    text-align: center;
+}
+
+a.pure-button {
+    color: inherit;
+}
+a.pure-button:hover, a.pure-button:active {
+    text-decoration: none;
+}
 .pure-form-aligned  ul {
     display: inline-block;
     list-style-type: none;
@@ -381,6 +396,14 @@ color: #faf0e6;
     padding: 1ex;
     margin: 1ex 0;
 }
+
+.pure-form.pure-form-aligned .fileinput label {
+    width: 7em;
+}
+.fileinput .pure-button {
+    width: 100%;
+}
+
 .messages { margin: 20px }
 .messages li {
     padding: 1ex;
@@ -431,8 +454,15 @@ h1 small, h2 small, h3 small {
 .dossier-block p {
     margin: 0.5ex 1ex;
 }
-#content .dossier-block ul {
+#content .dossier-block ul.nice {
     padding: 0;
+}
+
+.dossier-block table {
+    margin: 1ex;
+}
+.dossier-block td {
+    padding: 0.1ex 1em;
 }
 
 /****************/
@@ -455,4 +485,97 @@ li.stagiaire .links a {
 }
 li.stagiaire .nom {
     font-weight: bold
+}
+
+/************* Forms **************/
+
+#id_sexe li, #id_licencie li, #id_venu li, 
+#id_navette_a li, #id_navette_r li, #id_caf li { display: inline; }
+
+#id_formule { font-weight: bold }
+#id_formule .prix { float: right }
+#id_formule .description { 
+    display: block;
+    font-weight: normal;
+    padding-left: 4ex;
+}
+
+#id_formule label, #id_hebergement label { width: 100% }
+#id_formule > li:hover { background-color: inherit }
+#id_formule > li > ul { margin: 1ex 0 2ex 2ex }
+#id_formule > li > .group {
+    font-size: 110%;
+    font-weight: normal;
+    background-color: #cc6600;
+    color: white;
+    padding: 5px;
+}
+
+#id_hebergement {
+    font-weight: bold;
+}
+#id_hebergement p { 
+    font-weight: normal;
+    margin: 0.1ex 0 0.5ex 2ex;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 2s;
+    -webkit-transition: max-height 2s;
+    -o-transition: max-height 2s;
+}
+#id_hebergement input:checked ~ p,
+#id_hebergement li:hover label:not(.complet) p {
+    max-height: 100ex;
+}
+#id_hebergement label.hidden {
+    display: none;
+}
+
+#id_hebergement .complet,
+#id_formule .complet {
+    color: #aaa;
+    text-decoration: line-through;
+}
+
+#pay-block { display: inline-block }
+#cost-summary { 
+    display: inline-table;
+    vertical-align: middle;
+    border-collapse: collapse;
+    margin: 1em 0 0 4em;
+}
+#cost-summary tfoot { border-top : solid thin black }
+#cost-summary td:nth-child(2) { 
+    width: 3em;
+    text-align: right;
+    padding: 0 1ex 0 6ex;
+}
+#cost-summary .total { font-weight: bold }
+
+.note { font-size: 80%; margin: 0.4ex }
+.note:first-letter { font-size: 120% }
+
+/**********************/
+
+#total .price {
+    width: 0;
+    text-align: right;
+    margin-right: 10%;
+    padding-left: 1em;
+}
+#total .total {
+    text-align: right;
+}
+#total .total + .price {
+    font-weight: bold;
+}
+#total .subcost {
+    padding-left: 4em;
+}
+#total tbody tr:first-child td {
+    padding-top: 1em;
+}
+#total tfoot td {
+    font-weight: bold;
+    padding-top: 1em;
 }

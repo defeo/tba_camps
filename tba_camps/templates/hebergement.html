@@ -1,0 +1,49 @@
+{% extends "dossier_base.html" %}
+{% load static %}
+{% load forms %}
+
+{% block title %}Réservation hébergement{% endblock %}
+
+{% block dossier_content %}
+
+<div class="dossier-block" id="stagiaires">
+  <h3>Mes inscriptions stagiaires</h3>
+  <table>
+    {% for s in object.stagiaire_set.all %}
+    <tr>
+      <td>{{ s.prenom }} {{ s.nom }}</td>
+      <td><em>Semaines :</em> <strong>{{ s.semaines_str }}</strong></td>
+      <td><small>{{ s.formule }}</small></td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+
+<h2>Réservation hébergement</h2>
+
+{% if form.errors %}
+<div class="error">
+  <p>ERREUR&nbsp;: Veuillez corriger les erreurs ci-dessous.</p>
+  <ul style="margin: 2ex">
+    {% for e in form.non_field_errors %}
+    <li>{{ e }}</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+<form action="" method="post" class="pure-form pure-form-aligned">
+  {% csrf_token %}
+
+  <div id="inscription-data" class="fieldgroup">
+    <fieldset>
+      {{ form.semaines | cgroup }}
+      {{ form.hebergement | cgroup }}
+    </fieldset>
+  </div>
+  
+  <button type="submit" class="pure-button pure-button-primary">Réserver</button>
+  <a href="{% url 'dossier_view' %}" class="pure-button">Annuler</a>
+</form>
+
+{% endblock %}

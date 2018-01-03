@@ -26,7 +26,7 @@ def send_mail(subject, recipients, template, obj, ctx=None):
 def preinscr(obj):
     'Pre-inscription initiale'
     obj.send_mail()
-    admin_url = settings.HOST + reverse('admin:tba_camps_inscription_change', args=(obj.id,))
+    admin_url = settings.HOST + reverse('admin:tba_camps_dossier_change', args=(obj.id,))
     send_mail(
         subject="Nouvelle demande d'inscription",
         recipients=get_managers(),
@@ -37,7 +37,7 @@ def preinscr(obj):
 
 def inscr_modif(obj):
     'Telechargement de pieces jointes'
-    admin_url = settings.HOST + reverse('admin:tba_camps_inscription_change', args=(obj.id,))
+    admin_url = settings.HOST + reverse('admin:tba_camps_dossier_change', args=(obj.id,))
     send_mail(
         subject="Nouvelle pièce jointe",
         recipients=get_managers(),

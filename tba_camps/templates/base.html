@@ -42,7 +42,7 @@
 	  <ul>
 	    <li><a href="{% url 'static_pages' 'presentation' %}">Les nouvelles avant de s’inscrire</a></li>
             <li><a href="{% url 'pratique' %}">Dates, formules, prix et places disponibles</a></li>
-	    <li><a href="{% url 'register_form' %}">Inscriptions</a></li>
+	    <li><a href="{% url 'register_form' %}">{% if has_dossier %}<strong>Mes inscriptions</strong>{% else %}Inscriptions{% endif %}</a></li>
 	    <li><a href="{% url 'static_pages' 'arrivee-et-depart' %}">Vous êtes inscrit : Arrivée et départ</a></li>
 	    <li><a href="{% url 'static_pages' 'telechargements' %}">Les téléchargements </a></li>
 	    <li><a href="{% url 'static_pages' 'journee-type' %}">Une journée type</a></li>

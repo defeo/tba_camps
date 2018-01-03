@@ -2,9 +2,6 @@ $(function() {
     // Show/hide dependent fields
     $('#id_formule').on('change', 'input:checked', function() {
 	var $this = $(this);
-	$('#id_hebergement').trigger(this.dataset.hebergements
-				     ? 'show.formule'
-				     : 'hide.formule');
 	$('#id_chambre').trigger($this.data('chambre')
 				 ? 'show.formule'
 				 : 'hide.formule');
@@ -24,7 +21,7 @@ $(function() {
 			      ? 'show.formule'
 			      : 'hide.formule');
     });
-    $('#id_hebergement, #id_accompagnateur, #id_train, #id_chambre, #id_navette_a, #id_navette_r, #id_assurance, #id_mode').parent()
+    $('#id_accompagnateur, #id_train, #id_chambre, #id_navette_a, #id_navette_r, #id_assurance, #id_mode').parent()
 	.hide()
 	.on('show.formule hide.formule', function(e, speed) {
 	    $(this)[e.type]('slow');
@@ -41,19 +38,8 @@ $(function() {
 	    $(this)[e.type]('slow');
 	});
 
-    // Hebergement managemet
-    $('#id_semaines, #id_formule').on('change', function() {
-	// Get complet accomodations
-	var complet = [];
-	$('#id_semaines input:checked').each(function() {
-	    this.dataset.complet.split(',').forEach(function(h) {
-		if (h && complet.indexOf(h) < 0)
-		    complet.push(h);
-	    });
-	});
-	var applicable = String($('#id_formule input:checked').data('hebergements'));
-	applicable = applicable ? applicable.split(',') : [];
-	
+    // Complete formule/hebergement managemet
+    $('#id_semaines').on('change', function() {
 	// Function to disable options
 	var shutdown = function ($label, cond, clas) {
 	    $input = $label.find('input');
@@ -62,73 +48,31 @@ $(function() {
 	    $input.prop('disabled', cond);
 	    return cond;
 	};
-	// Disable complete accomodations
-	$('#id_hebergement label').each(function () {
-	    var $this = $(this);
-	    var $input = $this.find('input');
-	    shutdown($this, applicable.indexOf($input.val()) < 0, 'hidden');
-	    shutdown($this, complet.indexOf($input.val()) >= 0);
-	});
-	// Disable unavailable formules
-	// Select accomodation if unique
-	$('#id_formule label').each(function() {
-	    var $this = $(this);
-	    var $input = $(this).find('input');
-	    var h = String($input.data('hebergements'));
-	    if (h) {
-		var open = h.split(',').reduce(function(a,b) {
-		    return a.concat(complet.indexOf(b) >= 0 ? [] : [b]);
-		}, []);
-		
-		shutdown($this, open.length == 0);
-		
-		if (open.length == 1 && $input.is(':checked')) {
-		    $('#id_hebergement input[value=' + open[0] + ']').prop('checked', true);
-		}
-	    }
-	});
+	
+	var update = function(field, id) {
+	    // Get complete options
+	    var complet = [];
+	    $('#id_semaines input:checked').each(function() {
+		this.dataset[field + '_complet'].split(',').forEach(function(f) {
+		    if (f && complet.indexOf(f) < 0)
+			complet.push(f);
+		});
+	    });
+	    console.log(complet);
+	    
+	    // Disable unavailable options
+	    $(id + ' label').each(function() {
+		var $this = $(this);
+		var $input = $this.find('input');
+		shutdown($this, complet.indexOf($input.val()) >= 0);
+	    });
+	}
+	update('formule', '#id_formule');
+	update('hbgt', '#id_hebergement');
     });
     
-    // Update cost table
-    $('#id_semaines, #id_formule, #id_train, #id_assurance, #id_navette_a, #id_navette_r, #id_mode')
-	.on('change', function() {
-	    var formule = $('#id_formule input:checked'),
-		nsemaines = $('#id_semaines input:checked').length;
-	    if (!formule.length) return;
-	    var costs = {
-		prix       : formule.data('prix') * nsemaines,
-		cotisation : formule.data('cotisation'),
-		taxe       : formule.data('taxe'),
-		taxe_gym   : formule.data('taxe_gym') * nsemaines,
-		assurance  : $('#id_assurance input:checked').val(),
-		navette    : parseInt($('#id_navette_a input:checked').val()) 
-		             + parseInt($('#id_navette_r input:checked').val()),
-		train      : $('#id_train').val(),
-	    }
-	    
-	    var total = 0, acompte = 0, sum = $('#cost-summary');
-	    sum.find('.prix, .cotisation, .taxe, .taxe_gym, .assurance, .train, .navette')
-		.each(function() {
-		    var $this = $(this);
-		    var clas = $this.attr('class');
-		    var c = parseInt(costs[clas]);
-		    if (c == 0
-			|| (clas == 'train' && !formule.data('train'))
-			|| (clas == 'navette' && !formule.data('navette'))
-			|| (clas == 'assurance' && !formule.data('assurance'))) {
-			$this.hide('fast');
-		    } else {
-			total += c;
-			acompte += c * parseInt($this.data('acompte')) / 100;
-			$this.show('fast').find('td:nth-child(2)').html(c);
-		    }
-		});
-	    sum.find('.total td:nth-child(2)').html(total);
-	    sum.find('.acompte td:nth-child(2)').html(Math.floor(acompte));
-	});
-    
     // Trigger events if dependee fields are checked
-    $('#id_formule input:checked, #id_semaines input:checked').trigger('change');
+    $('#id_formule input:checked, #id_semaines input:checked, #id_hebergement input:checked').trigger('change');
     $('#id_licencie input:checked').trigger('change');
 
     // Async fetch license no from ffbb.com

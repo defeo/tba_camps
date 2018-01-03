@@ -1,0 +1,98 @@
+<!Doctype html>
+<html lang="fr">
+  <head>
+    <title>Bulletin d’inscription TBA {{ settings.ANNEE }} – {{ object.nom }} {{ object.prenom }}</title>
+    <style>
+      html {
+      -weasy-hyphens: auto;
+      font-size: 14px;
+      font-family: DejaVu Sans, sans;
+      }
+      
+      @page {
+      size: A4;
+      margin-left: 1cm;
+      margin-right: 1cm;
+      margin-top: 1cm;
+      margin-bottom: 1cm;
+      }
+
+      h1 {
+      text-align: center;
+      font-size: 2em;
+      }
+      em {
+      font-style: normal;
+      font-weight: bold;
+      text-decoration: underline;
+      }
+      small {
+      font-size: 0.8em;
+      }
+      
+      #auth p {
+      font-size: 0.8em;
+      text-align: justify;
+      }
+      #auth ul {
+      list-style-type: none;
+      }
+      #auth h2 {
+      font-size: 1em;
+      text-align: center;
+      margin: 4ex 0 1ex 0;
+      }
+      #sig {
+      font-size: 0.8em;
+      text-align: right;
+      margin: 2ex;
+      }
+
+      footer {
+      position: absolute;
+      width: 100%;
+      bottom: 0;
+      text-align: right;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Camps de basket TBA {{ settings.ANNEE }}</h1>
+    
+    <div id="auth">
+      <h2>AUTORISATION PARENTALE        DROIT À L’IMAGE</h2>
+      <p>A remplir par le responsable de l’enfant pour les mineurs</p>
+      <p>NOM (du responsable)
+	                                                              Prénom</p>
+      <p>Je soussigné, (père, mère, tuteur de) <b>{{ object.nom }} 
+	  {{ object.prenom }}</b>, né{% if object.sexe == 'F' %}e{% endif %}
+	le <b>{{ object.naissance }}</b>, demande son
+	adhésion à l’association TBA et sa participation au stage de Basket-ball organisé à
+	SUPERDEVOLUY du {{ object.semaines.first.debut }} au {{ object.semaines.last.fin }}.</p>
+      <p><em>Je déclare</em> que mon enfant répond aux conditions de santé exigées et que la fiche
+	sanitaire de liaison qui me sera envoyée sera jointe à son dossier.</p>
+      <p><em>J’accepte</em> les conditions de sécurité imposées par le centre de
+	vacances et toute transgression pourra être cause de renvoi.  Vous
+	serez prévenu par un avertissement préliminaire.</p>
+      <p><em>J’autorise</em> le responsable du séjour à lui faire donner tous les
+	soins, traitements médicaux ou hospitalisations rendus
+	nécessaires.  <em>Je m’engage</em> à assurer le remboursement des frais
+	avancés.</p>
+      <p><em>J’autorise</em> que des photos ou films pris pendant les camps
+	puissent être utilisés sur tout support diffusé par l’association
+	TBA (site Tba, Facebook, YouTube ou Dailymotion, dépliants ou chaînes de
+	télévision&hellip;)</p>
+      <p>En cas <em>d’opposition (pour le droit à l’image)</em>, veuillez
+	nous le signaler <em>par écrit</em> avant le début du séjour.</p>
+    </div>
+    <p id="sig">Date et signature (précédées de la mention « lu et approuvé »)</p>
+
+    <footer>
+      <small>compléter et téléverser dans
+	<a href="{{ object.dossier.get_full_url }}">votre dossier en
+	  ligne</a>,<br> ou retourner par courrier avec votre acompte
+	  à&nbsp;:</small><br> {{ settings.ADRESSE }}
+      </tr>
+    </footer>
+  </body>
+</html>

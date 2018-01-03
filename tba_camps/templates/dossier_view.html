@@ -1,21 +1,20 @@
 {% extends "dossier_base.html" %}
+{% load decimal %}
 
 {% block title %}Mon profil{% endblock %}
 
 {% block dossier_content %}
 
-<h2>Mon profil</h2>
-
 {% if messages %}
-<div class="messages">
+<ul class="messages">
   {% for message in messages %}
-  <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+  <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
   {% endfor %}
-</div>
+</ul>
 {% endif %}
 
 <div class="dossier-block" id="profile">
-  <h3>Mes informations
+  <h3>Mon profil
     <a href="{% url 'dossier_modify' %}">editer</a>
   </h3>
   <p><strong>{% if object.titre == 'M' %}M. {% elif object.titre == 'F' %}Mme. {% endif %}{{ object.prenom }} {{ object.nom }}</strong></p>
@@ -25,34 +24,163 @@
 </div>
 
 <div class="dossier-block" id="stagiaires">
-  <h3>Inscriptions stagiaires
+  <h3>Mes inscriptions stagiaires
     {% if object.is_editable %}
     <a href="{% url 'stagiaire_create' %}">ajouter</a>
     {% endif %}
   </h3>
-  <ul>
-    {% for s in object.stagiaire_set.all %}
+  {% if object.is_empty %}
+  <p class="centered">
+    <em>Votre dossier ne comporte aucune inscription.<br>
+      Veuillez <a href="{% url 'stagiaire_create' %}">ajouter</a> au
+      moins un stagiaire.</em></p>
+  {% else %}
+  <ul class="nice">
+    {% for s in stagiaires %}
     <li class="stagiaire">
       <div class="links">
 	{% if object.is_editable %}
-	<a href="{% url 'stagiaire_modify' s.pk %}">modifier</a>
-	<a href="{% url 'stagiaire_delete' s.pk %}">effacer</a>
+	<a href="{% url 'stagiaire_modify' s.object.pk %}">modifier</a>
+	<a href="{% url 'stagiaire_delete' s.object.pk %}">effacer</a>
 	{% endif %}
       </div>
-      <div class="nom">{{ s.prenom }} {{ s.nom }}</div>
-      <div class="formule"><em>Formule :</em> {{ s.formule }}</div>
-      <div class="semaines"><em>Semaines :</em> {{ s.semaines_str }}</div>
+      <div class="nom">{{ s.object.prenom }} {{ s.object.nom }}</div>
+      <div class="formule"><em>Formule :</em> {{ s.object.formule }}</div>
+      <div class="semaines"><em>Semaines :</em> {{ s.object.semaines_str }}</div>
+      <div class="pieces">
+	{% if object.accepts_uploads %}
+	<form action="{% url 'stagiaire_upload' s.object.pk %}" method="post" class="pure-form pure-form-aligned uploads"
+	      enctype="multipart/form-data">
+	  {% csrf_token %}
+	  <div class="fieldgroup">
+	    {% if not s.object.majeur %}
+	    <div class="pure-control-group">
+	      <label>{{ s.form.auth_paren.label }}<br>
+		<small><a href="{% url 'stagiaire_pdf_view' s.object.pk %}"
+			  target="_blank">télécharger</a></small>
+	      </label>
+	      {{ s.form.auth_paren }}
+	    </div>
+
+	    <div class="pure-control-group">
+	      <label>{{ s.form.fiche_sanit.label }}<br>
+	      	<small>
+		  télécharger
+		  (<a href="{{ settings.PIECES.sanitaire_doc }}" target="_blank">doc</a>)
+		  (<a href="{{ settings.PIECES.sanitaire_pdf }}" target="_blank">pdf</a>)
+		</small>
+	      </label>
+	      {{ s.form.fiche_sanit }}
+	    </div>
+	    {% endif %}
+	    
+	    {% if not s.object.licence %}
+	    <div class="pure-control-group">
+	      <label>{{ s.form.certificat.label }}</label>
+	      {{ s.form.certificat }}
+	    </div>
+	    {% endif %}
+	    
+	    <button type="submit" class="pure-button pure-button-primary">Mettre à jour</button>
+	  </div>
+	</form>
+	{% endif %}
+      </div>
     </li>
     {% endfor %}
   </ul>
+  {% endif %}
 </div>
 
+{% if object.semaines_hebergement %}
 <div class="dossier-block" id="hebergement">
-  <h3>Réservation hébergement</h3>
-</div>
+  <h3>Ma réservation hébergement
+    {% if object.is_editable %}
+    <a href="{% url 'hebergement_edit' %}">{% if object.hebergement %}modifier{% else %}ajouter{% endif %}</a>
+    {% endif %}
+  </h3>
 
-<div class="dossier-block" id="total">
+  {% if not object.hebergement and object.is_editable %}
+  <p class="centered">
+    <em>Les formules que vous avez choisies comportent la réservation
+      d'un hébergement du
+    <strong>{{ object.semaines_hebergement.predebut | date:"j F" }}</strong> au
+    <strong>{{ object.semaines_hebergement.fin | date:"j F Y" }}</strong> (au minimum).
+    Veuillez <a href="{% url 'hebergement_edit' %}">ajouter</a> une
+    réservation.</em></p>
+  {% else %}
+  <p>Vous avez réservé en <strong>{{ object.hebergement }}</strong> pour les semaines</p>
+  <ul>
+    {% for s in object.semaines.all %}
+    <li>{{ s }}{% if forloop.last %}.{% else %},{% endif %}</li>
+    {% endfor %}
+  </ul>
+  {% if object.is_complete or not object.is_editable %}
+  <p><strong>Modalité</strong></p>
+  {{ object.hebergement.md_commentaire }}
+  {% else %}
+  <p><strong>Attention !</strong> Votre réservation ne couvre pas
+    toutes les semaines.
+    Veuillez la <a href="{% url 'hebergement_edit' %}">mettre à jour</a>.
+  </p>
+  {% endif %}
+  {% endif %}
 </div>
+{% endif %}
+
+{% if object.prix_total %}
+<div class="dossier-block" id="total">
+  <h3>Prix</h3>
+
+  <table>
+
+    {% for s in object.stagiaire_set.all %}
+    <tbody>
+      <tr>
+	<td colspan="2"><strong>{{ s.prenom }} {{ s.nom }}</strong> ({{ s.formule }} – {{ s.semaines_str }})</td>
+      </tr>
+      {% for c in s.desc_costs %}
+      <tr><td class="subcost">{{ c.desc | capfirst }}</td><td class="price">{{ c.cost }}€</td></tr>
+      {% endfor %}
+      <tr><td class="total"></td><td class="price">{{ s.prix | strip_cents }}€</td></tr>
+    </tbody>
+    {% endfor %}
+    
+    {% if object.hebergement and object.hebergement.managed == 'M' %}
+    <tbody>
+      <tr>
+	<td>Réservation <strong>{{ object.hebergement }}</strong> ({{ object.semaines_str }})</td>
+	<td class="price">{% if object.prix_hebergement %}{{ object.prix_hebergement }}€{% else %}<em>en attente</em>{% endif %}</td>
+      </tr>
+    </tbody>
+    {% endif %}
+
+    <tbody>
+      {% if object.supplement %}
+      <tr><td>{{ object.motif }}</td><td class="price">{{ object.supplement }}€</td></tr>
+      {% endif %}
+      {% if object.remise %}
+      <tr><td>{{ object.motif_rem }}</td><td class="price">-{{ object.remise }}€</td></tr>
+      {% endif %}
+    </tbody>
+    
+    <tfoot>
+      <tr>
+	<td class="total">Total</td>
+	<td class="price">{{ object.prix_total | strip_cents }}€</td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+{% endif %}
+
+{% if object.is_editable %}
+<div class="centered">
+  <a class="pure-button pure-button-primary" href="{% url 'dossier_confirm' %}"
+     {% if not object.is_complete %}disabled{% endif %}>
+    Confirmer les demandes d'inscription</a>
+</div>
+{% endif %}
 
 {% endblock %}
 

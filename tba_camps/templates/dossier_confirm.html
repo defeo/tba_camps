@@ -1,0 +1,51 @@
+{% extends "dossier_base.html" %}
+{% load forms %}
+
+{% block title %}Confirmer demandes d'inscription{% endblock %}
+
+{% block dossier_content %}
+
+<h2>Confirmer demandes d'inscription</h2>
+
+<p>Voulez-vous confirmer les inscriptions des stagaires ci-dessous ?</p>
+
+<ul>
+  {% for s in object.stagiaire_set.all %}
+  <li class="stagiaire">
+    <div class="nom">{{ s.prenom }} {{ s.nom }}</div>
+    <div class="formule"><em>Formule :</em> {{ s.formule }}</div>
+    <div class="semaines"><em>Semaines :</em> {{ s.semaines_str }}</div>
+  </li>
+  {% endfor %}
+</ul>
+
+{% if object.hebergement %}
+<p>Et la réservation en <strong>{{ object.hebergement }}</strong> pour les semaines ci-dessous ?</p>
+<ul>
+  {% for s in object.semaines.all %}
+  <li>{{ s }}{% if forloop.last %}.{% else %},{% endif %}</li>
+  {% endfor %}
+</ul>
+{% endif %}
+
+<p><strong>Attention :</strong> après confirmation vous ne pourrez
+  plus modifier cette demande.</p>
+
+<p>Vous allez recevoir un récapitulatif de ces inscriptions à
+  l'adresse {{ object.email }}.</p>
+
+<form action="" method="post" class="pure-form pure-form-aligned">
+  {% csrf_token %}
+
+  <div class="fieldgroup">
+    <fieldset>
+      {{ form.notes | cgroup }}
+      {{ form.caf | cgroup }}
+    </fieldset>
+  </div>
+  
+  <button type="submit" class="pure-button pure-button-primary">Confirmer</button>
+  <a href="{% url 'dossier_view' %}" class="pure-button">Annuler</a>
+</form>
+
+{% endblock %}

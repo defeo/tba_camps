@@ -1,0 +1,28 @@
+{% if obj.titre == 'M' %}Cher{% elif obj.titre == 'F' %}Chère{% else %}Cher(e){% endif %} {{ obj.prenom }} {{ obj.nom }},
+
+Votre dossier d'inscritpion TBA {{ settings.ANNEE }} est accessible en
+ligne à l'adresse
+
+{{ obj.get_full_url }}
+
+{% if not obj.is_empty %}
+Il contient les inscriptions suivantes :
+
+{% for s in obj.stagiaire_set.iterator %}
+- {{ s.prenom }} {{ s.nom }} ({{ s.formule }} – {{ s.semaines_str }})</li>
+{% endfor %}
+{% endif %}
+{% if obj.hebergement %}
+
+Et la réservation en {{ obj.hebergement }} pour les semaines
+suivantes :
+
+{% for s in obj.semaines.all %}
+- {{ s }}{% if forloop.last %}.{% else %},{% endif %}
+{% endfor %}
+{% endif %}
+
+Sportivement,
+
+--
+Team Basket Association
