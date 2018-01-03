@@ -10,6 +10,5 @@ MEDIA_ROOT = '/tmp/'
 HOST = 'http://tba-camps.herokuapp.com'
 
 # Mail settings
-INSTALLED_APPS += ('djrill',)
-MANDRILL_API_KEY = os.environ['MANDRILL_APIKEY']
-EMAIL_BACKEND = 'djrill.mail.backends.djrill.DjrillBackend'
+EMAIL_BACKEND = "sgbackend.SendGridBackend"
+SENDGRID_API_KEY = os.environ['SENDGRID_API_KEY']
