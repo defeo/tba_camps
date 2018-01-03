@@ -8,6 +8,7 @@ DATABASES['default'] =  dj_database_url.config()
 MEDIA_ROOT = '/tmp/'
 
 HOST = 'http://tba-camps.herokuapp.com'
+ALLOWED_HOSTS.append('tba-camps.herokuapp.com')
 
 # Mail settings
 EMAIL_BACKEND = "sgbackend.SendGridBackend"
