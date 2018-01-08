@@ -13,3 +13,4 @@ ALLOWED_HOSTS.append('tba-camps.herokuapp.com')
 # Mail settings
 EMAIL_BACKEND = "sgbackend.SendGridBackend"
 SENDGRID_API_KEY = os.environ['SENDGRID_API_KEY']
+FROM_EMAIL = 'TBA Test <tba@camps-basket.com>'
