@@ -267,9 +267,18 @@ class Dossier(ModelWFiles):
     def prix_stagiaires(self):
         return sum(s.prix() for s in self.stagiaire_set.iterator())
 
+    def avance_stagiaires(self):
+        return sum(s.avance() for s in self.stagiaire_set.iterator())
+    
     def prix_total(self):
         return self.prix_stagiaires() + self.prix_hebergement + self.supplement - self.remise
 
+    def avance(self):
+        return self.prix_hebergement * Decimal('0.3')
+
+    def avance_total(self):
+        return self.avance_stagiaires() + self.avance()
+    
     def reste(self):
         return self.prix_total() - self.acompte
     

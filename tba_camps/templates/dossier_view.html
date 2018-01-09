@@ -169,6 +169,21 @@
 	<td class="total">Total</td>
 	<td class="price">{{ object.prix_total | strip_cents }}€</td>
       </tr>
+      {% if object.acompte %}
+      <tr>
+	<td class="total">Acompte donné</td>
+	<td class="price">{{ object.acompte | strip_cents }}€</td>
+      </tr>
+      <tr>
+	<td class="total"><strong>Solde dû</strong></td>
+	<td class="price">{{ object.reste | strip_cents }}€</td>
+      </tr>
+      {% else %}
+      <tr>
+	<td class="total"><strong>Acompte dû</strong></td>
+	<td class="price">{{ object.avance | strip_cents }}€</td>
+      </tr>
+      {% endif %}
     </tfoot>
   </table>
 </div>
@@ -179,6 +194,87 @@
   <a class="pure-button pure-button-primary" href="{% url 'dossier_confirm' %}"
      {% if not object.is_complete %}disabled{% endif %}>
     Confirmer les demandes d'inscription</a>
+</div>
+{% elif object.etat == etats.PREINSCRIPTION %}
+<div class="dossier-block">
+  <h3>Merci de votre demande d'inscription</h3>
+
+  <p>Nous allons vérifier les disponibilités, appliquer les
+    éventuelles réductions, et nous reviendrons rapidement vers
+    vous.</p>
+
+  <p>Dans l'attente, vous pouvez commencer à téléverser les pièces
+    justificatives pour les stagiaires ci-dessus.</p>
+  
+  <p><strong>Vous allez recevoir un email dès la validation de votre
+      demande.</strong></p>
+</div>
+{% elif object.etat == etats.VALID %}
+<div class="dossier-block">
+  <h3>Votre demande d'inscription est acceptée !</h3>
+
+  <p><strong>Merci d’envoyer, avant 8 jours, votre règlement par
+      courrier à l’adresse</strong></p>
+
+  <blockquote class="adress">{{ settings.ADRESSE }}</blockquote>
+
+  <p>Il peut être réglé avec 2 ou 3 chèques que nous encaissons à un
+    mois d’intervalle. Veuillez noter au verso votre nom, numéro(s) de
+    semaine(s), et la date d’encaissement désirée. Pour un virement
+    plus rapide, demandez notre RIB.</p>
+  <p>TBA accepte les Chèques Vacances ainsi que les bons vacances de
+    certaines CAF et les bons AVE du dispositif VACAF. Joindre votre
+    attestation CAF au moment de l’inscription ou le plus rapidement
+    possible, et impérativement deux semaines avant le début du séjour,
+    sous peine de ne pouvoir le prendre en compte.</p>
+  <p>Merci de joindre, si vous ne les avez pas téléversées : les
+      authorisations parentales, les fiches sanitaires, et les
+    certificats médicaux (ou photocopies des licences FFBB)</p>
+  <p>Dès réception de votre règlement vous recevrez une confirmation
+    d’inscription par email.</p>
+</div>
+{% elif object.etat == etats.COMPLETE %}
+<div class="dossier-block">
+  <h3>Votre inscription est complète</h3>
+
+  <p><strong>Nous vous attendons aux camps SUPERDEVOLUY !</strong></p>
+    
+  <p>Trouvez tous les
+    <a href="{{ settings.PIECES.renseignements_pdf }}">renseignements pratiques</a>
+    sur le camp de SUPERDEVOLUY
+    <a href="{{ settings.PIECES.renseignements_pdf }}">ICI</a>.
+    {% if not object.formule.adulte %}
+    À votre arrivée au camp nous vous offrons <strong>TROIS CADEAUX :</strong>
+    {% endif %}
+  </p>
+
+  {% if not object.formule.adulte %}
+  <ul class="cadeaux">
+    <li>Un maillot réversible,</li>
+    <li>Un short,</li>
+    <li>Une gourde.</li>
+  </ul>
+  {% endif %}
+  
+  <p>À la fin du stage nous vous offrons la photo souvenir de votre
+    camp.</p>
+
+  <p>Bon camp {{ settings.ANNEE }},</p>
+
+  <p class="signature">Jean-Michel SENEGAL</p>
+
+</div>
+
+<div class="dossier-block">
+  {% include "includes/parrainage.html" %}
+</div>
+{% elif object.etat == etats.CANCELED %}
+<div class="dossier-block">
+  <h3>Votre dossier a été annulé</h3>
+
+  <p>Veuillez nous contacter à l'adresse
+    <a href="mailto:{{ settings.FROM_EMAIL }}">{{ settings.FROM_EMAIL }}</a>
+    pour tout renseignement.</p>
 </div>
 {% endif %}
 

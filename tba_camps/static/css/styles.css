@@ -465,6 +465,19 @@ h1 small, h2 small, h3 small {
     padding: 0.1ex 1em;
 }
 
+blockquote {
+    text-align: center;
+    font-size: 120%;
+    margin: 1ex;
+}
+
+.signature {
+    text-align: right;
+    margin: 2ex 5em 2ex 0;
+    font-size: 110%;
+    font-style: italic;
+}
+
 /****************/
 
 li.stagiaire {
@@ -572,10 +585,7 @@ li.stagiaire .nom {
 #total .subcost {
     padding-left: 4em;
 }
-#total tbody tr:first-child td {
-    padding-top: 1em;
-}
-#total tfoot td {
-    font-weight: bold;
+#total tr:first-child td,
+#total tr:first-child td {
     padding-top: 1em;
 }
