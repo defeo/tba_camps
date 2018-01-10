@@ -11,6 +11,10 @@ def cp(request):
             'VALID': models.VALID,
             'COMPLETE': models.COMPLETE,
             'CANCELED': models.CANCELED,
+            },
+        'modes_h': {
+            'MANAGED': models.MANAGED,
+            'EXTERNAL': models.EXTERNAL,
             }
         }
 

@@ -88,6 +88,13 @@
       </div>
     </li>
     {% endfor %}
+    {% if object.is_editable %}
+    <li class="stagiaire centered">
+      <strong><em>
+	  <a href="{% url 'stagiaire_create' %}">ajouter un autre stagiaire…</a>
+      </em></strong>
+    </li>
+    {% endif %}
   </ul>
   {% endif %}
 </div>
@@ -146,7 +153,7 @@
     </tbody>
     {% endfor %}
     
-    {% if object.hebergement and object.hebergement.managed == 'M' %}
+    {% if object.hebergement and object.hebergement.managed == modes_h.MANAGED %}
     <tbody>
       <tr>
 	<td>Réservation <strong>{{ object.hebergement }}</strong> ({{ object.semaines_str }})</td>
@@ -181,7 +188,7 @@
       {% else %}
       <tr>
 	<td class="total"><strong>Acompte dû</strong></td>
-	<td class="price">{{ object.avance | strip_cents }}€</td>
+	<td class="price">{{ object.avance_total | strip_cents }}€</td>
       </tr>
       {% endif %}
     </tfoot>

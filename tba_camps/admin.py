@@ -237,7 +237,7 @@ class StagiaireAdmin(admin.ModelAdmin):
     list_display_links = ('nom', 'prenom')
     list_editable  = ('parrain',)
     list_filter    = (StagiaireFilter, 'semaines')
-    search_fields  = ('nom', 'prenom'),
+    search_fields  = ('nom', 'prenom')
     readonly_fields = ('age', 'prix', 'prix_formule', 'email', 'etat', 'tel', 'dossier_link')
     save_on_top = True
     fields  = (

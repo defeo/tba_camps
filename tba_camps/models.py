@@ -229,7 +229,8 @@ class Dossier(ModelWFiles):
     date_valid = models.DateField('Date validation', null=True, blank=True)
     ###
     semaines = models.ManyToManyField(Semaine)
-    hebergement = models.ForeignKey(Hebergement, null=True, on_delete=models.SET_NULL)
+    hebergement = models.ForeignKey(Hebergement, null=True, blank=True,
+                                        on_delete=models.SET_NULL)
     prix_hebergement = models.DecimalField('Prix hébergement', default=0,
                                            max_digits=10, decimal_places=2)
     fiche_hotel = FileField('Réservation hébergement', blank=True, null=True)
@@ -274,7 +275,7 @@ class Dossier(ModelWFiles):
         return self.prix_stagiaires() + self.prix_hebergement + self.supplement - self.remise
 
     def avance(self):
-        return self.prix_hebergement * Decimal('0.3')
+        return (self.hebergement and self.hebergement.managed == MANAGED) * 150
 
     def avance_total(self):
         return self.avance_stagiaires() + self.avance()
