@@ -229,7 +229,7 @@ class Dossier(ModelWFiles):
     date = models.DateTimeField('Date inscription', auto_now_add=True)
     date_valid = models.DateField('Date validation', null=True, blank=True)
     ###
-    semaines = models.ManyToManyField(Semaine)
+    semaines = models.ManyToManyField(Semaine, blank=True)
     hebergement = models.ForeignKey(Hebergement, null=True, blank=True,
                                         on_delete=models.SET_NULL)
     prix_hebergement = models.DecimalField('Prix hébergement', default=0,
