@@ -170,6 +170,12 @@
       <tr><td>{{ object.motif_rem }}</td><td class="price">-{{ object.remise }}€</td></tr>
       {% endif %}
     </tbody>
+
+    <tbody>
+      {% if object.assurance and object.prix_assurance %}
+      <tr><td>Assurance annulation</td><td class="price">{{ object.prix_assurance }}€</td></tr>
+      {% endif %}
+    </tbody>
     
     <tfoot>
       <tr>

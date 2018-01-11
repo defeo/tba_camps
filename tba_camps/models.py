@@ -238,6 +238,7 @@ class Dossier(ModelWFiles):
                                             default=False)
     ###
     notes = models.TextField(default='', blank=True)
+    assurance = models.BooleanField('Assurance annulation', default=True)
     caf = models.CharField("Je bénéficie d'une aide CAF ou VACAF", max_length=1,
                            choices=[('O', 'Oui'), ('N', 'Non')], default='N')
     
@@ -270,12 +271,15 @@ class Dossier(ModelWFiles):
 
     def avance_stagiaires(self):
         return sum(s.avance() for s in self.stagiaire_set.iterator())
+
+    def prix_assurance(self):
+        return sum(s.formule.affiche_assurance * 6 for s in self.stagiaire_set.iterator())
     
     def prix_total(self):
-        return self.prix_stagiaires() + self.prix_hebergement + self.supplement - self.remise
+        return self.prix_stagiaires() + self.assurance*self.prix_assurance() + self.prix_hebergement + self.supplement - self.remise
 
     def avance(self):
-        return (self.hebergement and self.hebergement.managed == MANAGED) * 150
+        return self.assurance*self.prix_assurance() + (self.hebergement and self.hebergement.managed == MANAGED) * 150
 
     def avance_total(self):
         return self.avance_stagiaires() + self.avance()
@@ -386,10 +390,6 @@ class Stagiaire(ModelWFiles):
                                     max_digits=10, decimal_places=2,
                                     choices=[(Decimal('0'), 'Non'),
                                              (Decimal('6'), 'Oui (6€)')])
-    assurance = models.DecimalField('Assurance annulation', default=Decimal('6'),
-                                    max_digits=10, decimal_places=2,
-                                    choices=[(Decimal('0'), 'Non'), 
-                                             (Decimal('6'), 'Avec assurance (6€)')])
     parrain = models.BooleanField("Parrain", default=False)
     nom_parrain = models.CharField('NOM Prénom parrain', max_length=255, blank=True)
     adr_parrain = models.CharField('Adresse parrain', max_length=255, blank=True)
@@ -439,7 +439,6 @@ class Stagiaire(ModelWFiles):
         costs = self.costs_formule()
         costs.update({
             Stagiaire._meta.get_field('train')            : (self.train.quantize(Decimal('0.00')), 1, 2),
-            Stagiaire._meta.get_field('assurance')        : (self.assurance, 1, 1),
             Stagiaire._meta.get_field('navette_a')        : (self.navette_a, 1, 1),
             Stagiaire._meta.get_field('navette_r')        : (self.navette_r, 1, 1),
             })

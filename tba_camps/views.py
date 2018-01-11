@@ -181,17 +181,32 @@ class DossierLastForm(forms.ModelForm):
     error_css_class = 'error'
     required_css_class = 'required'
 
+    assurance_confirm = forms.BooleanField(label='Je reconnais', required=False)
+
+    class Media:
+        js = ('//code.jquery.com/jquery-1.12.4.min.js', 
+              'js/assurance.js')
+    
     class Meta:
         model = Dossier
-        fields = ['notes', 'caf']
+        fields = ['notes', 'assurance', 'caf']
         widgets = {
             'notes': widgets.Textarea(attrs={'rows' : 5}),
+            'assurance' :  widgets.RadioSelect(
+                choices=[(False,'Non'), (True,'Avec assurance (6€ par stagiaire)')]),
             'caf' :  widgets.RadioSelect,
             }
         help_texts = {
             'notes': "N'hésitez pas à nous signaler toute situation particulière.",
         }
-    
+
+    def clean_assurance_confirm(self):
+        confirm = self.cleaned_data['assurance_confirm']
+        print(confirm)
+        if not confirm and not self.cleaned_data['assurance']:
+            raise ValidationError('Veuillez cocher la case')
+        return confirm
+            
 class DossierConfirm(SessionDossierMixin, UpdateView):
     template_name = 'dossier_confirm.html'
     model = Dossier
@@ -249,14 +264,13 @@ class StagiaireForm(forms.ModelForm):
                       'niveau', 'licence', 'club', 'venu',
                       'semaines', 'formule',
                       'chambre', 'accompagnateur', 'train',
-                      'navette_a', 'navette_r', 'assurance', 
+                      'navette_a', 'navette_r',
                       'nom_parrain', 'adr_parrain']
         widgets = {
             'sexe' : widgets.RadioSelect,
             'naissance' : my_widgets.DatePicker,
             'navette_a' : widgets.RadioSelect,
             'navette_r' : widgets.RadioSelect,
-            'assurance' : widgets.RadioSelect,
             'venu' :  widgets.RadioSelect,
         }
         help_texts = {
@@ -295,8 +309,6 @@ class StagiaireForm(forms.ModelForm):
                 cleaned_data['train'] = 0
             if not formule.affiche_navette:
                 cleaned_data['navette_a'] = cleaned_data['navette_r'] = 0
-            if not formule.affiche_assurance:
-                cleaned_data['assurance'] = 0
                 
             if not formule.affiche_accompagnateur:
                 cleaned_data['accompagnateur'] = ''

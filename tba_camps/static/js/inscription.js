@@ -14,14 +14,11 @@ $(function() {
 	$('#id_navette_a, #id_navette_r').trigger($this.data('navette')
 						  ? 'show.formule'
 						  : 'hide.formule');
-	$('#id_assurance').trigger($this.data('assurance')
-			       ? 'show.formule'
-			       : 'hide.formule');
 	$('#id_mode').trigger($this.data('mode')
 			      ? 'show.formule'
 			      : 'hide.formule');
     });
-    $('#id_accompagnateur, #id_train, #id_chambre, #id_navette_a, #id_navette_r, #id_assurance, #id_mode').parent()
+    $('#id_accompagnateur, #id_train, #id_chambre, #id_navette_a, #id_navette_r, #id_mode').parent()
 	.hide()
 	.on('show.formule hide.formule', function(e, speed) {
 	    $(this)[e.type]('slow');
