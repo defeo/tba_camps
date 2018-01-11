@@ -65,6 +65,7 @@ class Formule(OrderedModel):
     nom = models.CharField(max_length=255)
     description = models.TextField()
     prix = models.DecimalField('Prix formule', max_digits=10, decimal_places=2)
+    acompte = models.DecimalField('Acompte', max_digits=10, decimal_places=2)
     taxe = models.DecimalField('Taxe ménage', default=0, max_digits=10, decimal_places=2)
     taxe_gym = models.DecimalField('Taxe gymnase', default=0, max_digits=10, decimal_places=2)
     cotisation = models.DecimalField('Cotisation TBA', default=15, max_digits=10, decimal_places=2)
@@ -91,10 +92,10 @@ class Formule(OrderedModel):
 
     def costs(self):
         return {
-            Formule._meta.get_field('prix')       : (self.prix, True, 2),
-            Formule._meta.get_field('taxe_gym')   : (self.taxe_gym, True, 2),
-            Formule._meta.get_field('taxe')       : (self.taxe, False, 1),
-            Formule._meta.get_field('cotisation') : (self.cotisation, False, 1)
+            Formule._meta.get_field('prix')       : (self.prix, True, self.acompte),
+            Formule._meta.get_field('taxe_gym')   : (self.taxe_gym, True, self.taxe_gym / 2),
+            Formule._meta.get_field('taxe')       : (self.taxe, False, self.taxe),
+            Formule._meta.get_field('cotisation') : (self.cotisation, False, self.cotisation)
             }
 
 class Semaine(models.Model):
@@ -279,7 +280,7 @@ class Dossier(ModelWFiles):
         return self.prix_stagiaires() + self.assurance*self.prix_assurance() + self.prix_hebergement + self.supplement - self.remise
 
     def avance(self):
-        return self.assurance*self.prix_assurance() + (self.hebergement and self.hebergement.managed == MANAGED) * 150
+        return self.assurance*self.prix_assurance() + bool(self.hebergement and self.hebergement.managed == MANAGED) * 150
 
     def avance_total(self):
         return self.avance_stagiaires() + self.avance()
@@ -431,16 +432,16 @@ class Stagiaire(ModelWFiles):
     
     def costs_formule(self):
         sem = self.semaines.count()
-        costs = {k: (val, sem**by_sem, frac)
-                 for k, (val, by_sem, frac) in self.formule.costs().items()}
+        costs = {k: (val, sem**by_sem, ava)
+                 for k, (val, by_sem, ava) in self.formule.costs().items()}
         return costs
     
     def costs(self):
         costs = self.costs_formule()
         costs.update({
-            Stagiaire._meta.get_field('train')            : (self.train.quantize(Decimal('0.00')), 1, 2),
-            Stagiaire._meta.get_field('navette_a')        : (self.navette_a, 1, 1),
-            Stagiaire._meta.get_field('navette_r')        : (self.navette_r, 1, 1),
+            Stagiaire._meta.get_field('train')            : (self.train.quantize(Decimal('0.00')), 1, self.train.quantize(Decimal('0.00')) / 2),
+            Stagiaire._meta.get_field('navette_a')        : (self.navette_a, 1, self.navette_a),
+            Stagiaire._meta.get_field('navette_r')        : (self.navette_r, 1, self.navette_r),
             })
         return costs
 
@@ -461,8 +462,8 @@ class Stagiaire(ModelWFiles):
     prix.short_description = 'Total'
 
     def avance(self):
-        return min(sum(val * count // frac
-                       for (val, count, frac) in self.costs().values() if frac is not None),
+        return min(sum(ava * count
+                       for (_, count, ava) in self.costs().values()),
                     self.prix())
 
     def save(self, *args, **kwds):

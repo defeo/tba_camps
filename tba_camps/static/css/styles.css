@@ -550,7 +550,6 @@ li.stagiaire .nom {
     text-decoration: line-through;
 }
 
-#pay-block { display: inline-block }
 #cost-summary { 
     display: inline-table;
     vertical-align: middle;
