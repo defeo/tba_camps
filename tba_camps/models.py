@@ -441,7 +441,7 @@ class Stagiaire(ModelWFiles):
     def missing(self):
         return ', '.join(getattr(self, f).field.verbose_name
                              for f in self._file_fields
-                             if getattr(self, 'misses_' + f))
+                             if getattr(self, 'misses_' + f)())
     
     def semaines_str(self):
         return ', '.join('S%d' % s.ord() for s in self.semaines.iterator())
