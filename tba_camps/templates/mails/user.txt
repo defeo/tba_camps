@@ -1,6 +1,6 @@
 {% if obj.titre == 'M' %}Cher{% elif obj.titre == 'F' %}Chère{% else %}Cher(e){% endif %} {{ obj.prenom }} {{ obj.nom }},
 
-{% if obj.etat == etats.PREINSCRIPTION %}Merci de votre demande d'inscription.{% elif obj.etat == etats.VALIDE %}Votre demande d'inscription est acceptée.{% elif obj.etat == etats.COMPLETE %}Votre demande d'inscription est complète.{% endif %} Votre dossier d'inscritpion
+{% if obj.etat == etats.PREINSCRIPTION %}Merci de votre demande d'inscription.{% elif obj.etat == etats.VALID %}Votre demande d'inscription est acceptée.{% elif obj.etat == etats.COMPLETE %}Votre demande d'inscription est complète.{% endif %} Votre dossier d'inscritpion
 TBA {{ settings.ANNEE }} est accessible en ligne à l'adresse
 
 {{ obj.get_full_url }}

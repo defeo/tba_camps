@@ -35,8 +35,11 @@ Remember. Workflow is:
 
 # Other
 
+[] Fix backups!
 [] Handle broken Chrome autocompletion
 [~] Acompte accompagnateur
 [] Redo fixtures
 [] Rewrite tests
 [] Update sms
+[] Fix ordered models
+[] Modifier stagiaire breaks again boolean fields
