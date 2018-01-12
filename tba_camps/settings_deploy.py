@@ -42,18 +42,18 @@ FROM_EMAIL = os.environ.get('MAIL_FROM') or 'Camps de basket TBA <tba@camps-bask
 
 # Pieces PDF, Word, etc.
 PIECES = {
-    'inscription':           '/tba/pdf/Bulletin-inscription-2017.pdf',
-    'TBA':                   '/tba/pdf/TBA-2017.pdf',
+    'inscription':           '/tba/pdf/Bulletin-inscription-2018.pdf',
+    'TBA':                   '/tba/pdf/TBA-2018.pdf',
     'renseignements_doc':    '/tba/pdf/Renseignements-pour-le-camp-2017.doc',
     'renseignements_pdf':    '/tba/pdf/Renseignements-pour-le-camp-2017.pdf',
-    'sanitaire_doc':         '/tba/pdf/Fiche-sanitaire-2016.docx',
-    'sanitaire_pdf':         '/tba/pdf/Fiche-sanitaire-2016.pdf',
+    'sanitaire_doc':         '/tba/pdf/Fiche-sanitaire-2018.docx',
+    'sanitaire_pdf':         '/tba/pdf/Fiche-sanitaire-2018.pdf',
     'autorisation_doc':      '/tba/pdf/2016-autorisation-parentale.doc',
     'autorisation_pdf':      '/tba/pdf/2016-autorisation-parentale.pdf',
     'margot':                '/tba/pdf/CHALETS-RESIDENCE-ETE-2017-PRIX-PUBLIC.pdf',
-    'hameau_resa':           '/tba/pdf/Fiche-de-reservation-Hameau-du-Puy-2017.doc',
-    'hameau_resa_pdf':       '/tba/pdf/Fiche-de-reservation-Hameau-du-Puy-2017.pdf',
+    'hameau_resa':           '/tba/pdf/Fiche-de-reservation-Hameau-du-Puy-2018.doc',
+    'hameau_resa_pdf':       '/tba/pdf/Fiche-de-reservation-Hameau-du-Puy-2018.pdf',
     'hameau_tarif':          '/tba/pdf/tarif-hameau-du-puy-TBA-2017.docx',
-    'hameau_tarif_pdf':      '/tba/pdf/renseignements-locations-hameau-du-puy-2017.pdf',
+    'hameau_tarif_pdf':      '/tba/pdf/renseignements-locations-hameau-du-puy-2018.pdf',
     'devoluy' :              '/tba/pdf/RESERVATION-EN-DEVOLUY-TARIFS-PUBLICS-ETE-2017.pdf',
 }
