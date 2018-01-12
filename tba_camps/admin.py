@@ -166,13 +166,12 @@ class DossierAdmin(admin.ModelAdmin):
         ('etat', 'date_valid'),
         ('nom', 'prenom'),
         ('stagiaires',),
-        ('mode_solde',),
+        ('semaines', 'hebergement', 'prix_hebergement'),
         ('remise', 'motif_rem'),
         ('supplement', 'motif'),
-        ('prix_total', 'acompte', 'mode', 'reste'),
-        ('hebergement', 'prix_hebergement'),
         ('assurance',),
-        ('semaines',),
+        ('prix_total', 'acompte', 'mode', 'reste'),
+        ('mode_solde',),
         ('email', 'tel'),
         ('adresse', 'cp', 'ville', 'pays'),
         ('notes', 'caf'),
@@ -191,14 +190,17 @@ class DossierAdmin(admin.ModelAdmin):
         return [my_url] + urls 
 
     def stagiaires(self, obj):
-        return mark_safe('<br>'.join('''<a href="{url}">{nom} {prenom}</a>
-        ({formule} – {sems})'''.format(
+        return mark_safe('<table><tr>' + '</tr><tr>'.join(
+    '''<td><a href="{url}">{nom} {prenom}</a></td>
+<td>({formule} – {sems})</td>
+<td><b>{prix}€</b></td>'''.format(
             url=reverse_lazy('admin:tba_camps_stagiaire_change', args=(s.pk,)),
             nom=s.nom,
             prenom=s.prenom,
             formule=s.formule,
             sems=s.semaines_str(),
-            ) for s in obj.stagiaire_set.iterator()))
+            prix=s.prix(),
+            ) for s in obj.stagiaire_set.iterator()) + '</tr></table>')
     stagiaires.short_description = 'Inscriptions'
     
     def send_mail(self, request, obj_id):
