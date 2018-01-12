@@ -267,6 +267,9 @@ class Dossier(ModelWFiles):
                          (self.hebergement and
                               not self.semaines_hebergement.exclude(pk__in=self.semaines.all()))))
 
+    def misses(self):
+        return any(s.misses() for s in self.stagiaire_set.iterator())
+
     def prix_stagiaires(self):
         return sum(s.prix() for s in self.stagiaire_set.iterator())
 
@@ -422,6 +425,23 @@ class Stagiaire(ModelWFiles):
 
     def majeur(self):
         return self.age() > 18
+
+    def misses_auth_paren(self):
+        return not self.majeur() and not self.auth_paren_snail
+
+    def misses_fiche_sanit(self):
+        return not self.majeur() and not self.fiche_sanit_snail
+
+    def misses_certificat(self):
+        return not self.licence and not self.certificat_snail
+
+    def misses(self):
+        return self.misses_auth_paren() or self.misses_fiche_sanit() or self.misses_certificat()
+    
+    def missing(self):
+        return ', '.join(getattr(self, f).field.verbose_name
+                             for f in self._file_fields
+                             if getattr(self, 'misses_' + f))
     
     def semaines_str(self):
         return ', '.join('S%d' % s.ord() for s in self.semaines.iterator())

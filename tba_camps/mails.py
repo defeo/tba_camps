@@ -4,6 +4,7 @@ from django.core import mail
 from django.conf import settings
 from django.template.loader import render_to_string
 from django.urls import reverse
+from .context_processor import cp
 
 def get_managers():
     'Liste des administrateurs qui recoivent les notifications'
@@ -13,7 +14,7 @@ def get_managers():
 def send_mail(subject, recipients, template, obj, ctx=None):
     "Fonction d'utilite pour envoyer des mails"
     ctx = ctx or {}
-    ctx.update(obj=obj,settings=settings)
+    ctx.update(obj=obj, **cp(None))
     return mail.send_mail(
         subject=subject,
         from_email=settings.FROM_EMAIL,

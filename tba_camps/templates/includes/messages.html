@@ -1,0 +1,121 @@
+{% if object.etat == etats.PREINSCRIPTION %}
+
+<div class="dossier-block">
+  <h3>Merci de votre demande d'inscription</h3>
+
+  {% if object.misses %}
+  <p>Pour valider votre inscription vous devez imprimer, remplir et
+    <a href="{{ host }}{% url 'dossier_view' %}#stagiaires">téléverser</a>
+    les pièces justificatives pour les stagiaires.</p>
+  {% endif %}
+
+  {% if object.avance and not object.acompte %}
+  <p><strong>Merci d’envoyer, avant 8 jours, votre règlement par
+      courrier à l’adresse</strong></p>
+
+  <blockquote class="address">{{ settings.ADRESSE }}</blockquote>
+
+  <p>
+    {% if object.avance_total > 50 %}
+    Il peut être réglé avec 2 ou 3 chèques que nous encaissons à un
+    mois d’intervalle.
+    {% endif %}
+    
+    Veuillez noter au verso du chèque votre nom, numéro(s) de
+    semaine(s), et la date d’encaissement désirée. Pour un virement
+    plus rapide, demandez notre RIB.</p>
+  
+  {% if object.avance_total > 50 %}
+  <p>TBA accepte les Chèques Vacances ainsi que les bons vacances de
+    certaines CAF et les bons AVE du dispositif VACAF. Joindre votre
+    attestation CAF au moment de l’inscription ou le plus rapidement
+    possible, et impérativement deux semaines avant le début du séjour,
+    sous peine de ne pouvoir le prendre en compte.</p>
+  {% endif %}
+
+  {% if object.misses %}
+  <p>Merci de joindre, si vous ne les avez pas téléversées&nbsp;: les
+    authorisations parentales, les fiches sanitaires, et les
+    certificats médicaux (ou photocopies des licences FFBB)</p>
+  {% endif %}
+  
+  <p>Dès réception de votre règlement vous recevrez une confirmation
+    d’inscription par email.</p>
+  {% endif %}
+
+  {% if object.hebergement and object.hebergement.managed == modes_h.EXTERNAL %}
+  <hr>
+  <p>N’oubliez pas de réserver votre hebergement en
+      <strong>{{ object.hebergement }}</strong>&nbsp;!</p>
+    {{ object.hebergement.md_commentaire }}
+  {% endif %}
+
+</div>
+
+{% elif object.etat == etats.VALID or object.etat == etats.COMPLETE %}
+
+<div class="dossier-block">
+  <h3>Votre demande d'inscription est
+    {% if object.etat == etats.VALID %}acceptée{% else %}complète{% endif %}&nbsp;!</h3>
+
+  {% if not object.etat == etats.COMPLETE and object.misses %}
+  <p><strong>Attention&nbsp;!</strong> Il manque les pièces suivantes
+    à votre dossier, il faut les
+    <a href="{{ host }}{% url 'dossier_view' %}#stagiaires">téléverser</a>
+    ou nous les envoyer par courrier.</p>
+
+  <ul>
+    {% for s in object.stagiaire_set.all %}
+    <li><strong>{{ s.prenom }} {{ s.nom }}:</strong>
+      {{ s.missing }}.</li>
+    {% endfor %}
+  </ul>
+
+  <p>On doit impérativement les avoir le jour de votre
+    arrivée. <em>Adresse postale pour l’envoi des pièces&nbsp;:</em></p>
+
+  <blockquote class="adress">{{ settings.ADRESSE }}</blockquote><hr>
+  {% endif %}
+
+  <p><strong>Nous vous attendons aux camps SUPERDEVOLUY&nbsp;!</strong></p>
+
+  <p>Trouvez tous les
+    <a href="{{ settings.PIECES.renseignements_pdf }}">renseignements pratiques</a>
+    sur le camp de SUPERDEVOLUY
+    <a href="{{ settings.PIECES.renseignements_pdf }}">ICI</a>.
+    {% if not object.formule.adulte %}
+    À votre arrivée au camp nous vous offrons <strong>TROIS CADEAUX&nbsp;:</strong>
+    {% endif %}
+  </p>
+
+  {% if not object.formule.adulte %}
+  <ul class="cadeaux">
+    <li>Un maillot réversible,</li>
+    <li>Un short,</li>
+    <li>Une gourde.</li>
+  </ul>
+  {% endif %}
+
+  <p>À la fin du stage nous vous offrons la photo souvenir de votre
+    camp.</p>
+
+  <p>Bon camp {{ settings.ANNEE }},</p>
+
+  <p class="signature">Jean-Michel SENEGAL</p>
+
+</div>
+<div class="dossier-block">
+  {% include "includes/parrainage.html" %}
+</div>
+
+{% elif object.etat == etats.CANCELED %}
+
+<div class="dossier-block">
+  <h3>Votre dossier a été annulé</h3>
+
+  <p>Veuillez nous contacter à l'adresse
+    <a href="mailto:{{ settings.FROM_EMAIL }}">{{ settings.FROM_EMAIL }}</a>
+    pour tout renseignement.</p>
+</div>
+
+{% endif %}

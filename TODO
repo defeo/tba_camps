@@ -8,6 +8,7 @@
 # Dossiers
 
 [] Remove double cotisation+assurance for same stagiaire on diff. formules
+[] PDF receipt
 
 # Admin
 
@@ -29,12 +30,12 @@ Remember. Workflow is:
 ...
 6. Cancel → CANCELED
 
-[] Rewrite emails
-[] Rewrite confirmation messages
+[x] Rewrite emails
+[x] Rewrite confirmation messages
 
 # Other
 
 [] Handle broken Chrome autocompletion
-[] Acompte accompagnateur
+[~] Acompte accompagnateur
 [] Redo fixtures
 [] Rewrite tests

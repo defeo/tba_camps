@@ -1,8 +1,18 @@
 <p>{% if obj.titre == 'M' %}Cher{% elif obj.titre == 'F' %}Chère{% else %}Cher(e){% endif %}
   {{ obj.prenom }} {{ obj.nom }},</p>
 
-<p>Votre dossier d'inscritpion TBA {{ settings.ANNEE }} est accessible
-  en ligne en cliquant sur le bouton ci-dessous.</p>
+<p>
+  {% if obj.etat == etats.PREINSCRIPTION %}
+  Merci de votre demande d'inscription.
+  {% elif obj.etat == etats.VALIDE %}
+  Votre demande d'inscription est acceptée.
+  {% elif obj.etat == etats.COMPLETE %}
+  Votre demande d'inscription est complète.
+  {% endif %}
+
+  Votre dossier d'inscritpion TBA {{ settings.ANNEE }} est accessible
+  en ligne en cliquant sur le bouton ci-dessous.
+</p>
 
 <p style="text-align:centered">
   <a href="{{ obj.get_full_url }}" style="text-decoration:none;color:white;font-weight:bold">
@@ -20,7 +30,7 @@
 
 <ul>
 {% for s in obj.stagiaire_set.iterator %}
-  <li>{{ s.prenom }} {{ s.nom }} ({{ s.formule }} – {{ s.semaines_str }})</li>
+  <li>{{ s.prenom }} {{ s.nom }} ({{ s.formule }} – {{ s.semaines_str }}){% if forloop.last %}.{% else %},{% endif %}</li>
 {% endfor %}
 </ul>
 {% endif %}
@@ -34,16 +44,8 @@
 </ul>
 {% endif %}
 
-<div style="font-size:110%">
-<p><b>Merci de compléter les pièces jointes, que vous pouvez</b></p>
-<ul>
-  <li><b>soit <a href="{{ obj.get_full_url }}">télécharger directement
-      dans votre dossier</a>,</b></li>
-  <li><b>soit nous envoyer par email
-    à <a href="tba@camps-basket.com">tba@camps-basket.com</a>,</b></li>
-  <li><b>soit nous envoyer par courrier avec votre règlement.</b></li>
-</ul>
-</div>
+{% include "includes/messages.html" with object=obj host=settings.HOST %}
+
 
 <p>Sportivement,</p>
 <h3>Team Basket Association</h3>

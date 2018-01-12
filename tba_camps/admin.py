@@ -297,11 +297,11 @@ class StagiaireAdmin(admin.ModelAdmin):
             else:
                 return str
         
-        p = '<img src="%s">%s' % (yesno(obj.auth_paren_snail),
+        p = '<img src="%s">%s' % (yesno(not obj.misses_auth_paren()),
                                    link('auth_paren', 'inscription'))
-        p += '<br><img src="%s">%s' % (yesno(obj.fiche_sanit_snail),
+        p += '<br><img src="%s">%s' % (yesno(not obj.misses_fiche_sanit()),
                                       link('fiche_sanit', 'sanitaire'))
-        p += '<br><img src="%s">%s' % (yesno(obj.certificat_snail),
+        p += '<br><img src="%s">%s' % (yesno(not obj.misses_certificat),
                                         link('certificat', 'certificat'))
 
         return mark_safe(p)
