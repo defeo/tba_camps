@@ -486,14 +486,14 @@ class HebergementForm(forms.ModelForm):
 
     def __init__(self, *args, **kwds):
         super().__init__(*args, **kwds)
-        self.initial['semaines'] = self.initial['semaines'] + list(self.instance.semaines_hebergement)
+        self.initial['semaines'] = self.initial['semaines'] + list(self.instance.semaines_hebergement())
         # Disable compulsory weeks
-        for s in self.instance.semaines_hebergement:
+        for s in self.instance.semaines_hebergement():
             self.fields['semaines'].off(s.pk)
     
     def clean_semaines(self):
         sems = self.cleaned_data['semaines']
-        for s in self.instance.semaines_hebergement:
+        for s in self.instance.semaines_hebergement():
             if s not in sems:
                 raise ValidationError('Vous devez réserver en semaine %d.' % s.ord())
         return sems

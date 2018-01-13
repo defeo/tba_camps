@@ -43,3 +43,4 @@ Remember. Workflow is:
 [] Update sms
 [] Fix ordered models
 [] Modifier stagiaire breaks again boolean fields
+[] Fix error 500 when mail does not exist

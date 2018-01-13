@@ -15,7 +15,6 @@ from django.template.loader import render_to_string
 from django.template import Context, Template
 from markdown import markdown
 from django.utils.safestring import mark_safe
-from django.utils.functional import cached_property
 from decimal import Decimal
 
 class Manager(models.Model):
@@ -263,9 +262,9 @@ class Dossier(ModelWFiles):
 
     def is_complete(self):
         return (not self.is_empty() and
-                    (not self.semaines_hebergement or
+                    (not self.semaines_hebergement() or
                          (self.hebergement and
-                              not self.semaines_hebergement.exclude(pk__in=self.semaines.all()))))
+                              not self.semaines_hebergement().exclude(pk__in=self.semaines.all()))))
 
     def misses(self):
         return any(s.misses() for s in self.stagiaire_set.iterator())
@@ -298,7 +297,6 @@ class Dossier(ModelWFiles):
         return ', '.join('S%d' % s.ord() for s in self.semaines.iterator())
     semaines_str.short_description = 'Semaines'
 
-    @cached_property
     def semaines_hebergement(self):
         return Semaine.objects.filter(stagiaire__dossier=self,
                                           stagiaire__formule__has_hebergement=True).distinct()
