@@ -44,3 +44,4 @@ Remember. Workflow is:
 [] Fix ordered models
 [] Modifier stagiaire breaks again boolean fields
 [] Fix error 500 when mail does not exist
+[] Make dossier clickable in stagiare list view

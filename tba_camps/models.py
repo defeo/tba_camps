@@ -50,7 +50,7 @@ class Hebergement(OrderedModel):
         (MANAGED, 'Géré par TBA'),
         (EXTERNAL, 'Réservé par le client')])
 
-    class Meta:
+    class Meta(OrderedModel.Meta):
         verbose_name = 'Hébergement'
     
     def __str__(self):
