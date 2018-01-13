@@ -475,9 +475,7 @@ class HebergementForm(forms.ModelForm):
     """
     error_css_class = 'error'
     
-    semaines = my_widgets.SemainesField(
-        help_text='''Vous pouvez sélectionner des semaines en plus 
-        des semaines d'inscription des stagiaires.''')
+    semaines = my_widgets.SemainesField()
     hebergement = my_widgets.HebergementField()
 
     class Meta:
