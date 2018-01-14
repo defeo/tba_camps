@@ -272,6 +272,8 @@ class StagiaireForm(forms.ModelForm):
             'navette_a' : widgets.RadioSelect,
             'navette_r' : widgets.RadioSelect,
             'venu' :  widgets.RadioSelect,
+            'nom_parrain': widgets.TextInput(attrs={'autocomplete': 'other'}),
+            'adr_parrain': widgets.TextInput(attrs={'autocomplete': 'other'}),
         }
         help_texts = {
             'licence': '<a target="_blank" href="http://www.ffbb.com/jouer/recherche-avancee">Chercher sur ffbb.com</a>',
