@@ -201,7 +201,7 @@ class DossierAdmin(admin.ModelAdmin):
             formule=s.formule,
             sems=s.semaines_str(),
             prix=s.prix(),
-            ages=s.age(),
+            age=s.age(),
             sexe=s.sexe,
             ) for s in obj.stagiaire_set.iterator()) + '</tr></table>')
     stagiaires.short_description = 'Inscriptions'
