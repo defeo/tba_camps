@@ -370,12 +370,12 @@ class Stagiaire(ModelWFiles):
     formule = models.ForeignKey(Formule, on_delete=models.PROTECT)
     accompagnateur = models.CharField("Nom de l'accompagnateur", max_length=255, blank=True)
     train = models.DecimalField('Supplément train depuis Paris (inclut les navettes aller et retour)',
-                           max_digits=10, decimal_places=3, default=Decimal('0'),
-                           choices=[(Decimal('0'), "Pas de supplément"),
-                                    (Decimal('160'), 'Aller-retour tarif normal (160€)'),
-                                    (Decimal('80'), 'Aller-retour moins de 12 ans (80€)'),
+                           max_digits=10, decimal_places=3, default=Decimal('0.000'),
+                           choices=[(Decimal('0.000'), "Pas de supplément"),
+                                    (Decimal('160.000'), 'Aller-retour tarif normal (160€)'),
+                                    (Decimal('80.000'), 'Aller-retour moins de 12 ans (80€)'),
                                     (Decimal('80.001'), 'Aller tarif normal (80€)'),
-                                    (Decimal('40'), 'Aller moins de 12 ans (40€)'),
+                                    (Decimal('40.000'), 'Aller moins de 12 ans (40€)'),
                                     (Decimal('80.002'), 'Retour tarif normal (80€)'),
                                     (Decimal('40.001'), 'Retour moins de 12 ans (40€)')])
     chambre = models.CharField('En chambre avec', max_length=255,
@@ -384,14 +384,14 @@ class Stagiaire(ModelWFiles):
                                     choices=[('Chambre', 'Chambre'), ('Chalet', 'Châlet')],
                                     default='', blank=True)
     num_chambre = models.CharField('Numéro chambre', max_length=10, default='', blank=True)
-    navette_a = models.DecimalField('Navette aller', default=Decimal('0'),
+    navette_a = models.DecimalField('Navette aller', default=Decimal('0.00'),
                                     max_digits=10, decimal_places=2,
-                                    choices=[(Decimal('0'), 'Non'),
-                                             (Decimal('6'), 'Oui (6€)')])
-    navette_r = models.DecimalField('Navette retour', default=Decimal('0'),
+                                    choices=[(Decimal('0.00'), 'Non'),
+                                             (Decimal('6.00'), 'Oui (6€)')])
+    navette_r = models.DecimalField('Navette retour', default=Decimal('0.00'),
                                     max_digits=10, decimal_places=2,
-                                    choices=[(Decimal('0'), 'Non'),
-                                             (Decimal('6'), 'Oui (6€)')])
+                                    choices=[(Decimal('0.00'), 'Non'),
+                                             (Decimal('6.00'), 'Oui (6€)')])
     parrain = models.BooleanField("Parrain", default=False)
     nom_parrain = models.CharField('NOM Prénom parrain', max_length=255, blank=True)
     adr_parrain = models.CharField('Adresse parrain', max_length=255, blank=True)
