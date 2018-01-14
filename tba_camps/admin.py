@@ -193,13 +193,16 @@ class DossierAdmin(admin.ModelAdmin):
         return mark_safe('<table><tr>' + '</tr><tr>'.join(
     '''<td><a href="{url}">{nom} {prenom}</a></td>
 <td>({formule} – {sems})</td>
-<td><b>{prix}€</b></td>'''.format(
+<td><b>{prix}€</b></td>
+<td>{age} ans, {sexe}</td>'''.format(
             url=reverse_lazy('admin:tba_camps_stagiaire_change', args=(s.pk,)),
             nom=s.nom,
             prenom=s.prenom,
             formule=s.formule,
             sems=s.semaines_str(),
             prix=s.prix(),
+            ages=s.age(),
+            sexe=s.sexe,
             ) for s in obj.stagiaire_set.iterator()) + '</tr></table>')
     stagiaires.short_description = 'Inscriptions'
     
