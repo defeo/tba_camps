@@ -102,9 +102,10 @@ class Semaine(models.Model):
     commentaire = models.CharField('Commentaire affiché', max_length=255, blank=True)
     places = models.IntegerField('Nombre de places', default=0)
     fermer = models.BooleanField('Inscriptions fermées', default=False)
-    hbgt_complet = models.ManyToManyField(Hebergement)
-    formule_complet = models.ManyToManyField(Formule)
-    formule_complet.short_description = 'Formules complètes'
+    hbgt_complet = models.ManyToManyField(Hebergement, blank=True)
+    hbgt_complet.verbose_name = 'Hébergements complets'
+    formule_complet = models.ManyToManyField(Formule, blank=True)
+    formule_complet.verbose_name = 'Formules complètes'
 
     objects = SemaineQuerySet.as_manager()
     
