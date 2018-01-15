@@ -538,9 +538,9 @@ li.stagiaire .nom {
 #id_hebergement li:hover label:not(.complet) p {
     max-height: 100ex;
 }
-#id_hebergement label.hidden {
+/*#id_hebergement label.hidden {
     display: none;
-}
+}*/
 
 #id_hebergement .complet,
 #id_formule .complet {

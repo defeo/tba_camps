@@ -79,6 +79,9 @@ class FormuleWidget(forms.widgets.RadioSelect):
         opt['attrs'].update(opt['label']['attrs'])
         opt['label'] = opt['label']['label']
         return opt
+
+    def id_for_label(self, *args, **kwds):
+        return ''
     
 class FormuleField(forms.ModelChoiceField):
     widget = FormuleWidget
