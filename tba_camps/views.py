@@ -202,7 +202,6 @@ class DossierLastForm(forms.ModelForm):
 
     def clean_assurance_confirm(self):
         confirm = self.cleaned_data['assurance_confirm']
-        print(confirm)
         if not confirm and not self.cleaned_data['assurance']:
             raise ValidationError('Veuillez cocher la case')
         return confirm
@@ -477,7 +476,6 @@ class HebergementForm(forms.ModelForm):
     """
     error_css_class = 'error'
     
-    semaines = my_widgets.SemainesField()
     hebergement = my_widgets.HebergementField()
 
     class Meta:
@@ -486,14 +484,12 @@ class HebergementForm(forms.ModelForm):
 
     def __init__(self, *args, **kwds):
         super().__init__(*args, **kwds)
-        self.initial['semaines'] = self.initial['semaines'] + list(self.instance.semaines_hebergement())
-        # Disable compulsory weeks
-        for s in self.instance.semaines_hebergement():
-            self.fields['semaines'].off(s.pk)
-    
+        self.initial['semaines'] = self.initial['semaines'] + list(self.instance.semaines_hebergement)
+        self.fields['semaines'] = my_widgets.SemainesField(locked=self.instance.semaines_hebergement)
+
     def clean_semaines(self):
         sems = self.cleaned_data['semaines']
-        for s in self.instance.semaines_hebergement():
+        for s in self.instance.semaines_hebergement:
             if s not in sems:
                 raise ValidationError('Vous devez réserver en semaine %d.' % s.ord())
         return sems
@@ -501,7 +497,7 @@ class HebergementForm(forms.ModelForm):
     def clean_hebergement(self):
         hbgt = self.cleaned_data['hebergement']
         sems = self.cleaned_data.get('semaines')
-        if hbgt and any(hbgt in s.hbgt_complet.all() for s in sems):
+        if sems and hbgt and any(hbgt in s.hbgt_complet.all() for s in sems):
             raise ValidationError('Cet hébergement est complet pour les semaines demandées')
         return hbgt
     

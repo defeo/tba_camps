@@ -55,17 +55,14 @@ class SemainesWidget(forms.widgets.CheckboxSelectMultiple):
 class SemainesField(forms.ModelMultipleChoiceField):
     widget = SemainesWidget
 
-    def __init__(self, *args, **kwds):
-        super().__init__(queryset=Semaine.objects.open(), *args, **kwds)
-        self._off = set()
+    def __init__(self, locked=None, **kwds):
+        super().__init__(queryset=Semaine.objects.open(), **kwds)
+        self._locked = locked
 
-    def off(self, val):
-        self._off.add(val)
-    
     def label_from_instance(self, obj):
         return {
             'label': str(obj),
-            'off': obj.pk in self._off,
+            'off': self._locked and obj in self._locked,
             'formule_complet': ','.join(str(h.pk) for h in obj.formule_complet.iterator()),
             'hbgt_complet': ','.join(str(h.pk) for h in obj.hbgt_complet.iterator()),
             }
