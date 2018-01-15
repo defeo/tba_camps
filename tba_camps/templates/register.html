@@ -29,8 +29,8 @@ d'acompte.{% endblock %}
 <div class="messages">
   {% for message in messages %}
   <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
-  {% endfor %}
 
+  {% if message.level != DEFAULT_MESSAGE_LEVELS.ERROR %}
   <p><strong>Veuillez contrôler votre boîte email.</strong></p>
   
   <p>Si vous n'avez rien reçu, veuillez attendre quelques minutes et
@@ -38,8 +38,9 @@ d'acompte.{% endblock %}
     SPAM. Ajoutez <a href="mailto:{{settings.FROM_EMAIL}}">{{settings.FROM_EMAIL}}</a>
     à votre carnet d'adresses pour être sûr de toujours reçevoir nos
     emails.</p>
+  {% endif %}
+  {% endfor %}
 </div>
-
 {% endif %}
 
 {% endblock %}

@@ -44,6 +44,6 @@ Remember. Workflow is:
 [x] Fix ordered models
 [x] Modifier stagiaire breaks again boolean fields
 [] Write a test for this ↑↑↑ (Decimal + choice)
-[] Fix error 500 when mail does not exist
+[x] Fix error 500 when mail does not exist
 [] Make dossier clickable in stagiare list view
 [] Clean hebergement after dossier contains no more F2

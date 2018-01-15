@@ -51,21 +51,23 @@ class RegisterView(FormView):
         res = super().form_valid(form, *args, **kwds)
         try:
             dossier = Dossier.objects.get(email=form.cleaned_data['email'])
-            messages.info(self.request, format_html(
-            """Nous avons trouvé un dossier associé à l'adresse <strong>{email}</strong>.
-Un email de rappel vient de vous être envoyé.""",
-                          email=dossier.email))
+            info = """Nous avons trouvé un dossier associé à l'adresse <strong>{email}</strong>.
+Un email de rappel vient de vous être envoyé."""
         except Dossier.DoesNotExist:
             dossier = Dossier(
                 email=form.cleaned_data['email'],
                 etat=models.CREATION,
                 )
             dossier.save()
-            messages.info(self.request, format_html(
-                "Nous venons d'envoyer un email à l'adresse <strong>{email}</strong>.",
-                          email=dossier.email))
-        
-        dossier.send_mail()
+            info = "Nous venons d'envoyer un email à l'adresse <strong>{email}</strong>."
+
+        try:
+            dossier.send_mail()
+        except:
+            messages.error(self.request, format_html("Une erreur s'est produite en envoyant un email à l'adresse <em>{email}<em>. Veuillez ressayer.", email=dossier.email))
+        else:
+            messages.info(self.request, format_html(info, email=dossier.email))
+
         return res
 
 ### Session-based "login" machinery
