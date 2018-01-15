@@ -28,8 +28,12 @@ class SemaineQuerySet(models.QuerySet):
         '''
         Queryset discarding full/closed weeks
         '''
-        return self.filter(fermer=False).filter(models.Q(stagiaire__isnull=True)
-                                                | ~models.Q(stagiaire__dossier__etat=CANCELED)).annotate(models.Count('stagiaire')).filter(stagiaire__count__lt=models.F('places'))
+        return self.filter(fermer=False).annotate(
+            stagiaires=models.Count(
+                'stagiaire',
+                filter=models.Q(stagiaire__dossier__etat__in=[
+                    PREINSCRIPTION, VALID,COMPLETE
+                    ]))).filter(stagiaires__lt=models.F('places'))
 
     def debut(self):
         return self.aggregate(models.Min('debut'))['debut__min']
@@ -137,7 +141,7 @@ class Semaine(models.Model):
 
     def restantes(self):
         return (self.places
-                - self.stagiaire_set.exclude(dossier__etat=CANCELED).count())
+                - self.stagiaire_set.filter(dossier__etat__in=[PREINSCRIPTION, VALID, COMPLETE]).count())
 
 CREATION = '0'
 CONFIRME = '1'
