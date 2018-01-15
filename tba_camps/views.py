@@ -202,6 +202,8 @@ class DossierLastForm(forms.ModelForm):
 
     def clean_assurance_confirm(self):
         confirm = self.cleaned_data['assurance_confirm']
+        if not confirm and not self.instance.prix_assurance():
+            return True
         if not confirm and not self.cleaned_data['assurance']:
             raise ValidationError('Veuillez cocher la case')
         return confirm
