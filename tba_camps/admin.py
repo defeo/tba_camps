@@ -306,7 +306,7 @@ class StagiaireAdmin(admin.ModelAdmin):
                                    link('auth_paren', 'inscription'))
         p += '<br><img src="%s">%s' % (yesno(not obj.misses_fiche_sanit()),
                                       link('fiche_sanit', 'sanitaire'))
-        p += '<br><img src="%s">%s' % (yesno(not obj.misses_certificat),
+        p += '<br><img src="%s">%s' % (yesno(not obj.misses_certificat()),
                                         link('certificat', 'certificat'))
 
         return mark_safe(p)
