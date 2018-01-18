@@ -160,10 +160,10 @@ class DossierAdmin(admin.ModelAdmin):
     list_editable  = ('prix_hebergement', 'acompte', 'etat')
     list_filter    = ('date', DossierFilter, 'semaines')
     search_fields  = ('nom', 'prenom', 'email')
-    readonly_fields = ('stagiaires', 'prix_total', 'reste')
+    readonly_fields = ('stagiaires', 'prix_total', 'reste', 'num')
     save_on_top = True
     fields  = (
-        ('etat', 'date_valid'),
+        ('etat', 'num', 'date_valid'),
         ('nom', 'prenom'),
         ('stagiaires',),
         ('semaines', 'hebergement', 'prix_hebergement'),
@@ -188,6 +188,10 @@ class DossierAdmin(admin.ModelAdmin):
                      self.admin_site.admin_view(self.send_mail), 
                      name='tba_camps_dossier_send_mail')
         return [my_url] + urls 
+
+    def num(self, obj):
+        return obj.pk
+    num.short_description = 'Numero de dossier'
 
     def stagiaires(self, obj):
         return mark_safe('<table><tr>' + '</tr><tr>'.join(
