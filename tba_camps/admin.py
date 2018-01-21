@@ -155,12 +155,12 @@ class DossierFilter(admin.SimpleListFilter):
 
 @admin.register(Dossier, site=site)
 class DossierAdmin(admin.ModelAdmin):
-    list_display   = ('nom', 'prenom', 'semaines_str', 'hebergement', 'prix_hebergement', 'prix_total', 'acompte', 'reste', 'etat', 'date', 'date_valid')
+    list_display   = ('nom', 'prenom', 'semaines_str', 'hebergement', 'prix_hebergement', 'prix_total', 'acompte', 'acompte_total', 'reste', 'etat', 'date', 'date_valid')
     list_display_links = ('nom', 'prenom')
     list_editable  = ('prix_hebergement', 'acompte', 'etat')
     list_filter    = ('date', DossierFilter, 'semaines')
     search_fields  = ('nom', 'prenom', 'email')
-    readonly_fields = ('stagiaires', 'prix_total', 'reste', 'num')
+    readonly_fields = ('stagiaires', 'prix_total', 'reste', 'num', 'acompte_total')
     save_on_top = True
     fields  = (
         ('etat', 'num', 'date_valid'),
@@ -170,7 +170,7 @@ class DossierAdmin(admin.ModelAdmin):
         ('remise', 'motif_rem'),
         ('supplement', 'motif'),
         ('assurance',),
-        ('prix_total', 'acompte', 'mode', 'reste'),
+        ('prix_total', 'acompte', 'acompte_total', 'mode', 'reste'),
         ('mode_solde',),
         ('email', 'tel'),
         ('adresse', 'cp', 'ville', 'pays'),
@@ -198,7 +198,8 @@ class DossierAdmin(admin.ModelAdmin):
     '''<td><a href="{url}">{nom} {prenom}</a></td>
 <td>({formule} – {sems})</td>
 <td><b>{prix}€</b></td>
-<td>{age} ans, {sexe}</td>'''.format(
+<td>{age} ans, {sexe}</td>
+<td>acompte: <b>{acompte}</b></td>'''.format(
             url=reverse_lazy('admin:tba_camps_stagiaire_change', args=(s.pk,)),
             nom=s.nom,
             prenom=s.prenom,
@@ -207,7 +208,12 @@ class DossierAdmin(admin.ModelAdmin):
             prix=s.prix(),
             age=s.age(),
             sexe=s.sexe,
-            ) for s in obj.stagiaire_set.iterator()) + '</tr></table>')
+            acompte=s.acompte,
+            ) for s in obj.stagiaire_set.iterator()) + '''</tr>
+<tr><td></td><td></td><td><b>{tot}</b></td><td></td><td><b>{acompte}</b></td></tr>
+</table>'''.format(
+    tot=obj.prix_stagiaires(),
+    acompte=obj.acompte_stagiaires))
     stagiaires.short_description = 'Inscriptions'
     
     def send_mail(self, request, obj_id):
@@ -262,7 +268,7 @@ class StagiaireAdmin(admin.ModelAdmin):
         ('formule', 'prix_formule'),
         ('train'),
         ('navette_a', 'navette_r'),
-        ('prix',),
+        ('prix', 'acompte'),
         ('chambre', 'accompagnateur'),
         ('email', 'tel'),
         ('lieu'),

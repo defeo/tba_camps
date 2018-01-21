@@ -292,9 +292,16 @@ class Dossier(ModelWFiles):
 
     def avance_total(self):
         return self.avance_stagiaires() + self.avance()
+
+    @cached_property
+    def acompte_stagiaires(self):
+        return self.stagiaire_set.aggregate(tot=models.Sum('acompte'))['tot'] or 0
+    
+    def acompte_total(self):
+        return self.acompte + self.acompte_stagiaires
     
     def reste(self):
-        return self.prix_total() - self.acompte
+        return self.prix_total() - self.acompte_total()
     
     def accepts_uploads(self):
         return self.etat in (PREINSCRIPTION, VALID)
@@ -399,6 +406,7 @@ class Stagiaire(ModelWFiles):
                                     max_digits=10, decimal_places=2,
                                     choices=[(Decimal('0.00'), 'Non'),
                                              (Decimal('6.00'), 'Oui (6€)')])
+    acompte = models.DecimalField(default=0, max_digits=10, decimal_places=2)
     parrain = models.BooleanField("Parrain", default=False)
     nom_parrain = models.CharField('NOM Prénom parrain', max_length=255, blank=True)
     adr_parrain = models.CharField('Adresse parrain', max_length=255, blank=True)

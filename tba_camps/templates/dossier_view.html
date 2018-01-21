@@ -182,11 +182,13 @@
 	<td class="total">Total</td>
 	<td class="price">{{ object.prix_total | strip_cents }}€</td>
       </tr>
-      {% if object.acompte %}
+      {% if object.acompte_total %}
       <tr>
 	<td class="total">Acompte donné</td>
-	<td class="price">{{ object.acompte | strip_cents }}€</td>
+	<td class="price">{{ object.acompte_total | strip_cents }}€</td>
       </tr>
+      {% endif %}
+      {% if object.acompte_total >= object.avance_total %}
       <tr>
 	<td class="total"><strong>Solde dû</strong></td>
 	<td class="price">{{ object.reste | strip_cents }}€</td>

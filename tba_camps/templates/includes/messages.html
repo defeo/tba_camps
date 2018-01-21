@@ -9,7 +9,7 @@
     les pièces justificatives pour les stagiaires.</p>
   {% endif %}
 
-  {% if object.avance and not object.acompte %}
+  {% if object.avance and object.acompte_total < object.avance_total %}
   <p><strong>Merci d’envoyer, avant 8 jours, votre règlement à l'ordre
       de TBA par courrier à l’adresse</strong></p>
 
