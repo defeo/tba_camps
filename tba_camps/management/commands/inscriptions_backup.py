@@ -2,10 +2,10 @@ from django.core.management.base import BaseCommand, CommandError
 from django.core import serializers
 import tarfile, io
 from datetime import datetime
-from tba_camps.models import Inscription, Semaine, Hebergement, Formule
+from tba_camps.models import Dossier, Stagiaire, Semaine, Hebergement, Formule
 from django.conf import settings
 
-_models = [Inscription, Semaine, Hebergement, Formule]
+_models = [Dossier, Stagiaire, Semaine, Hebergement, Formule]
 
 class Command(BaseCommand):
     help = 'Backup model data (and uploads directory) in a tar file.'

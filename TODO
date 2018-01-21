@@ -35,7 +35,7 @@ Remember. Workflow is:
 
 # Other
 
-[] Fix backups!
+[x] Fix backups!
 [x] Handle broken Chrome autocompletion
 [~] Acompte accompagnateur
 [x] Redo fixtures
@@ -47,3 +47,4 @@ Remember. Workflow is:
 [x] Fix error 500 when mail does not exist
 [] Make dossier clickable in stagiare list view
 [] Clean hebergement after dossier contains no more F2
+[] Rewrite cleaning script
