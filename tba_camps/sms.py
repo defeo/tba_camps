@@ -28,7 +28,7 @@ def sms(req):
         s = form.cleaned_data['semaines']
         f = form.cleaned_data['formules']
         inscr = Stagiaire.objects.filter(semaines=s, formule__in=f)
-        nums = list(set(str(i.tel).translate(str.maketrans('', '', '- .')) for i in inscr))
+        nums = list(set(str(i.dossier.tel).translate(str.maketrans('', '', '- .')) for i in inscr))
         return JsonResponse({'nums': nums, 'semaine': s.ord(), 'formules': [x.nom for x in f]})
 
 def login(req):

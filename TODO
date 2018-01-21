@@ -39,12 +39,12 @@ Remember. Workflow is:
 [x] Handle broken Chrome autocompletion
 [~] Acompte accompagnateur
 [x] Redo fixtures
-[] Rewrite tests
-[] Update sms
+[x] Update sms
 [x] Fix ordered models
+[x] Fix error 500 when mail does not exist
 [x] Modifier stagiaire breaks again boolean fields
 [] Write a test for this ↑↑↑ (Decimal + choice)
-[x] Fix error 500 when mail does not exist
 [] Make dossier clickable in stagiare list view
 [] Clean hebergement after dossier contains no more F2
 [] Rewrite cleaning script
+[] Rewrite tests
