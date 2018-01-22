@@ -21,6 +21,7 @@ from django.contrib.auth.decorators import permission_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.urls import reverse_lazy
+from functools import reduce
 
 class MyAdmin(admin.AdminSite):
     def get_urls(self):
@@ -90,8 +91,9 @@ class MyUserAdmin(UserAdmin):
 @admin.register(Semaine, site=site)
 class SemaineAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'commentaire', 'places', 'preinscrits',
-                    'inscrits', 'restantes', 'fermer', 'get_hbgt_complet',
-                    'get_formule_complet')
+                    'inscrits', 'get_inscr_formule', 'get_inscr_hbgt',
+                    'restantes', 'fermer',
+                    'get_hbgt_complet', 'get_formule_complet')
     list_editable = ('places', 'fermer')
 
     formfield_overrides = {
@@ -106,6 +108,24 @@ class SemaineAdmin(admin.ModelAdmin):
         return mark_safe('<br>'.join(map(str, obj.formule_complet.iterator())) or '     —')
     get_formule_complet.short_description = 'Formules complètes'
 
+    def get_inscr_formule(self, obj):
+        shorten = lambda x: reduce(lambda o,w: w + '&nbsp;' if o == '' else o + w[:1], x.split(), '')
+        return mark_safe('<br>'.join('%s:&nbsp;<b>%d</b>' % (shorten(f.nom), f.stagiaires)
+                               for f in Formule.objects.annotate(
+                                   stagiaires=models.Count(
+                                       'stagiaire',
+                                       filter=models.Q(stagiaire__semaines=obj)
+                                       & models.Q(stagiaire__dossier__etat__in=[PREINSCRIPTION, VALID, COMPLETE])))))
+    get_inscr_formule.short_description = 'Par formule'
+
+    def get_inscr_hbgt(self, obj):
+        return mark_safe('<br>'.join('%s:&nbsp;<b>%d</b>' % (f.nom, f.dossiers)
+                               for f in Hebergement.objects.annotate(
+                                   dossiers=models.Count(
+                                       'dossier',
+                                       filter=models.Q(dossier__semaines=obj)
+                                       & models.Q(dossier__etat__in=[PREINSCRIPTION, VALID, COMPLETE])))))
+    get_inscr_hbgt.short_description = 'Par hébergement'
     
 @admin.register(Formule, site=site)
 class FormuleAdmin(OrderedModelAdmin):
