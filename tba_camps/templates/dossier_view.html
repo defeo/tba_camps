@@ -187,8 +187,6 @@
 	<td class="total">Acompte donné</td>
 	<td class="price">{{ object.acompte_total | strip_cents }}€</td>
       </tr>
-      {% endif %}
-      {% if object.acompte_total >= object.avance_total %}
       <tr>
 	<td class="total"><strong>Solde dû</strong></td>
 	<td class="price">{{ object.reste | strip_cents }}€</td>
