@@ -23,7 +23,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.urls import reverse_lazy
 from functools import reduce
-from . import settings
+from django.conf import settings
 
 class MyAdmin(admin.AdminSite):
     def get_urls(self):
@@ -363,6 +363,9 @@ class MessageAdmin(OrderedModelAdmin):
             'height': 500,
             'width': 800,
             'block_formats': 'Paragraphe=p;Titre=h4;Sous-titre=h5',
+            'relative_urls': False,
+            'remove_script_host': False,
+            'document_base_url': settings.HOST,
             'link_list': [{ 'title': name, 'value': settings.HOST + url }
                               for name, url in settings.PIECES.items()],
             'image_list': [{ 'title': name, 'value': settings.HOST + url }

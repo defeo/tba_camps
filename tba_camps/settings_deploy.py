@@ -58,4 +58,6 @@ PIECES = {
     'devoluy' :              '/tba/pdf/RESERVATION-EN-DEVOLUY-TARIFS-PUBLICS-ETE-2017.pdf',
 }
 IMAGES = {
+    'Plan Dévoluy':          '/tba/images/plan_devoluy.jpg',
+    'Sherpa':                '/tba/images/sherpa.jpg',
 }
