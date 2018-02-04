@@ -9,6 +9,7 @@
 
 [] Remove double cotisation+assurance for same stagiaire on diff. formules
 [] PDF receipt
+[] Option to attach a one off message to a confirmation email
 
 # Admin
 
@@ -48,3 +49,4 @@ Remember. Workflow is:
 [] Clean hebergement after dossier contains no more F2
 [] Rewrite cleaning script
 [] Rewrite tests
+[] Allow messages to cover more than one state
