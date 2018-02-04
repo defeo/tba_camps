@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'captcha',
     'import_export',
     'ordered_model',
+    'tinymce',
 )
 
 MIDDLEWARE = (
@@ -138,5 +139,8 @@ SESSION_COOKIE_AGE = 3600*24*90
 
 # Pieces PDF, Word, etc.
 PIECES = {
+    # see settings_deploy.py
+}
+IMAGES = {
     # see settings_deploy.py
 }

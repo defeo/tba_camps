@@ -57,3 +57,5 @@ PIECES = {
     'hameau_tarif_pdf':      '/tba/pdf/renseignements-locations-hameau-du-puy-2018.pdf',
     'devoluy' :              '/tba/pdf/RESERVATION-EN-DEVOLUY-TARIFS-PUBLICS-ETE-2017.pdf',
 }
+IMAGES = {
+}

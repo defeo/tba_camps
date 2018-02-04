@@ -9,6 +9,7 @@ django-downloadview
 django-recaptcha
 WeasyPrint
 unidecode
+django-tinymce4-lite
 
 # For production
 gunicorn

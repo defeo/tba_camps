@@ -6,6 +6,7 @@ urlpatterns = [
     path('', RedirectView.as_view(url='/tba/', permanent=True)),
     path('index-tba.htm', RedirectView.as_view(url='/tba/presentation.htm', permanent=True)),
     path('admin/', admin.site.urls),
+    path('tinymce/', include('tinymce.urls')),
     path('sms/', include(sms.urls)),
     path('tba/inscriptions.htm', views.RegisterView.as_view(), name='register_form'),
     path('tba/dossier/', include([

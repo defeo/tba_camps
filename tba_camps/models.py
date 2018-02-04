@@ -16,7 +16,9 @@ from django.template import Context, Template
 from markdown import markdown
 from django.utils.safestring import mark_safe
 from django.utils.functional import cached_property
+from django.utils.html import strip_tags
 from decimal import Decimal
+from tinymce.models import HTMLField
 
 class Manager(models.Model):
     'Options en plus pour les utilisateurs'
@@ -315,6 +317,12 @@ class Dossier(ModelWFiles):
         return Semaine.objects.filter(stagiaire__dossier=self,
                                           stagiaire__formule__has_hebergement=True).distinct()
 
+    @cached_property
+    def messages(self):
+        return Message.objects.filter(etat=self.etat).filter(
+            models.Q(hebergement__dossier=self)
+            | models.Q(formule__stagiaire__dossier=self)).distinct()
+    
     def save(self, *args, **kwds):
         # Capitalisations
         self.nom = self.nom and self.nom.upper()
@@ -344,7 +352,7 @@ class Dossier(ModelWFiles):
                 obj=self,
                 ctx={ 'host' : settings.HOST }
             )
-        elif self.etat in (CONFIRME, PREINSCRIPTION, VALID, COMPLETE):
+        elif self.etat in (CONFIRME, PREINSCRIPTION, VALID, COMPLETE, CANCELED):
             mails.send_mail(
                 subject="Inscriptions TBA %d" % settings.ANNEE,
                 recipients=[ self.email ],
@@ -352,6 +360,22 @@ class Dossier(ModelWFiles):
                 obj=self,
                 ctx={ 'host' : settings.HOST }
             )
+
+### Messages ciblés
+
+class Message(OrderedModel):
+    titre = models.CharField(max_length=255)
+    message = HTMLField()
+    etat = models.CharField("Envoyer aux dossiers", max_length=1,
+                            choices=Dossier._etat_dict.items())
+    formule = models.ManyToManyField(Formule, blank=True)
+    hebergement = models.ManyToManyField(Hebergement, blank=True)
+    
+    class Meta(OrderedModel.Meta):
+        pass
+
+    def __str__(self):
+        return self.titre
 
 ### Stagiaire
 

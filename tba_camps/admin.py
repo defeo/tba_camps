@@ -2,7 +2,7 @@
 
 from django.contrib import admin
 from ordered_model.admin import OrderedModelAdmin
-from .models import Manager, Semaine, Formule, Hebergement, Dossier, Stagiaire
+from .models import Manager, Semaine, Formule, Hebergement, Dossier, Stagiaire, Message
 from .models import PREINSCRIPTION, VALID, COMPLETE
 from import_export.admin import ExportMixin
 #from .resources import InscriptionResource
@@ -10,6 +10,7 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User, Group
 from django.shortcuts import redirect
 from django.conf.urls import url
+from django.urls import path
 from django.utils.html import mark_safe
 from django.contrib.admin.templatetags.admin_static import static
 from django.db import models
@@ -22,6 +23,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.urls import reverse_lazy
 from functools import reduce
+from . import settings
 
 class MyAdmin(admin.AdminSite):
     def get_urls(self):
@@ -341,3 +343,37 @@ class StagiaireAdmin(admin.ModelAdmin):
 
         return mark_safe(p)
     pieces.short_description = 'Pièces'
+
+####
+
+from tinymce.models import HTMLField
+from tinymce.widgets import TinyMCE
+
+@admin.register(Message, site=site)
+class MessageAdmin(OrderedModelAdmin):
+    list_display = ['titre', 'etat', 'fs', 'hs', 'move_up_down_links']
+    
+    formfield_overrides = {
+        models.ManyToManyField: {'widget': widgets.CheckboxSelectMultiple},
+        HTMLField: { 'widget': TinyMCE(mce_attrs={
+            'branding': False,
+            'language': 'fr_FR',
+            'plugins': 'link image table hr lists code',
+            'toolbar1': 'formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist | outdent indent | table | link image | hr | preview code',
+            'height': 500,
+            'width': 800,
+            'block_formats': 'Paragraphe=p;Titre=h4;Sous-titre=h5',
+            'link_list': [{ 'title': name, 'value': settings.HOST + url }
+                              for name, url in settings.PIECES.items()],
+            'image_list': [{ 'title': name, 'value': settings.HOST + url }
+                              for name, url in settings.IMAGES.items()],
+            }) },
+    }
+
+    def fs(self, obj):
+        return mark_safe('<br>'.join(str(f) for f in obj.formule.iterator()))
+    fs.short_description = 'Envoyer aux formules'
+    
+    def hs(self, obj):
+        return mark_safe('<br>'.join(str(h) for h in obj.hebergement.iterator()))
+    hs.short_description = 'Envoyer aux hebergements'

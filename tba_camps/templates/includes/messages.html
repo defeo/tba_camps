@@ -119,3 +119,10 @@
 </div>
 
 {% endif %}
+
+{% for m in object.messages %}
+<div class="dossier-block">
+  <h3>{{ m.titre }}</h3>
+  {{ m.message | safe }}
+</div>
+{% endfor %}

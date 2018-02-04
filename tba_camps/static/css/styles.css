@@ -463,6 +463,10 @@ h1 small, h2 small, h3 small {
     padding: 0.1ex 1em;
 }
 
+.dossier-block img {
+    max-width: 100%;
+}
+
 blockquote {
     text-align: center;
     font-size: 120%;
