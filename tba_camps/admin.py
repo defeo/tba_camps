@@ -286,7 +286,7 @@ class StagiaireAdmin(ExportMixin, admin.ModelAdmin):
         ('dossier_link',),
         ('type_chambre', 'num_chambre'),
         ('age', 'naissance'),
-        ('semaines', 'sexe', 'taille'),
+        ('semaines', 'sexe', 'taille', 'niveau'),
         ('formule', 'prix_formule'),
         ('train'),
         ('navette_a', 'navette_r'),
