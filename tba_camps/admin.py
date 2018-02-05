@@ -5,7 +5,7 @@ from ordered_model.admin import OrderedModelAdmin
 from .models import Manager, Semaine, Formule, Hebergement, Dossier, Stagiaire, Message
 from .models import PREINSCRIPTION, VALID, COMPLETE
 from import_export.admin import ExportMixin
-#from .resources import InscriptionResource
+from .resources import StagiaireResource
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User, Group
 from django.shortcuts import redirect
@@ -272,7 +272,7 @@ class StagiaireFilter(admin.SimpleListFilter):
             return queryset.filter(dossier__etat__in=(PREINSCRIPTION, VALID, COMPLETE))
 
 @admin.register(Stagiaire, site=site)
-class StagiaireAdmin(admin.ModelAdmin):
+class StagiaireAdmin(ExportMixin, admin.ModelAdmin):
     list_display   = ('nom', 'prenom', 'dossier', 'semaines_str', 'formule', 'prix', 'parrain', 'pieces', 'etat')
     list_display_links = ('nom', 'prenom')
     list_editable  = ('parrain',)
@@ -303,7 +303,7 @@ class StagiaireAdmin(admin.ModelAdmin):
         models.TextField: {'widget': widgets.Textarea(attrs={'rows' : 3})},
         models.DecimalField: {'widget': widgets.NumberInput(attrs={'style' : 'width: 6em'})},
     }
-    #resource_class = InscriptionResource
+    resource_class = StagiaireResource
 
     def etat(self, obj):
         return Dossier._etat_dict[obj.dossier.etat]

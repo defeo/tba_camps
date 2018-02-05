@@ -1,7 +1,8 @@
 import functools
 from import_export import resources, fields, widgets
-from .models import Semaine
+from .models import Semaine, Stagiaire
 from django.conf import settings
+from django.urls import reverse
 
 class ChoiceWidget(widgets.Widget):
     def __init__(self, choices):
@@ -20,70 +21,67 @@ class SemaineField(fields.Field):
     def get_value(self, obj):
         return int(self.semaine in obj.semaines.get_queryset())
 
-# class InscriptionResource(resources.ModelResource):
-#     lien = fields.Field()
-#     age  = fields.Field()
-#     prix = fields.Field()
-#     du   = fields.Field(column_name='Solde du')
-
-#     def __new__(cls):
-#         newclass = super(InscriptionResource, cls).__new__(cls)
-#         export_order = []
-#         for i, s in enumerate(Semaine.objects.all().order_by('debut')):
-#             label = 'S' + str(i+1)
-#             export_order.append(label)
-#             newclass.fields[label] = SemaineField(semaine=s, column_name=str(s))
-#         newclass._meta.export_order = newclass._meta.export_base + export_order
-#         return newclass
-
-#     class Meta:
-#         model = Inscription
-#         exclude = ('id', 'slug', 'semaines')
-#         export_base = ['nom', 'prenom', 'email', 'tel', 'sexe', 'naissance', 'age', 'taille', 
-#                         'lieu', 'adresse', 'cp', 'ville', 'pays', 'licence', 'venu',
-#                         'formule', 'etat', 'train', 'navette_a', 'navette_r', 'assurance', 
-#                         'prix', 'acompte', 'mode', 'mode_solde', 'du',
-#                         'hebergement', 'chambre', 'type_chambre', 'num_chambre', 'accompagnateur',
-#                         'nom_parrain', 'adr_parrain',
-#                         'date', 'date_valid', 'notes', 'caf', 'lien']
-#         widgets = {
-#             'naissance' : { 'format' : '%x'},
-#             'date' : { 'format' : '%x %X'},
-#         }
-        
-#     @classmethod
-#     def widget_from_django_field(cls, f, default=widgets.Widget):
-#         result = resources.ModelResource.widget_from_django_field(f, default)
-#         if f.choices:
-#             result = functools.partial(ChoiceWidget, choices=f.choices)
-#         return result
-
-#     # Hack around bad xlsx export
-#     def dehydrate_tel(self, inscr):
-#         return " %s" % inscr.tel
+class StagiaireResource(resources.ModelResource):
+    email = fields.Field('dossier__email')
+    tel = fields.Field()
+    age = fields.Field()
+    lien = fields.Field()
     
-#     def dehydrate_cp(self, inscr):
-#         return " %s" % inscr.cp
-    
-#     def dehydrate_prix(self, inscr):
-#         return inscr.prix()
+    def __new__(cls):
+        newclass = super().__new__(cls)
+        export_order = []
+        for i, s in enumerate(Semaine.objects.all().order_by('debut')):
+            label = 'S' + str(i+1)
+            export_order.append(label)
+            newclass.fields[label] = SemaineField(semaine=s, column_name=str(s))
+        newclass._meta.export_order = newclass._meta.export_base + export_order
+        return newclass
 
-#     def dehydrate_du(self, inscr):
-#         return inscr.reste()
-
-#     def dehydrate_hebergement(self, inscr):
-#         if inscr.hebergement is None:
-#             return ''
-#         return inscr.hebergement.nom
-
-#     def dehydrate_formule(self, inscr):
-#         if inscr.formule is None:
-#             return ''
-#         return inscr.formule.nom
-
-#     def dehydrate_lien(self, inscr):
-#         return inscr.get_full_url()
-
-#     def dehydrate_age(self, inscr):
-#         return inscr.age()
+    class Meta:
+        model = Stagiaire
+        export_base = fields = [
+            'nom', 'prenom', 'email', 'tel', 'sexe', 'naissance', 'age', 'taille',
+            'niveau', 'lieu', 'formule', 'train', 'navette_a', 'navette_r',
+            'chambre', 'type_chambre', 'num_chambre', 'accompagnateur',
+            'nom_parrain', 'adr_parrain', 'lien',
+            ]
+        widgets = {
+            'naissance' : { 'format' : '%x'},
+            'date' : { 'format' : '%x %X'},
+        }
         
+    @classmethod
+    def widget_from_django_field(cls, f, default=widgets.Widget):
+        result = resources.ModelResource.widget_from_django_field(f, default)
+        if f.choices:
+            result = functools.partial(ChoiceWidget, choices=f.choices)
+        return result
+
+    # Hack around bad xlsx export
+    def dehydrate_tel(self, inscr):
+        return " %s" % inscr.dossier.tel
+
+    def dehydrate_age(self, inscr):
+        return inscr.age()
+    
+    def dehydrate_formule(self, inscr):
+        if inscr.formule is None:
+            return ''
+        return inscr.formule.nom
+
+    def dehydrate_lien(self, inscr):
+        return settings.HOST + reverse('admin:tba_camps_stagiaire_change', args=(inscr.pk,))
+    
+    # def dehydrate_cp(self, inscr):
+    #     return " %s" % inscr.cp
+    
+    # def dehydrate_prix(self, inscr):
+    #     return inscr.prix()
+
+    # def dehydrate_du(self, inscr):
+    #     return inscr.reste()
+
+    # def dehydrate_hebergement(self, inscr):
+    #     if inscr.hebergement is None:
+    #         return ''
+    #     return inscr.hebergement.nom
