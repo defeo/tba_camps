@@ -1,6 +1,6 @@
 import functools
 from import_export import resources, fields, widgets
-from .models import Semaine, Stagiaire
+from .models import Semaine, Stagiaire, Dossier
 from django.conf import settings
 from django.urls import reverse
 
@@ -26,6 +26,8 @@ class StagiaireResource(resources.ModelResource):
     tel = fields.Field()
     age = fields.Field()
     lien = fields.Field()
+    date = fields.Field('dossier__date')
+    etat = fields.Field('dossier__etat')
     
     def __new__(cls):
         newclass = super().__new__(cls)
@@ -43,7 +45,7 @@ class StagiaireResource(resources.ModelResource):
             'nom', 'prenom', 'email', 'tel', 'sexe', 'naissance', 'age', 'taille',
             'niveau', 'lieu', 'formule', 'train', 'navette_a', 'navette_r',
             'chambre', 'type_chambre', 'num_chambre', 'accompagnateur',
-            'nom_parrain', 'adr_parrain', 'lien',
+            'nom_parrain', 'adr_parrain', 'date', 'etat', 'lien',
             ]
         widgets = {
             'naissance' : { 'format' : '%x'},
@@ -71,6 +73,9 @@ class StagiaireResource(resources.ModelResource):
 
     def dehydrate_lien(self, inscr):
         return settings.HOST + reverse('admin:tba_camps_stagiaire_change', args=(inscr.pk,))
+
+    def dehydrate_etat(self, inscr):
+        return Dossier._etat_dict[inscr.dossier.etat]
     
     # def dehydrate_cp(self, inscr):
     #     return " %s" % inscr.cp
