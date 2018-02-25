@@ -175,6 +175,17 @@ class DossierFilter(admin.SimpleListFilter):
         else:
             return queryset.filter(etat__in=(PREINSCRIPTION, VALID, COMPLETE))
 
+
+class StagiaireInline(admin.TabularInline):
+    model = Stagiaire
+    show_change_link = True
+    fields = ('age', 'sexe', 'formule', 'semaines_str', 'prix', 'acompte', )
+    readonly_fields = ('age', 'sexe', 'formule', 'semaines_str', 'prix',)
+    can_delete = False
+    template = 'admin/edit_inline/stagiaire.html'
+    def has_add_permission(self, *args, **kwds):
+        return False
+    
 @admin.register(Dossier, site=site)
 class DossierAdmin(admin.ModelAdmin):
     list_display   = ('nom', 'prenom', 'semaines_str', 'hebergement', 'prix_hebergement', 'prix_total', 'acompte', 'acompte_total', 'reste', 'etat', 'date', 'date_valid')
@@ -182,13 +193,14 @@ class DossierAdmin(admin.ModelAdmin):
     list_editable  = ('prix_hebergement', 'acompte', 'etat')
     list_filter    = ('date', DossierFilter, 'semaines')
     search_fields  = ('nom', 'prenom', 'email')
-    readonly_fields = ('stagiaires', 'prix_total', 'reste', 'num', 'acompte_total')
+    readonly_fields = ('stagiaires', 'prix_total', 'reste', 'num', 'acompte_total', 'acompte_stagiaires')
     save_on_top = True
+    inlines = ( StagiaireInline, )
     fields  = (
         ('etat', 'num', 'date_valid'),
         ('nom', 'prenom'),
-        ('stagiaires',),
-        ('semaines', 'hebergement', 'prix_hebergement'),
+#        ('stagiaires',),
+        ('semaines', 'hebergement', 'prix_hebergement','acompte_stagiaires'),
         ('remise', 'motif_rem'),
         ('supplement', 'motif'),
         ('assurance',),
