@@ -10,11 +10,13 @@
 [] Remove double cotisation+assurance for same stagiaire on diff. formules
 [] PDF receipt
 [] Option to attach a one off message to a confirmation email
+[] Merge 2 dossiers
 
 # Admin
 
 [] use subviews
 [] add stagiare to dossier
+[] move stagiaire between dossiers
 [] Add 2D table for hebergement prices + Remise hbgt.
 [x] Excel export
 
@@ -45,7 +47,7 @@ Remember. Workflow is:
 [x] Fix error 500 when mail does not exist
 [x] Modifier stagiaire breaks again boolean fields
 [] Write a test for this ↑↑↑ (Decimal + choice)
-[] Make dossier clickable in stagiare list view
+[x] Make dossier clickable in stagiare list view
 [] Clean hebergement after dossier contains no more F2
 [] Rewrite cleaning script
 [] Rewrite tests

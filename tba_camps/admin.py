@@ -11,7 +11,7 @@ from django.contrib.auth.models import User, Group
 from django.shortcuts import redirect
 from django.conf.urls import url
 from django.urls import path
-from django.utils.html import mark_safe
+from django.utils.html import mark_safe, format_html
 from django.contrib.admin.templatetags.admin_static import static
 from django.db import models
 from django.forms import widgets
@@ -179,36 +179,67 @@ class DossierFilter(admin.SimpleListFilter):
 class StagiaireInline(admin.TabularInline):
     model = Stagiaire
     show_change_link = True
-    fields = ('age', 'sexe', 'formule', 'semaines_str', 'prix', 'acompte', )
-    readonly_fields = ('age', 'sexe', 'formule', 'semaines_str', 'prix',)
+    fields = ('age', 'sexe', 'formule', 'semaines_str', 'prix', 'acompte')
+    readonly_fields = ('age', 'sexe', 'formule', 'semaines_str', 'prix')
     can_delete = False
     template = 'admin/edit_inline/stagiaire.html'
     def has_add_permission(self, *args, **kwds):
         return False
+
+# class StagiaireCreateInline(admin.StackedInline):
+#     model = Stagiaire
+#     fields = (
+#         ('nom', 'prenom'),
+#         ( 'naissance', 'lieu'),
+#         ( 'niveau'),
+#         ('formule', 'semaines'),
+#         )
+#     can_delete = False
+#     classes = ('collapse', )
+#     extra = 1
+#     max_num = 1
+#     title = 'aaa'
+#     verbose_name = 'Ajouter stagiaire'
+#     def get_queryset(self, *args, **kwds):
+#         return Stagiaire.objects.none()
     
 @admin.register(Dossier, site=site)
 class DossierAdmin(admin.ModelAdmin):
-    list_display   = ('nom', 'prenom', 'semaines_str', 'hebergement', 'prix_hebergement', 'prix_total', 'acompte', 'acompte_total', 'reste', 'etat', 'date', 'date_valid')
+    list_display   = ('nom', 'prenom', 'stagiaires_short', 'semaines_str', 'hebergement', 'prix_hebergement', 'prix_total', 'acompte', 'acompte_total', 'reste', 'etat', 'date', 'date_valid')
     list_display_links = ('nom', 'prenom')
     list_editable  = ('prix_hebergement', 'acompte', 'etat')
     list_filter    = ('date', DossierFilter, 'semaines')
-    search_fields  = ('nom', 'prenom', 'email')
+    search_fields  = ('nom', 'prenom', 'email', 'stagiaire__nom', 'stagiaire__prenom')
     readonly_fields = ('stagiaires', 'prix_total', 'reste', 'num', 'acompte_total', 'acompte_stagiaires')
     save_on_top = True
-    inlines = ( StagiaireInline, )
-    fields  = (
-        ('etat', 'num', 'date_valid'),
-        ('nom', 'prenom'),
-#        ('stagiaires',),
-        ('semaines', 'hebergement', 'prix_hebergement','acompte_stagiaires'),
-        ('remise', 'motif_rem'),
-        ('supplement', 'motif'),
-        ('assurance',),
-        ('prix_total', 'acompte', 'acompte_total', 'mode', 'reste'),
-        ('mode_solde',),
-        ('email', 'tel'),
-        ('adresse', 'cp', 'ville', 'pays'),
-        ('notes', 'caf'),
+    inlines = ( StagiaireInline, ) #StagiaireCreateInline )
+    fieldsets  = (
+        (None, {
+            'fields' : (
+                ('etat', 'num', 'date_valid'),
+                ('nom', 'prenom'),
+#                ('stagiaires',),
+                ('remise', 'motif_rem'),
+                ('supplement', 'motif'),
+                ('assurance',),
+                ('prix_total', 'acompte', 'acompte_stagiaires', 'acompte_total', 'mode', 'reste'),
+                ('mode_solde',),
+                ),
+        }),
+        ('Hébergement', {
+            'classes' : ( 'collapse', ),
+            'fields': (
+                ('semaines', 'hebergement', 'prix_hebergement'),
+                ),
+        }),
+        ('Autres données personnelles', {
+            'classes' : ( 'collapse', ),
+            'fields' : (
+                ('email', 'tel'),
+                ('adresse', 'cp', 'ville', 'pays'),
+                ('notes', 'caf'),
+                ),
+        }),
      )
     formfield_overrides = {
         models.TextField: {'widget': widgets.Textarea(attrs={'rows' : 3})},
@@ -227,6 +258,10 @@ class DossierAdmin(admin.ModelAdmin):
         return obj.pk
     num.short_description = 'Numero de dossier'
 
+    def stagiaires_short(self, obj):
+        return mark_safe(',<br>'.join(format_html('{} {}', s.nom, s.prenom) for s in obj.stagiaire_set.iterator()))
+    stagiaires_short.short_description = 'Stagiaires'
+    
     def stagiaires(self, obj):
         return mark_safe('<table><tr>' + '</tr><tr>'.join(
     '''<td><a href="{url}">{nom} {prenom}</a></td>
@@ -282,20 +317,20 @@ class StagiaireFilter(admin.SimpleListFilter):
             return queryset
         else:
             return queryset.filter(dossier__etat__in=(PREINSCRIPTION, VALID, COMPLETE))
-
+        
 @admin.register(Stagiaire, site=site)
 class StagiaireAdmin(ExportMixin, admin.ModelAdmin):
-    list_display   = ('nom', 'prenom', 'dossier', 'semaines_str', 'formule', 'prix', 'parrain', 'pieces', 'etat')
+    list_display   = ('nom', 'prenom', 'dossier_link', 'semaines_str', 'formule', 'prix', 'parrain', 'pieces', 'etat')
     list_display_links = ('nom', 'prenom')
     list_editable  = ('parrain',)
     list_filter    = (StagiaireFilter, 'semaines')
-    search_fields  = ('nom', 'prenom')
-    readonly_fields = ('age', 'prix', 'prix_formule', 'email', 'etat', 'tel', 'dossier_link')
+    search_fields  = ('nom', 'prenom', 'dossier__nom', 'dossier__prenom')
+    readonly_fields = ('age', 'prix', 'prix_formule', 'email', 'etat', 'tel', 'dossier_link', 'acompte')
     save_on_top = True
     fields  = (
         ('etat', 'venu'),
         ('nom', 'prenom'),
-        ('dossier_link',),
+        ('dossier_link'),
         ('type_chambre', 'num_chambre'),
         ('age', 'naissance'),
         ('semaines', 'sexe', 'taille', 'niveau'),
@@ -317,6 +352,9 @@ class StagiaireAdmin(ExportMixin, admin.ModelAdmin):
     }
     resource_class = StagiaireResource
 
+    def has_add_permission(self, *args, **kwds):
+       return False
+    
     def etat(self, obj):
         return Dossier._etat_dict[obj.dossier.etat]
     etat.short_description = "État"

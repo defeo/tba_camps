@@ -211,12 +211,12 @@ class Dossier(ModelWFiles):
         CANCELED: 'Annulé',
         }
     
-    email = models.EmailField('Adresse email', max_length=255, unique=True)
+    email = models.EmailField('Adresse email', max_length=255, unique=True, db_index=True)
     secret = models.SlugField(max_length=22, blank=True, editable=False)
     ###
     titre = models.CharField(max_length=1, choices=[('M', 'Mr'), ('F', 'Mme')], null=True, blank=True)
-    nom = models.CharField(max_length=255, null=True)
-    prenom = models.CharField(max_length=255, null=True)
+    nom = models.CharField(max_length=255, null=True, db_index=True)
+    prenom = models.CharField(max_length=255, null=True, db_index=True)
     adresse = models.TextField(null=True)
     cp = models.CharField('Code postal', max_length=10, null=True)
     ville = models.CharField(max_length=255, null=True)
@@ -227,16 +227,16 @@ class Dossier(ModelWFiles):
     mode = models.CharField('Mode de règlement', max_length=1023, default='', blank=True)
     mode_solde = models.CharField('Règlement solde', max_length=1023, default='', blank=True)    
     etat = models.CharField("État du dossier", max_length=1, default=VALID,
-                            choices=_etat_dict.items())
+                            choices=_etat_dict.items(), db_index=True)
     acompte = models.DecimalField(default=0, max_digits=10, decimal_places=2)
     remise = models.DecimalField('Remise', default=0, max_digits=10, decimal_places=2)
     motif_rem = models.CharField('Motif de la remise', max_length=255, default='', blank=True)
     supplement = models.DecimalField('Supplément', default=0, max_digits=10, decimal_places=2)
     motif = models.CharField('Motif du supplément', max_length=255, default='', blank=True)
-    date = models.DateTimeField('Date inscription', auto_now_add=True)
+    date = models.DateTimeField('Date inscription', auto_now_add=True, db_index=True)
     date_valid = models.DateField('Date validation', null=True, blank=True)
     ###
-    semaines = models.ManyToManyField(Semaine, blank=True)
+    semaines = models.ManyToManyField(Semaine, blank=True, db_index=True)
     hebergement = models.ForeignKey(Hebergement, null=True, blank=True,
                                         on_delete=models.SET_NULL)
     prix_hebergement = models.DecimalField('Prix hébergement', default=0,
@@ -384,8 +384,8 @@ class Stagiaire(ModelWFiles):
 
     dossier = models.ForeignKey(Dossier, on_delete=models.CASCADE)
     ###
-    nom = models.CharField(max_length=255)
-    prenom = models.CharField(max_length=255)
+    nom = models.CharField(max_length=255, db_index=True)
+    prenom = models.CharField(max_length=255, db_index=True)
     # See http://stackoverflow.com/questions/3248887/
     sexe = models.CharField(max_length=1, choices=[('H', 'Homme'), ('F', 'Femme')], default=0)
     naissance = models.DateField('Date de naissance')
@@ -404,7 +404,7 @@ class Stagiaire(ModelWFiles):
     licence = models.CharField('Numéro de licence', max_length=31, blank=True)
     club = models.CharField('Club', max_length=255, blank=True)
     ###
-    semaines = models.ManyToManyField(Semaine)
+    semaines = models.ManyToManyField(Semaine, db_index=True)
     formule = models.ForeignKey(Formule, on_delete=models.PROTECT)
     accompagnateur = models.CharField("Nom de l'accompagnateur", max_length=255, blank=True)
     train = models.DecimalField('Supplément train depuis Paris (inclut les navettes aller et retour)',
