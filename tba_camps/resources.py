@@ -90,3 +90,62 @@ class StagiaireResource(resources.ModelResource):
     #     if inscr.hebergement is None:
     #         return ''
     #     return inscr.hebergement.nom
+
+class DossierResource(resources.ModelResource):
+    lien = fields.Field()
+    stagiaires = fields.Field()
+    prix_total = fields.Field()
+    acompte_total = fields.Field()
+    reste = fields.Field()
+    
+    def __new__(cls):
+        newclass = super().__new__(cls)
+        export_order = []
+        for i, s in enumerate(Semaine.objects.all().order_by('debut')):
+            label = 'S' + str(i+1)
+            export_order.append(label)
+            newclass.fields[label] = SemaineField(semaine=s, column_name=str(s))
+        newclass._meta.export_order = newclass._meta.export_base + export_order
+        return newclass
+
+    class Meta:
+        model = Dossier
+        export_base = fields = [
+            'nom', 'prenom', 'stagiaires',
+            'hebergement', 'prix_hebergement',
+            'prix_total', 'acompte_total', 'reste',
+            'mode', 'mode_solde',
+            'email', 'tel', 'date', 'etat', 'lien',
+            ]
+        widgets = {
+            'date' : { 'format' : '%x %X'},
+        }
+        
+    @classmethod
+    def widget_from_django_field(cls, f, default=widgets.Widget):
+        result = resources.ModelResource.widget_from_django_field(f, default)
+        if f.choices:
+            result = functools.partial(ChoiceWidget, choices=f.choices)
+        return result
+
+    # Hack around bad xlsx export
+    def dehydrate_tel(self, inscr):
+        return " %s" % inscr.tel
+
+    def dehydrate_stagiaires(self, inscr):
+        return ",\n".join("%s %s" % (s.nom, s.prenom) for s in inscr.stagiaire_set.iterator())
+    
+    def dehydrate_prix_total(self, inscr):
+        return inscr.prix_total()
+    
+    def dehydrate_acompte_total(self, inscr):
+        return inscr.acompte_total()
+    
+    def dehydrate_reste(self, inscr):
+        return inscr.reste()
+    
+    def dehydrate_lien(self, inscr):
+        return settings.HOST + reverse('admin:tba_camps_dossier_change', args=(inscr.pk,))
+
+    def dehydrate_etat(self, inscr):
+        return Dossier._etat_dict[inscr.etat]

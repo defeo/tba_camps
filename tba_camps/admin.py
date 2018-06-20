@@ -5,7 +5,7 @@ from ordered_model.admin import OrderedModelAdmin
 from .models import Manager, Semaine, Formule, Hebergement, Dossier, Stagiaire, Message
 from .models import PREINSCRIPTION, VALID, COMPLETE
 from import_export.admin import ExportMixin
-from .resources import StagiaireResource
+from .resources import StagiaireResource, DossierResource
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User, Group
 from django.shortcuts import redirect
@@ -204,7 +204,7 @@ class StagiaireInline(admin.TabularInline):
 #         return Stagiaire.objects.none()
     
 @admin.register(Dossier, site=site)
-class DossierAdmin(admin.ModelAdmin):
+class DossierAdmin(ExportMixin, admin.ModelAdmin):
     list_display   = ('nom', 'prenom', 'stagiaires_short', 'semaines_str', 'hebergement', 'prix_hebergement', 'prix_total', 'acompte', 'acompte_total', 'reste', 'etat', 'date', 'date_valid')
     list_display_links = ('nom', 'prenom')
     list_editable  = ('prix_hebergement', 'acompte', 'etat')
@@ -245,7 +245,7 @@ class DossierAdmin(admin.ModelAdmin):
         models.TextField: {'widget': widgets.Textarea(attrs={'rows' : 3})},
         models.DecimalField: {'widget': widgets.NumberInput(attrs={'style' : 'width: 6em'})},
     }
-#    resource_class = DossierResource
+    resource_class = DossierResource
 
     def get_urls(self):
         urls = super().get_urls()
