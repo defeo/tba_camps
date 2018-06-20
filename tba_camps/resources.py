@@ -135,6 +135,14 @@ class DossierResource(resources.ModelResource):
     def dehydrate_stagiaires(self, inscr):
         return ",\n".join("%s %s" % (s.nom, s.prenom) for s in inscr.stagiaire_set.iterator())
     
+    def dehydrate_hebergement(self, inscr):
+        if inscr.hebergement is None:
+            return ''
+        return inscr.hebergement.nom
+
+    def dehydrate_prix_hebergement(self, inscr):
+        return inscr.prix_hebergement if inscr.hebergement is not None else ''
+    
     def dehydrate_prix_total(self, inscr):
         return inscr.prix_total()
     
