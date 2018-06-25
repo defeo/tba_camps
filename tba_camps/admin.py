@@ -175,6 +175,19 @@ class DossierFilter(admin.SimpleListFilter):
         else:
             return queryset.filter(etat__in=(PREINSCRIPTION, VALID, COMPLETE))
 
+class DossierSemaineFilter(admin.SimpleListFilter):
+    title = 'semaines'
+    parameter_name = 'semaine'
+
+    def lookups(self, req, model):
+        return [(s.pk, s) for s in Semaine.objects.iterator()]
+
+    def queryset(self, req, queryset):
+        if self.value() is None:
+            return queryset
+        else:
+            return queryset.filter(stagiaire__semaines=self.value()).distinct()
+
 
 class StagiaireInline(admin.TabularInline):
     model = Stagiaire
@@ -208,7 +221,7 @@ class DossierAdmin(ExportMixin, admin.ModelAdmin):
     list_display   = ('nom', 'prenom', 'stagiaires_short', 'semaines_str', 'hebergement', 'prix_hebergement', 'prix_total', 'acompte', 'acompte_total', 'reste', 'etat', 'date', 'date_valid')
     list_display_links = ('nom', 'prenom')
     list_editable  = ('prix_hebergement', 'acompte', 'etat')
-    list_filter    = ('date', DossierFilter, 'semaines')
+    list_filter    = ('date', DossierFilter, DossierSemaineFilter)
     search_fields  = ('nom', 'prenom', 'email', 'stagiaire__nom', 'stagiaire__prenom')
     readonly_fields = ('stagiaires', 'prix_total', 'reste', 'num', 'acompte_total', 'acompte_stagiaires')
     save_on_top = True
