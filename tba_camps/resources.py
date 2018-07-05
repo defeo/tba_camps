@@ -115,7 +115,8 @@ class DossierResource(resources.ModelResource):
             'hebergement', 'prix_hebergement',
             'prix_total', 'acompte_total', 'reste',
             'mode', 'mode_solde',
-            'email', 'tel', 'date', 'etat', 'lien',
+            'email', 'tel', 'adresse', 'cp', 'ville',
+            'date', 'etat', 'lien',
             ]
         widgets = {
             'date' : { 'format' : '%x %X'},
