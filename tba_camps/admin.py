@@ -196,7 +196,7 @@ class StagiaireInline(admin.TabularInline):
     readonly_fields = ('age', 'sexe', 'formule', 'semaines_str', 'prix')
     can_delete = False
     template = 'admin/edit_inline/stagiaire.html'
-    def has_add_permission(self, *args, **kwds):
+    def has_add_permission(self, obj, *args, **kwds):
         return False
 
 # class StagiaireCreateInline(admin.StackedInline):
