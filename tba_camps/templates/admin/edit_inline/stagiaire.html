@@ -9,11 +9,11 @@
    {{ inline_admin_formset.formset.non_form_errors }}
    <table>
      <thead><tr>
-	 <th></th>
+       <th></th>
      {% for field in inline_admin_formset.fields %}
        {% if not field.widget.is_hidden %}
          <th{% if field.required %} class="required"{% endif %}>{{ field.label|capfirst }}
-         {% if field.help_text %}&nbsp;<img src="{% static "admin/img/icon-unknown.svg" %}" class="help help-tooltip" width="10" height="10" alt="({{ field.help_text|striptags }})" title="{{ field.help_text|striptags }}" />{% endif %}
+         {% if field.help_text %}&nbsp;<img src="{% static "admin/img/icon-unknown.svg" %}" class="help help-tooltip" width="10" height="10" alt="({{ field.help_text|striptags }})" title="{{ field.help_text|striptags }}">{% endif %}
          </th>
        {% endif %}
      {% endfor %}
@@ -21,21 +21,22 @@
      </tr></thead>
 
      <tbody>
-     {% for i in inline_admin_formset %}
-        {% if i.form.non_field_errors %}
-        <tr><td colspan="{{ i|cell_count }}">{{ i.form.non_field_errors }}</td></tr>
+     {% for inline_admin_form in inline_admin_formset %}
+        {% if inline_admin_form.form.non_field_errors %}
+        <tr><td colspan="{{ inline_admin_form|cell_count }}">{{ inline_admin_form.form.non_field_errors }}</td></tr>
         {% endif %}
-        {% if i.original %}
-        <tr class="form-row {% cycle "row1" "row2" %} {% if forloop.last %} empty-form{% endif %}"
-             id="{{ iset.formset.prefix }}-{% if not forloop.last %}{{ forloop.counter0 }}{% else %}empty{% endif %}">
+        <tr class="form-row {% cycle "row1" "row2" %} {% if inline_admin_form.original or inline_admin_form.show_url %}has_original{% endif %}{% if forloop.last and inline_admin_formset.has_add_permission %} empty-form{% endif %}"
+             id="{{ inline_admin_formset.formset.prefix }}-{% if not forloop.last %}{{ forloop.counter0 }}{% else %}empty{% endif %}">
         <td>
-          <a href="{% url i.model_admin.opts|admin_urlname:'change' i.original.pk|admin_urlquote %}">{{ i.original }}</a>
+          {% if inline_admin_form.original %}<p>
+          {% if inline_admin_form.model_admin.show_change_link and inline_admin_form.model_admin.has_registered_model %}
+          <a href="{% url inline_admin_form.model_admin.opts|admin_urlname:'change' inline_admin_form.original.pk|admin_urlquote %}">{{ inline_admin_form.original }}</a>{% endif %}
 	  
-          {% if i.needs_explicit_pk_field %}{{ i.pk_field.field }}{% endif %}
-          {{ i.fk_field.field }}
+          {% if inline_admin_form.needs_explicit_pk_field %}{{ inline_admin_form.pk_field.field }}{% endif %}
+          {{ inline_admin_form.fk_field.field }}
 
           {% spaceless %}
-          {% for fieldset in i %}
+          {% for fieldset in inline_admin_form %}
             {% for line in fieldset %}
               {% for field in line %}
                 {% if field.field.is_hidden %} {{ field.field }} {% endif %}
@@ -43,8 +44,8 @@
             {% endfor %}
           {% endfor %}
           {% endspaceless %}
-	</td>
-        {% for fieldset in i %}
+        </td>
+        {% for fieldset in inline_admin_form %}
           {% for line in fieldset %}
             {% for field in line %}
               {% if not field.field.is_hidden %}
