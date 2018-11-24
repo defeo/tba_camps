@@ -180,7 +180,7 @@ class FileInput(forms.widgets.FileInput):
 </span>
 '''
 
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, **kwds):
         t = value.name and value.name.split('/')[-1] or ''
         trunc = lambda x,l: x[:l] + '…' * (len(x) > l)
         attrs = attrs or {}
