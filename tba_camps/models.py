@@ -1,5 +1,6 @@
 # -*- encoding: utf-8 
 
+from collections import OrderedDict
 from django.db import models
 from django.contrib.auth.models import User
 from ordered_model.models import OrderedModel
@@ -202,14 +203,14 @@ def delete_files(sender, instance, **kwargs):
 
 class Dossier(ModelWFiles):
     _file_fields = ('fiche_hotel',)
-    _etat_dict = {
-        CREATION: 'Email non confirmée',
-        CONFIRME: 'Pré-inscription incomplète',
-        PREINSCRIPTION: 'Pré-inscription',
-        VALID: 'Validé',
-        COMPLETE: 'Complet',
-        CANCELED: 'Annulé',
-        }
+    _etat_dict = OrderedDict([
+        (CREATION, 'Email non confirmée'),
+        (CONFIRME, 'Pré-inscription incomplète'),
+        (PREINSCRIPTION, 'Pré-inscription'),
+        (VALID, 'Validé'),
+        (COMPLETE, 'Complet'),
+        (CANCELED, 'Annulé'),
+        ])
     
     email = models.EmailField('Adresse email', max_length=255, unique=True, db_index=True)
     secret = models.SlugField(max_length=22, blank=True, editable=False)
