@@ -131,7 +131,7 @@ class FormuleField(forms.ModelChoiceField):
             attrs['data-assurance'] = '1'
         if obj.affiche_mode:
             attrs['data-mode'] = '1'
-        for field, (val, _, _) in obj.costs().items():
+        for field, (val, _) in obj.costs(1).items():
             attrs['data-%s' % field.name] = val
 
         return {

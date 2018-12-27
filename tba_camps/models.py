@@ -47,6 +47,14 @@ class SemaineQuerySet(models.QuerySet):
     
     def fin(self):
         return self.aggregate(models.Max('debut'))['debut__max'] + datetime.timedelta(6)
+
+    def weekend_count(self):
+        c = 0
+        debut = datetime.date(1,1,1)
+        for s in self.order_by('debut'):
+            c += debut + datetime.timedelta(7) == s.debut
+            debut = s.debut
+        return c
     
 MANAGED='M'
 EXTERNAL='E'
@@ -76,6 +84,7 @@ class Formule(OrderedModel):
     taxe = models.DecimalField('Taxe ménage', default=0, max_digits=10, decimal_places=2)
     taxe_gym = models.DecimalField('Taxe gymnase', default=0, max_digits=10, decimal_places=2)
     cotisation = models.DecimalField('Cotisation TBA', default=15, max_digits=10, decimal_places=2)
+    weekend = models.DecimalField('Prix weekend', default=0, max_digits=10, decimal_places=2)
     has_hebergement = models.BooleanField("Résa Hébergement", default=False)
     affiche_train = models.BooleanField("Opt. train", default=False)
     affiche_chambre = models.BooleanField("Opt. 'chambre avec'",
@@ -97,12 +106,20 @@ class Formule(OrderedModel):
     def __str__(self):
         return self.nom
 
-    def costs(self):
+    def costs(self, weeks, weekends=0):
+        '''
+        Takes a number of weeks, gives back breakdown of costs as:
+        
+        { field: (price, advance) }
+        '''
         return {
-            Formule._meta.get_field('prix')       : (self.prix, True, self.acompte),
-            Formule._meta.get_field('taxe_gym')   : (self.taxe_gym, True, self.taxe_gym / 2),
-            Formule._meta.get_field('taxe')       : (self.taxe, False, self.taxe),
-            Formule._meta.get_field('cotisation') : (self.cotisation, False, self.cotisation)
+            Formule._meta.get_field('prix')       : (self.prix * weeks, self.acompte * weeks),
+            Formule._meta.get_field('taxe_gym')   : (self.taxe_gym * weeks,
+                                                         self.taxe_gym * weeks / 2),
+            Formule._meta.get_field('weekend')    : (self.weekend * weekends,
+                                                         self.weekend * weekends / 2),
+            Formule._meta.get_field('taxe')       : (self.taxe, self.taxe),
+            Formule._meta.get_field('cotisation') : (self.cotisation, self.cotisation)
             }
 
 class Semaine(models.Model):
@@ -490,38 +507,39 @@ class Stagiaire(ModelWFiles):
     
     def costs_formule(self):
         sem = self.semaines.count()
-        costs = {k: (val, sem**by_sem, ava)
-                 for k, (val, by_sem, ava) in self.formule.costs().items()}
+        weekends = self.semaines.weekend_count()
+        costs = {k: (val, ava)
+                 for k, (val, ava) in self.formule.costs(sem, weekends).items()}
         return costs
     
     def costs(self):
         costs = self.costs_formule()
         costs.update({
-            Stagiaire._meta.get_field('train')            : (self.train.quantize(Decimal('0.00')), 1, self.train.quantize(Decimal('0.00')) / 2),
-            Stagiaire._meta.get_field('navette_a')        : (self.navette_a, 1, self.navette_a),
-            Stagiaire._meta.get_field('navette_r')        : (self.navette_r, 1, self.navette_r),
+            Stagiaire._meta.get_field('train')            : (self.train.quantize(Decimal('0.00')), self.train.quantize(Decimal('0.00')) / 2),
+            Stagiaire._meta.get_field('navette_a')        : (self.navette_a, self.navette_a),
+            Stagiaire._meta.get_field('navette_r')        : (self.navette_r, self.navette_r),
             })
         return costs
 
     def desc_costs(self):
-        for field, (val, mul, _) in self.costs().items():
-            if val * mul:
+        for field, (val, _) in self.costs().items():
+            if val:
                 yield {
                     'desc' : field.verbose_name,
                     'short': field.name,
-                    'cost' : val*mul,
+                    'cost' : val,
                     }
     
     def prix_formule(self):
-        return sum(val * count for (val, count, _) in self.costs_formule().values())
+        return sum(val for (val, _) in self.costs_formule().values())
         
     def prix(self):
-        return sum(val * count for (val, count, _) in self.costs().values())
+        return sum(val for (val, _) in self.costs().values())
     prix.short_description = 'Total'
 
     def avance(self):
-        return min(sum(ava * count
-                       for (_, count, ava) in self.costs().values()),
+        return min(sum(ava
+                       for (_, ava) in self.costs().values()),
                     self.prix())
 
     def save(self, *args, **kwds):
