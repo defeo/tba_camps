@@ -425,7 +425,7 @@ class Stagiaire(ModelWFiles):
     semaines = models.ManyToManyField(Semaine, db_index=True)
     formule = models.ForeignKey(Formule, on_delete=models.PROTECT)
     accompagnateur = models.CharField("Nom de l'accompagnateur", max_length=255, blank=True)
-    train = models.DecimalField('Supplément train depuis Paris (inclut les navettes aller et retour)',
+    train = models.DecimalField('Supplément train depuis Paris',
                            max_digits=10, decimal_places=3, default=Decimal('0.000'),
                            choices=[(Decimal('0.000'), "Pas de supplément"),
                                     (Decimal('160.000'), 'Aller-retour tarif normal (160€)'),
