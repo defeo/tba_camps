@@ -108,12 +108,13 @@ li {
 padding-left: 5px;
 }
 
-/* nav 
+/* nav */
+
 nav {
 margin: 0 auto;
 display: block;
 float: left;
-margin-top: -4px;
+margin-top: 0px;
 }
 
 nav .menu {
@@ -143,10 +144,7 @@ nav .menu a:hover {
 color: #000;
 }
 
-*/
-
-
-/* nav 1-level dropdowns 
+/* nav 1-level dropdowns */
 nav .menu li ul { 
 display: none; 
 z-index: 8888;
@@ -174,15 +172,14 @@ float: none;
 }
 
 nav .menu li:hover a { 
-background: #5E355C; 
+/*background: #5E355C; */
+background: #ea7807; 
 }
 
 nav .menu li:hover li a:hover { 
-background: #5E355C; 
+/*background: #5E355C; */
+background: #ea7807; 
 }
-
-*/
-
 
 /** HEADER */
 
@@ -191,10 +188,11 @@ padding: 20px 0 0 0;
 }
 
 header>h1 {
-float: left;
-margin: 0 0 18px 10px;
+float: left; ;
+text-align: center;
+margin: 0 0 18px 160px;
 width: 600px;
-font-size: 40px;
+font-size: 45px;
 line-height: 36px;
 }
 
