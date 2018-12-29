@@ -7,14 +7,12 @@
     <title>{% block title %}Les camps de Basket TBA : 30 ans d'expérience au service du Basket{% endblock %}</title>
     <meta name="description" content="{% block description %}Le premier camp de basket de SUPERDEVOLUY a vu le jour en 1984, c'est le plus grand camp de Basket de France avec 8 terrains de basket. Sa renommé et sa réputation, il les doit aux milliers de stagiaires qui ont participé aux camps TBA  et parmi eux certains sont devenus des stars comme Aymeric JEANNEAU, Eric MICOUD, Laure SAVASTA… et le futur grand Edwin JACKSON{% endblock %}">    
     <link rel="stylesheet" type="text/css" href="{% static "css/styles.css" %}"  media="screen" />
+    <link rel="stylesheet" type="text/css" href="{% static "css/dossier.css" %}"  media="screen" />
     <link rel="stylesheet" type="text/css" href="{% static "css/print.css" %}" media="print" />
     
     <link rel="stylesheet" href="{% static "css/pure-forms+buttons.css" %}">
-
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
+    <link rel="stylesheet" href="{% static "css/bootstrap.min.css" %}">
+    
     {{ form.media.css }}
     {% block extrahead %}{% endblock %}
   </head>
@@ -25,125 +23,77 @@
 	<img src="/tba/images/tba.jpg" width="940" height="200" alt=""><!-- header image -->
       </header>
 
-
-<!--
-
+      <!-- Navigation -->
       <nav>
-	<div class="menu">
-	  <ul>
-	    <li><a href="{% url 'static_index' %}">Home</a></li>
-	    <li><a href="{% url 'static_pages' 'historique' %}">Historique de l'association</a>
-  	    </li>
-	    <li><a href="{% url 'static_pages' 'superdevoluy' %}">Le site de Superdévoluy </a></li>
-	    <li><a href="{% url 'static_pages' 'contacts' %}">Les contacts</a></li>
-	  </ul>
-	</div>        
+	<div class="menu-container">
+	  <div class="menu">
+	    <ul>
+
+	      <li><a title="Home | accueil" href="{% url 'static_index' %}">Accueil</a></li>
+
+	      <li>
+		<a href="#">TBA C'EST QUOI ?</a>
+		<ul>
+		  <li><a href="{% url 'static_pages' 'historique' %}">Historique de l'Association</a></li>
+		  <li><a href="{% url 'static_pages' 'sejour-specifique-sportif' %}">Un séjour sportif</a></li>
+		  <li><a href="{% url 'static_pages' 'projet-educatif' %}">Projet éducatif</a></li>
+		  <li><a href="{% url 'static_pages' 'projet-pedagogique' %}">Projet pédagogique</a></li>	     
+		  <li><a href="{% url 'static_pages' 'journee-type' %}">Une journée type </a></li>
+		  <li><a href="{% url 'static_pages' 'cadre' %}">Des coachs fidèles</a></li>
+
+		</ul>
+	      </li>
+
+	      <li>
+		<a href="#">INFO STAGES</a>
+		<ul>
+		  <li><a href="{% url 'static_pages' 'depliant' %}">Le dépliant {{ settings.ANNEE }}</a></li>
+		  <li><a href="{% url 'pratique' %}">Dates, Formules et prix des places disponibles</a></li>
+		  <li><a href="{% url 'static_pages' 'assurance-desistement' %}">Annulation d'un séjour, assurances</a></li>
+		  <li><a href="{% url 'static_pages' 'camp-special' %}">Stages U7 et U9</a></li>
+		  <li><a href="{% url 'static_pages' 'stage-anglais' %}">Stage en immersion Anglais 24h sur 24</a></li>
+		  <li><a href="{% url 'static_pages' 'infos-pratiques' %}">Infos pratiques</a></li>
+		  <li><a href="{% url 'static_pages' 'special-club' %}">Spécial Club</a></li>
+		  <li><a href="{% url 'static_pages' 'location-parents' %}">Location Parents</a></li>
+		  <li><a href="{% url 'static_pages' 'aides-financieres-possibles' %}">Les aides financières possibles</a></li>
+		  <li><a href="{% url 'static_pages' 'parrainages' %}">Parrainages</a></li>
+
+		</ul>
+	      </li>
+
+	      <li>
+		<a style="background-color: red; color: white;" href="{% url 'register_form' %}">{% if has_dossier %}<strong>Mes inscriptions</strong>{% else %}INSCRIPTIONS{% endif %}</a>
+		<ul>  
+
+
+		  <li><a href="{% url 'static_pages' 'presentation' %}">Les nouvelles avant de s’inscrire </a></li>
+		  <li><a href="{% url 'register_form' %}">Je m’inscris  </a></li>
+		  <li><a href="{% url 'static_pages' 'inscrit' %}">Je suis inscrit</a></li>
+		  <li><a href="{% url 'static_pages' 'telechargements' %}">Téléchargement</a></li>
+		  <li><a href="{{ settings.PIECES.sanitaire_pdf }}" target="_blank">Fiche sanitaire de liaison</a></li>
+		</ul>
+	      </li>
+
+	      <li>
+		<a href="#">CONTACTS</a>
+		<ul>
+		  <li><a href="{% url 'static_pages' 'superdevoluy' %}">Le site Superdévoluy</a></li>
+		  <li><a href="{% url 'static_pages' 'partenaire' %}">Les partenaires</a></li>
+		  <li><a href="{% url 'static_pages' 'contacts' %}">Contactez nous</a></li>
+		</ul>
+	      </li>
+
+	      
+	      
+	    </ul>
+	  </div>
+	</div>
+
       </nav>
 
--->
-
-
-<!-- Navigation -->
-<nav>
-<div class="menu-container">
-<div class="menu">
-<ul>
-
-<li><a title="Home | accueil" href="{% url 'static_index' %}">Accueil</li>
-
-<li>
-<a href="#">TBA C'EST QUOI ?</a>
-<ul>
-  <li><a href="{% url 'static_pages' 'historique' %}">Historique de l'Association</a></li>
-  <li><a href="{% url 'static_pages' 'sejour-specifique-sportif' %}">Un séjour sportif</a></li>
-  <li><a href="{% url 'static_pages' 'projet-educatif' %}">Projet éducatif</a></li>
-  <li><a href="{% url 'static_pages' 'projet-pedagogique' %}">Projet pédagogique</a></li>	     
-  <li><a href="{% url 'static_pages' 'journee-type' %}">Une journée type </a></li>
-  <li><a href="{% url 'static_pages' 'cadre' %}">Des coachs fidèles</a></li>
-
-</ul>
-</li>
-
-<li>
-<a href="#">INFO STAGES</a>
-<ul>
-<li><a href="{% url 'static_pages' 'depliant' %}">Le dépliant {{ settings.ANNEE }}</a></li>
-<li><a href="{% url 'pratique' %}">Dates, Formules et prix des places disponibles</a></li>
-<li><a href="{% url 'static_pages' 'assurance-desistement' %}">Annulation d'un séjour, assurances</a></li>
-<li><a href="{% url 'static_pages' 'camp-special' %}">Stages U7 et U9</a></li>
-<li><a href="{% url 'static_pages' 'stage-anglais' %}">Stage en immersion Anglais 24h sur 24</a></li>
-<li><a href="{% url 'static_pages' 'infos-pratiques' %}">Infos pratiques</a></li>
-<li><a href="{% url 'static_pages' 'special-club' %}">Spécial Club</a></li>
-<li><a href="{% url 'static_pages' 'location-parents' %}">Location Parents</a></li>
-<li><a href="{% url 'static_pages' 'aides-financieres-possibles' %}">Les aides financières possibles</a></li>
-<li><a href="{% url 'static_pages' 'parrainages' %}">Parrainages</a></li>
-
-</ul>
-</li>
-
-<li>
- <a style="background-color: red; color: white;" href="{% url 'register_form' %}">{% if has_dossier %}<strong>Mes inscriptions</strong>{% else %}INSCRIPTIONS{% endif %}</a>
-<ul>  
-
-
-<li><a href="{% url 'static_pages' 'presentation' %}">Les nouvelles avant de s’inscrire </a></li>
-<li><a href="{% url 'register_form' %}">Je m’inscris  </a></li>
-<li><a href="{% url 'static_pages' 'inscrit' %}">Je suis inscrit</a></li>
-<li><a href="{% url 'static_pages' 'telechargements' %}">Téléchargement</a></li>
-<li><a href="{{ settings.PIECES.sanitaire_pdf }}" target="_blank">Fiche sanitaire de liaison</a></li>
-</ul>
-</li>
-
-<li>
-<a href="#">CONTACTS</a>
-<ul>
-<li><a href="{% url 'static_pages' 'superdevoluy' %}">Le site Superdévoluy</a></li>
-<li><a href="{% url 'static_pages' 'partenaire' %}">Les partenaires</a></li>
-<li><a href="{% url 'static_pages' 'contacts' %}">Contactez nous</a></li>
-</ul>
-</li>
-
-	 
-	 
-</ul>
-</div>
-</div>
-
-</nav>
 
 
 
-
-
-<!--
-
-<nav class="navbar navbar-default">
-  <div class="container-fluid">
-    <div class="navbar-header">
-     
-    </div>
-    <ul class="nav navbar-nav">
-      <li class="active"><a href="#">ACCEUIL</a></li>
-      <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">TBA C'EST QUOI ?  <span class="caret"></span></a>
-        <ul class="dropdown-menu">
-          <li><a href="#">Historique de l'Association</a></li>
-          <li><a href="#">Un séjour sportif</a></li>
-          <li><a href="#">Projet éducatif </a></li>
-          <li><a href="#">Projet pédagogique</a></li>
-          <li role="separator" class="divider"></li>
-          <li><a href="#">Une journée types pédagogique</a></li>
-          <li role="separator" class="divider"></li>
-          <li><a href="#">Des coachs fidèles</a></li>
-        </ul>
-      </li>
-      <li><a href="#">INFOS STAGES</a></li>
-      <li><a href="#">INSCRIPTIONS</a></li>
-      <li><a href="#">CONTACTS</a></li>
-    </ul>
-  </div>
-</nav>
-
--->
       <section id="main"><!-- #main content and sidebar area -->
 	<section id="content"><!-- #content -->
 
@@ -152,57 +102,14 @@
 	</section><!-- end of #content -->
 
 	<aside id="sidebar"><!-- sidebar -->
-	<br>
-<br>
-<br>
-<br>
-<p style="text-align:center;">
-<a href="{% url 'static_pages' 'video' %}"><img src="/tba/photo/videos-logo.jpg" width="180px" ></a><br><br>
+	  <p>
+	    <a href="{% url 'static_pages' 'video' %}"><img src="/tba/photo/videos-logo.jpg" width="180px" ></a><br><br>
 
-<a href="{% url 'static_pages' 'sejour-specifique-sportif' %}"><img src="/tba/photo/camps-sportif.jpg" width="180px" ></a><br>
-<a href="{% url 'static_pages' 'boutique' %}"><img src="/tba/photo/icone-boutique.png" width="180px" ></a><br>
-<a href="https://www.facebook.com/TBACampsBasket/?ref=settings"><img src="/tba/photo/tB4s8XryFacebook-official-logo-650x433.jpg" width="180px" >
-</p>
-    
-    <!--
-      <h3>Les camps de Basket</h3>
-      
-            
-	  <ul>
-	    <li><a href="{% url 'static_pages' 'presentation' %}">Les nouvelles avant de s’inscrire</a></li>
-        <li><a href="{% url 'static_pages' 'video' %}">Vidéos des camps</a></li>
-        <li><a href="{% url 'static_pages' 'stage-anglais' %}">Stage en immersion Anglais 24h sur 24</a></li>        
-        <li><a href="{% url 'pratique' %}">Dates, formules, prix et places disponibles</a></li>
-	    <li><a href="{% url 'register_form' %}">{% if has_dossier %}<strong>Mes inscriptions</strong>{% else %}Inscriptions{% endif %}</a></li> -->
- <!--<li><a href="{% url 'static_pages' 'arrivee-et-depart' %}">Vous êtes inscrit : Arrivée et départ</a></li>enlevé le 12/01/18  -->
-
-    <!--        <li><a href="{% url 'static_pages' 'infos-pratiques' %}">Infos, conditions d’inscriptions et fonctionnement des camps</a></li>
-	    <li><a href="{% url 'static_pages' 'telechargements' %}">Les téléchargements </a></li>
-	    <li><a href="{% url 'static_pages' 'journee-type' %}">Une journée type</a></li>
-	    <li><a href="{% url 'static_pages' 'sejour-specifique-sportif' %}"><span style="color: red;">2018 : Séjour spécifique sportif</span></a></li>
- 		<li><a href="{% url 'static_pages' 'projet-pedagogique' %}">Projet pédagogique</a></li>
- 		<li><a href="{% url 'static_pages' 'projet-educatif' %}">Projet éducatif</a></li>
-	    <li><a href="{% url 'static_pages' 'location-parents' %}">Location Parents</a></li>
-            <li><a href="{% url 'static_pages' 'special-club' %}">Spécial Club</a></li>
-            <li><a href="{% url 'static_pages' 'camp-special' %}">Camp spécial de 6 à 9 ans</a></li>
-	    <li><a href="{% url 'static_pages' 'infos-parents' %}">Infos Parents</a></li>
-	    <li><a href="{% url 'static_pages' 'depliant' %}">Le dépliant {{ settings.ANNEE }}</a></li>
-	    <li><a href="{% url 'static_pages' 'assurance-desistement' %}">Assurance désistement</a></li>
-            <li><a href="{% url 'static_pages' 'cadre' %}">Les Cadres</a></li>
-	    <li><a href="{% url 'static_pages' 'partenaire' %}">Nos partenaires</a></li>
-	    <li><a href="{% url 'static_pages' 'photos' %}">Les photos</a></li>
-	-->    
-         <!--    <li><a href="{% url 'static_pages' 'conseils-pratiques' %}">Conseils pratiques</a></li>  enlevé le 12/01/18  -->
-	       <!-- <li><a href="{% url 'static_pages' 'boutique' %}">Boutique</a></li> -->
-	    <!--<li><a href="{% url 'static_pages' 'option-anglais' %}">Option Anglais en semaine N°1 et N°2</a></li>-->
-    <!--
-	  </ul>
-	</aside>
--->    
-    <!-- end of sidebar -->
-
-
-
+	    <a href="{% url 'static_pages' 'sejour-specifique-sportif' %}"><img src="/tba/photo/camps-sportif.jpg" width="180px" ></a><br>
+	    <a href="{% url 'static_pages' 'boutique' %}"><img src="/tba/photo/icone-boutique.png" width="180px" ></a><br>
+	    <a href="https://www.facebook.com/TBACampsBasket/?ref=settings"><img src="/tba/photo/tB4s8XryFacebook-official-logo-650x433.jpg" width="180px" ></a>
+	  </p>
+	</aside><!-- end of sidebar -->
       </section><!-- end of #main content and sidebar-->
 
 
@@ -239,7 +146,10 @@
       </footer>  
       
     </div><!-- #wrapper -->
-    <!-- Free template created by http://freehtml5templates.com -->
+    
+    <script src="{% static "js/jquery.min.js" %}"></script>
+    <script src="{% static "js/bootstrap.min.js" %}"></script>
+
     {{ form.media.js }}
    
 <script>

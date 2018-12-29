@@ -45,7 +45,7 @@ background: #cc6600;
 width: 940px;
 margin: 0 auto;
 padding-top: 10px;
-background: #F0EDD8 url(images/colbg.png) repeat-y;
+background: #F0EDD8;
 overflow: hidden;
 }
 
@@ -58,8 +58,9 @@ padding: 10px 30px 5px 0;
 
 #sidebar {
 float: left;
-padding: 10px 0 0 20px;
+padding: 6em 0 0 20px;
 width: 220px;
+text-align: center;
 }
 
 footer {
@@ -230,9 +231,6 @@ article .featuredthumb {
 float: left;
 width: 200px;
 height: 200px;
-/* curved border radius */
--moz-border-radius: 10px;
--webkit-border-radius: 10px;
 }
 
 article .featuredtitle {
@@ -252,9 +250,6 @@ article .thumb {
 float: right;
 width: 80px;
 height: 80px;
-/* curved border radius */
--moz-border-radius: 10px;
--webkit-border-radius: 10px;
 }
 
 article .title {
@@ -316,11 +311,6 @@ color: #FFF;
 font-size: 90%;
 padding: 18px 0;
 overflow: hidden;
-/* curved border radius */
--moz-border-radius-bottomright: 8px;
--moz-border-radius-bottomleft: 8px;
--webkit-border-bottom-left-radius: 8px;
--webkit-border-bottom-right-radius: 8px;
 }
 
 .footer-segment {
@@ -354,44 +344,27 @@ margin-top: -15px;
 color: #faf0e6;
 }
 
-/**** More style by Luca ****/
-.pure-form-aligned  ul {
-    display: inline-block;
-    list-style-type: none;
-    vertical-align: top;
-    max-width: 400px;
+#content ul {
+    padding: 0 2em;
 }
-.pure-form-aligned .pure-control-group li label { 
-    width: auto;
-    text-align: left;
-}
-.pure-control-group li { border-radius: 4px }
-.pure-control-group li:hover { background-color: rgba(255,255,255,0.5) }
-.error {
-    background-color: #fcc;
-    color: #666;
-    font-weight: bold;
-}
-.fieldgroup {
-    border-radius: 5px;
-    border: solid thin #ddd;
-    padding: 1ex;
-    margin: 1ex 0;
-}
-.messages { margin: 20px }
-.messages li {
-    padding: 1ex;
-    list-style-type: none;
-    background-color: #dadaff;
-    border: solid thin #666;
-    border-radius: 4px;
-}
-.messages li.error {
-    background-color: #fcc;
-    color: #666;
-    font-weight: bold;
+
+.centered {
+    text-align: center;
 }
 
 h1 small, h2 small, h3 small {
     font-weight: normal;
+}
+
+blockquote {
+    text-align: center;
+    font-size: 120%;
+    margin: 1ex;
+}
+
+.signature {
+    text-align: right;
+    margin: 2ex 5em 2ex 0;
+    font-size: 110%;
+    font-style: italic;
 }
