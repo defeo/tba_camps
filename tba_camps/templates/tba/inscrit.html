@@ -1,23 +1,16 @@
-
-</style>
-<style type="text/css">
-.rouge {
-	color: #F00;
-}
-.rouge {
-	color: #F00;
-}
-.rouge {
-	color: #F00;
-}
-</style>
-
 {% extends "base.html" %}
 
 {% block title %} Infos, conditions d’inscriptions et fonctionnement des camps {% endblock %}
 
 {% block description %} . {% endblock %}
 
+{% block extrahead %}
+<style type="text/css">
+.rouge {
+	color: #F00;
+}
+</style>
+{% endblock %}
 
 {% block content %}
 
@@ -26,12 +19,13 @@
   
   <p align="center"><b><font face="Verdana" size="4" color="#FF0000">  Conditions générales d’inscription et de fonctionnement des stages</font></b></p>
  
-   <p><span class="rouge"><strong>Vous êtes inscrit, retournez dans les 8 jours votre règlement</strong>.</span><br />
+  <p><strong class="rouge">Vous êtes inscrit, retournez dans les 8 jours votre règlement</strong>.<br />
 
-Vous pouvez suivre votre dossier en vous connectant avec l’adresse mail qui a servi à l’inscription.
-  <br />
-  <br />
-  Une fois l’inscription enregistrée, votre dossier ne peut plus être modifié. Si vous voulez apporter une modification à votre dossier (nouvelle inscription par exemple), vous devez nous prévenir par mail pour que l’on vous permette d’intervenir de nouveau à l’intérieur de votre dossier.</p>
+    Vous pouvez suivre votre dossier en vous connectant avec l’adresse mail qui a servi à l’inscription.</p>
+
+  <p class="centered"><strong><a href="{% url 'register_form' %}">→ Suivre mon dossier ←</a></strong></p>
+
+  <p>Une fois l’inscription enregistrée, votre dossier ne peut plus être modifié. Si vous voulez apporter une modification à votre dossier (nouvelle inscription par exemple), vous devez nous prévenir par mail pour que l’on vous permette d’intervenir de nouveau à l’intérieur de votre dossier.</p>
   
 <p><strong>1. INSCRIPTION VALIDEE</strong><br />
   <br />
@@ -191,9 +185,6 @@ SUPERDEVOLUY Station<br />
   La cotisation de 15 € de l’inscription reste toujours acquise à TBA<br />
   <br />
   Pour les locations assurées par TBA dans la résidence « LES HAMEAUX DU PUY », les 2 assurances ne couvrent la totalité de la location, en cas d’annulation, <strong>qu’à plus de 30 jours</strong>. Entre 30 et 7 jours, 50% du prix de la location sera remboursée, à moins de 7 jours AUCUN REMBOURSEMENT. </p>
-
-   <p> 
-    <strong>  </strong></p>  
 </article>
 
 {% endblock %}

@@ -62,13 +62,16 @@
 	      </li>
 
 	      <li>
-		<a style="background-color: red; color: white;" href="{% url 'register_form' %}">{% if has_dossier %}<strong>Mes inscriptions</strong>{% else %}INSCRIPTIONS{% endif %}</a>
+		<a style="background-color: red; color: white;" href="{% url 'register_form' %}">{% if has_dossier %}<strong>MES INSCRIPTIONS</strong>{% else %}INSCRIPTIONS{% endif %}</a>
 		<ul>  
 
 
 		  <li><a href="{% url 'static_pages' 'presentation' %}">Les nouvelles avant de s’inscrire </a></li>
-		  <li><a href="{% url 'register_form' %}">Je m’inscris  </a></li>
+		  {% if not has_dossier %}
+		  <li><a href="{% url 'register_form' %}">Je m’inscris</a></li>
+		  {% else %}
 		  <li><a href="{% url 'static_pages' 'inscrit' %}">Je suis inscrit</a></li>
+		  {% endif %}
 		  <li><a href="{% url 'static_pages' 'telechargements' %}">Téléchargement</a></li>
 		  <li><a href="{{ settings.PIECES.sanitaire_pdf }}" target="_blank">Fiche sanitaire de liaison</a></li>
 		</ul>
