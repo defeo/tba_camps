@@ -368,3 +368,7 @@ blockquote {
     font-size: 110%;
     font-style: italic;
 }
+
+.rouge {
+    color: #F00;
+}
