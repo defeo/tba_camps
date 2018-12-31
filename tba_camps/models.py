@@ -112,15 +112,15 @@ class Formule(OrderedModel):
         
         { field: (price, advance) }
         '''
-        return {
-            Formule._meta.get_field('prix')       : (self.prix * weeks, self.acompte * weeks),
-            Formule._meta.get_field('taxe_gym')   : (self.taxe_gym * weeks,
-                                                         self.taxe_gym * weeks / 2),
-            Formule._meta.get_field('weekend')    : (self.weekend * weekends,
-                                                         self.weekend * weekends / 2),
-            Formule._meta.get_field('taxe')       : (self.taxe, self.taxe),
-            Formule._meta.get_field('cotisation') : (self.cotisation, self.cotisation)
-            }
+        return OrderedDict([
+            (Formule._meta.get_field('prix')       , (self.prix * weeks, self.acompte * weeks)),
+            (Formule._meta.get_field('weekend')    , (self.weekend * weekends,
+                                                         (self.weekend * weekends) / 2)),
+            (Formule._meta.get_field('cotisation') , (self.cotisation, self.cotisation)),
+            (Formule._meta.get_field('taxe_gym')   , (self.taxe_gym * weeks,
+                                                         (self.taxe_gym * weeks) / 2 )),
+            (Formule._meta.get_field('taxe')       , (self.taxe, self.taxe)),
+            ])
 
 class Semaine(models.Model):
     debut = models.DateField('Début de la semaine', unique=True)
@@ -516,17 +516,17 @@ class Stagiaire(ModelWFiles):
     def costs_formule(self):
         sem = self.semaines.count()
         weekends = self.semaines.weekend_count()
-        costs = {k: (val, ava)
-                 for k, (val, ava) in self.formule.costs(sem, weekends).items()}
+        costs = OrderedDict((k, (val, ava))
+                 for k, (val, ava) in self.formule.costs(sem, weekends).items())
         return costs
     
     def costs(self):
         costs = self.costs_formule()
-        costs.update({
-            Stagiaire._meta.get_field('train')            : (self.train.quantize(Decimal('0.00')), self.train.quantize(Decimal('0.00')) / 2),
-            Stagiaire._meta.get_field('navette_a')        : (self.navette_a, self.navette_a),
-            Stagiaire._meta.get_field('navette_r')        : (self.navette_r, self.navette_r),
-            })
+        costs.update(OrderedDict([
+            (Stagiaire._meta.get_field('train')      , (self.train.quantize(Decimal('0.00')), self.train.quantize(Decimal('0.00')) / 2)),
+            (Stagiaire._meta.get_field('navette_a')  , (self.navette_a, self.navette_a)),
+            (Stagiaire._meta.get_field('navette_r')  , (self.navette_r, self.navette_r)),
+            ]))
         return costs
 
     def desc_costs(self):
