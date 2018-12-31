@@ -30,7 +30,6 @@ margin-bottom: 20px;
 border: 3px solid #888;
 background: #F0EDD8;
 /* curved border radius */
-border-radius: 10px;
 -moz-border-radius: 10px;
 -webkit-border-radius: 10px;
 }
@@ -59,8 +58,9 @@ padding: 10px 30px 5px 0;
 
 #sidebar {
 float: left;
-padding: 10px 0 0 20px;
+padding: 6em 0 0 20px;
 width: 220px;
+text-align: center;
 }
 
 footer {
@@ -86,22 +86,23 @@ color: #333;
 }
 
 a:link, a:visited {
-    color:#004C9A;
-    text-decoration: none;
+color:#004C9A;
 }
 
 a:hover, a:active {
-    color: #333;
-    text-decoration: underline;
+color: #333;
 }
 
-p, ul {
-margin-bottom: 1em;
+p {
+margin-bottom: 18px;
+font-family: sans-serif;
 }
 
 hr {
-color: #fff;
-margin: 10px;
+height: 2px;
+color: #eee;
+background-color: #eee;
+margin: 10px 0
 }
 
 li {
@@ -114,7 +115,7 @@ nav {
 margin: 0 auto;
 display: block;
 float: left;
-margin-top: -4px;
+margin-top: 0px;
 }
 
 nav .menu {
@@ -172,11 +173,13 @@ float: none;
 }
 
 nav .menu li:hover a { 
-background: #5E355C; 
+/*background: #5E355C; */
+background: #ea7807; 
 }
 
 nav .menu li:hover li a:hover { 
-background: #5E355C; 
+/*background: #5E355C; */
+background: #ea7807; 
 }
 
 /** HEADER */
@@ -186,10 +189,11 @@ padding: 20px 0 0 0;
 }
 
 header>h1 {
-float: left;
-margin: 0 0 18px 10px;
+float: left; ;
+text-align: center;
+margin: 0 0 18px 160px;
 width: 600px;
-font-size: 40px;
+font-size: 45px;
 line-height: 36px;
 }
 
@@ -227,10 +231,6 @@ article .featuredthumb {
 float: left;
 width: 200px;
 height: 200px;
-/* curved border radius */
-border-radius: 10px;
--moz-border-radius: 10px;
--webkit-border-radius: 10px;
 }
 
 article .featuredtitle {
@@ -250,10 +250,6 @@ article .thumb {
 float: right;
 width: 80px;
 height: 80px;
-/* curved border radius */
-border-radius: 10px;
--moz-border-radius: 10px;
--webkit-border-radius: 10px;
 }
 
 article .title {
@@ -315,13 +311,6 @@ color: #FFF;
 font-size: 90%;
 padding: 18px 0;
 overflow: hidden;
-/* curved border radius */
-border-bottom-right-radius: 8px;
-border-bottom-left-radius: 8px;
--moz-border-radius-bottomright: 8px;
--moz-border-radius-bottomleft: 8px;
--webkit-border-bottom-left-radius: 8px;
--webkit-border-bottom-right-radius: 8px;
 }
 
 .footer-segment {
@@ -355,8 +344,6 @@ margin-top: -15px;
 color: #faf0e6;
 }
 
-/**** More style by Luca ****/
-
 #content ul {
     padding: 0 2em;
 }
@@ -365,106 +352,8 @@ color: #faf0e6;
     text-align: center;
 }
 
-a.pure-button {
-    color: inherit;
-}
-a.pure-button:hover, a.pure-button:active {
-    text-decoration: none;
-}
-.pure-form-aligned  ul {
-    display: inline-block;
-    list-style-type: none;
-    vertical-align: top;
-    max-width: 400px;
-}
-.pure-form-aligned .pure-control-group li label { 
-    width: auto;
-    text-align: left;
-}
-.pure-control-group li { border-radius: 4px }
-.pure-control-group li:hover { background-color: rgba(255,255,255,0.5) }
-.error {
-    background-color: #fcc;
-    color: #666;
-    font-weight: bold;
-}
-.fieldgroup {
-    border-radius: 5px;
-    border: solid thin #ddd;
-    padding: 1ex;
-    margin: 1ex 0;
-}
-
-.pure-form.pure-form-aligned .fileinput label {
-    width: 7em;
-}
-.fileinput .pure-button {
-    width: 100%;
-}
-
-.messages { margin: 20px }
-.messages li {
-    padding: 1ex;
-    list-style-type: none;
-    background-color: #dadaff;
-    border: solid thin #666;
-    border-radius: 4px;
-}
-.messages li.error {
-    background-color: #fcc;
-    color: #666;
-    font-weight: bold;
-}
-
-#content h1 {
-    color: #c60;
-    text-align: center;
-    font-size: 2em;
-}
-
-#user {
-    text-align: right;
-}
-
 h1 small, h2 small, h3 small {
     font-weight: normal;
-}
-
-/****************/
-
-.dossier-block {
-    border: solid thin #cc6600;
-    border-radius: 5px;
-    margin: 1ex 0;
-}
-.dossier-block h3 {
-    color: #fff;
-    background-color: #cc6600;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-    padding: 0.4ex;
-    margin-bottom: 1ex;
-}
-.dossier-block h3 a {
-    float: right;
-    margin-right: 1ex;
-}
-.dossier-block p {
-    margin: 0.5ex 1ex;
-}
-#content .dossier-block ul.nice {
-    padding: 0;
-}
-
-.dossier-block table {
-    margin: 1ex;
-}
-.dossier-block td {
-    padding: 0.1ex 1em;
-}
-
-.dossier-block img {
-    max-width: 100%;
 }
 
 blockquote {
@@ -480,113 +369,6 @@ blockquote {
     font-style: italic;
 }
 
-/****************/
-
-li.stagiaire {
-    list-style-type: none;
-    padding: 0.5ex;
-}
-li.stagiaire:not(:last-child) {
-    border-bottom: solid thin #aaa;
-}
-li.stagiaire .links {
-    float: right;
-    text-align: right;
-    margin: 0 0.5ex;
-}
-li.stagiaire .links a {
-    display: block;
-    margin-bottom: 1ex;
-}
-li.stagiaire .nom {
-    font-weight: bold
-}
-
-/************* Forms **************/
-
-#id_sexe li, #id_licencie li, #id_venu li, 
-#id_navette_a li, #id_navette_r li, #id_caf li { display: inline; }
-
-#id_formule { font-weight: bold }
-#id_formule .prix { float: right }
-#id_formule .description { 
-    display: block;
-    font-weight: normal;
-    padding-left: 4ex;
-}
-
-#id_formule label, #id_hebergement label { width: 100% }
-#id_formule > li:hover { background-color: inherit }
-#id_formule > li > ul { margin: 1ex 0 2ex 2ex }
-#id_formule > li > .group {
-    font-size: 110%;
-    font-weight: normal;
-    background-color: #cc6600;
-    color: white;
-    padding: 5px;
-}
-
-#id_hebergement {
-    font-weight: bold;
-}
-#id_hebergement p { 
-    font-weight: normal;
-    margin: 0.1ex 0 0.5ex 2ex;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 2s;
-    -webkit-transition: max-height 2s;
-    -o-transition: max-height 2s;
-}
-#id_hebergement input:checked ~ p,
-#id_hebergement li:hover label:not(.complet) p {
-    max-height: 100ex;
-}
-/*#id_hebergement label.hidden {
-    display: none;
-}*/
-
-#id_hebergement .complet,
-#id_formule .complet {
-    color: #aaa;
-    text-decoration: line-through;
-}
-
-#cost-summary { 
-    display: inline-table;
-    vertical-align: middle;
-    border-collapse: collapse;
-    margin: 1em 0 0 4em;
-}
-#cost-summary tfoot { border-top : solid thin black }
-#cost-summary td:nth-child(2) { 
-    width: 3em;
-    text-align: right;
-    padding: 0 1ex 0 6ex;
-}
-#cost-summary .total { font-weight: bold }
-
-.note { font-size: 80%; margin: 0.4ex }
-.note:first-letter { font-size: 120% }
-
-/**********************/
-
-#total .price {
-    width: 0;
-    text-align: right;
-    margin-right: 10%;
-    padding-left: 1em;
-}
-#total .total {
-    text-align: right;
-}
-#total .total + .price {
-    font-weight: bold;
-}
-#total .subcost {
-    padding-left: 4em;
-}
-#total tr:first-child td,
-#total tr:first-child td {
-    padding-top: 1em;
+.rouge {
+    color: #F00;
 }

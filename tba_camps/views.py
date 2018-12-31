@@ -186,8 +186,7 @@ class DossierLastForm(forms.ModelForm):
     assurance_confirm = forms.BooleanField(label='Je reconnais', required=False)
 
     class Media:
-        js = ('//code.jquery.com/jquery-1.12.4.min.js', 
-              'js/assurance.js')
+        js = ('js/assurance.js',)
     
     class Meta:
         model = Dossier

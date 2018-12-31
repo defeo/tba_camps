@@ -37,8 +37,7 @@ class HebergementField(forms.ModelChoiceField):
 
 class SemainesWidget(forms.widgets.CheckboxSelectMultiple):
     class Media:
-        js = ('//code.jquery.com/jquery-1.12.4.min.js', 
-              'js/inscription.js')
+        js = ('js/inscription.js',)
 
     def create_option(self, *args, **kwds):
         opt = super().create_option(*args, **kwds)
@@ -71,8 +70,7 @@ class SemainesField(forms.ModelMultipleChoiceField):
 
 class FormuleWidget(forms.widgets.RadioSelect):
     class Media:
-        js = ('//code.jquery.com/jquery-1.12.4.min.js', 
-              'js/inscription.js')
+        js = ('js/inscription.js',)
             
     def create_option(self, *args, **kwds):
         opt = super().create_option(*args, **kwds)
@@ -148,8 +146,7 @@ class FormuleField(forms.ModelChoiceField):
 class DatePicker(forms.widgets.DateInput):
     class Media:
         css = { 'all' : ('css/jquery-ui.min.css',) }
-        js = ('//code.jquery.com/jquery-1.12.4.min.js', 
-              'js/jquery-ui.min.js',
+        js = ('js/jquery-ui.min.js',
               'js/datepicker.js')
 
     def __init__(self, *args, **kwds):
@@ -164,8 +161,7 @@ class DatePicker(forms.widgets.DateInput):
 
 class FileInput(forms.widgets.FileInput):
     class Media:
-        js = ('//code.jquery.com/jquery-1.12.4.min.js', 
-              'js/uploads.js')
+        js = ('js/uploads.js',)
             
     template = '''
 <span class="fileinput {klass}">

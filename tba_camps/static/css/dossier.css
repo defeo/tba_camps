@@ -1,0 +1,188 @@
+/* Pure forms */
+
+a.pure-button:hover, a.pure-button:active {
+    text-decoration: none;
+}
+a.pure-button {
+    color: inherit;
+}
+.pure-form-aligned  ul {
+    display: inline-block;
+    list-style-type: none;
+    vertical-align: top;
+    max-width: 400px;
+}
+.pure-form-aligned .pure-control-group li label { 
+    width: auto;
+    text-align: left;
+}
+.pure-control-group li { border-radius: 4px }
+.pure-control-group li:hover { background-color: rgba(255,255,255,0.5) }
+
+.pure-form.pure-form-aligned .fileinput label {
+    width: 7em;
+}
+.fileinput .pure-button {
+    width: 100%;
+}
+
+/* Form errors/messages */
+
+.error {
+    background-color: #fcc;
+    color: #666;
+    font-weight: bold;
+}
+.fieldgroup {
+    border-radius: 5px;
+    border: solid thin #ddd;
+    padding: 1ex;
+    margin: 1ex 0;
+}
+.messages { margin: 20px }
+.messages li {
+    padding: 1ex;
+    list-style-type: none;
+    background-color: #dadaff;
+    border: solid thin #666;
+    border-radius: 4px;
+}
+.messages li.error {
+    background-color: #fcc;
+    color: #666;
+    font-weight: bold;
+}
+
+/* Dossier */
+
+#user {
+    text-align: right;
+}
+ 
+.dossier-block {
+    border: solid thin #cc6600;
+    margin: 1ex 0;
+}
+.dossier-block h3 {
+    color: #fff;
+    background-color: #cc6600;
+    padding: 0.4ex;
+    margin-top: 0;
+    margin-bottom: 1ex;
+}
+.dossier-block h3 a {
+    float: right;
+    margin-right: 1ex;
+    font-size: smaller;
+}
+.dossier-block p {
+    margin: 0.5ex 1ex;
+}
+#content .dossier-block ul.nice {
+    padding: 0;
+}
+
+.dossier-block table {
+    margin: 1ex;
+}
+.dossier-block td {
+    padding: 0.1ex 1em;
+}
+
+.dossier-block img {
+    max-width: 100%;
+}
+
+/****************/
+
+li.stagiaire {
+    list-style-type: none;
+    padding: 0.5ex;
+}
+li.stagiaire:not(:last-child) {
+    border-bottom: solid thin #aaa;
+}
+li.stagiaire .links {
+    float: right;
+    text-align: right;
+    margin: 0 0.5ex;
+}
+li.stagiaire .links a {
+    display: block;
+    margin-bottom: 1ex;
+}
+li.stagiaire .nom {
+    font-weight: bold
+}
+
+/************* Forms **************/
+
+#id_sexe li, #id_licencie li, #id_venu li, 
+#id_navette_a li, #id_navette_r li, #id_caf li { display: inline; }
+
+#id_formule { font-weight: bold }
+#id_formule .prix { float: right }
+#id_formule .description { 
+    display: block;
+    font-weight: normal;
+    padding-left: 4ex;
+}
+
+#id_formule label, #id_hebergement label { width: 100% }
+#id_formule > li:hover { background-color: inherit }
+#id_formule > li > ul { margin: 1ex 0 2ex 2ex }
+#id_formule > li > .group {
+    font-size: 110%;
+    font-weight: normal;
+    background-color: #cc6600;
+    color: white;
+    padding: 5px;
+}
+
+#id_hebergement {
+    font-weight: bold;
+}
+#id_hebergement p { 
+    font-weight: normal;
+    margin: 0.1ex 0 0.5ex 2ex;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 2s;
+    -webkit-transition: max-height 2s;
+    -o-transition: max-height 2s;
+}
+#id_hebergement input:checked ~ p,
+#id_hebergement li:hover label:not(.complet) p {
+    max-height: 100ex;
+}
+
+#id_hebergement .complet,
+#id_formule .complet {
+    color: #aaa;
+    text-decoration: line-through;
+}
+
+.note { font-size: 80%; margin: 0.4ex }
+.note:first-letter { font-size: 120% }
+
+/**********************/
+
+#total .price {
+    width: 0;
+    text-align: right;
+    margin-right: 10%;
+    padding-left: 1em;
+}
+#total .total {
+    text-align: right;
+}
+#total .total + .price {
+    font-weight: bold;
+}
+#total .subcost {
+    padding-left: 4em;
+}
+#total tr:first-child td,
+#total tr:first-child td {
+    padding-top: 1em;
+}
