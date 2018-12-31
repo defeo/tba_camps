@@ -1,0 +1,23 @@
+export DJANGO_SETTINGS_MODULE=tba_camps.settings_deploy
+
+# Configuration de la base de données.
+# Éditer avec les paramètres de connexion.
+export DATABASE_URL=mysql://root:PASSWORD@localhost/tba
+
+# Configurer le secret pour Django. TRÈS IMPORTANT !
+# Générer, par exemple, avec
+#   head -c50 /dev/random | base64
+export SECRET_KEY="very_secret_and_random"
+
+# Éditer avec l'adresse du site
+export HOST_NAME=www.camps-basket.com
+
+# Configuration du mail, éditer avec les données de connexion
+# (d'autres variables peuvent être configurées, lire settings_deploy.py)
+export MAIL_HOST=smtp.camps-basket.com
+export MAIL_USER=username
+export MAIL_PASSWORD=password
+
+# Encodage du système de fichiers, changer si différent
+export LANG='fr_FR.UTF-8'
+export LC_ALL='fr_FR.UTF-8'
