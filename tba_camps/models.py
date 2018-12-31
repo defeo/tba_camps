@@ -81,7 +81,7 @@ class Formule(OrderedModel):
     description = models.TextField()
     prix = models.DecimalField('Prix formule', max_digits=10, decimal_places=2)
     acompte = models.DecimalField('Acompte', max_digits=10, decimal_places=2)
-    taxe = models.DecimalField('Taxe ménage', default=0, max_digits=10, decimal_places=2)
+    taxe = models.DecimalField('Contribution ménage', default=0, max_digits=10, decimal_places=2)
     taxe_gym = models.DecimalField('Taxe gymnase', default=0, max_digits=10, decimal_places=2)
     cotisation = models.DecimalField('Cotisation TBA', default=15, max_digits=10, decimal_places=2)
     weekend = models.DecimalField('Prix weekend', default=0, max_digits=10, decimal_places=2)

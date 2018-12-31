@@ -17,10 +17,15 @@ $(function() {
 	$('#id_mode').trigger($this.data('mode')
 			      ? 'show.formule'
 			      : 'hide.formule');
+	$('#note_menage').trigger($this.data('taxe') != '0.00'
+				  ? 'show.formule'
+				  : 'hide.formule');
     });
     $('#id_accompagnateur, #id_train, #id_chambre, #id_navette_a, #id_navette_r, #id_mode').parent()
+	.add('#note_menage')
 	.hide()
 	.on('show.formule hide.formule', function(e, speed) {
+	    console.log(this, e.type);
 	    $(this)[e.type]('slow');
 	});
 
@@ -55,7 +60,6 @@ $(function() {
 			complet.push(f);
 		});
 	    });
-	    console.log(complet);
 	    
 	    // Disable unavailable options
 	    $(id + ' label').each(function() {

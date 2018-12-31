@@ -134,9 +134,10 @@ class FormuleField(forms.ModelChoiceField):
 
         return {
             'label': format_html(
-    '''{nom} <span class="prix">{prix}</span> <span class="description">{description}</span>''',
+    '''{nom} <span class="prix">{prix}</span> <span class="description">{weekend}{description}</span>''',
                 nom=force_text(obj.nom),
                 prix=format_html('({}€)', strip_cents(obj.prix)) * obj.publique,
+                weekend=format_html('(<strong>+{}€</strong>/week-end si semaines consécutives) <br>', strip_cents(obj.weekend)) if obj.weekend > 0 else '',
                 description=force_text(obj.description)),
             'attrs': attrs,
             }

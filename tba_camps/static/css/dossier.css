@@ -1,7 +1,8 @@
 /* Pure forms */
 
-a.pure-button:hover, a.pure-button:active {
+a.pure-button:hover, a.pure-button:active, a.pure-button:focus {
     text-decoration: none;
+    color: #fff;
 }
 a.pure-button {
     color: inherit;
