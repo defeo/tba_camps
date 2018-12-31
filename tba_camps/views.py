@@ -178,34 +178,27 @@ class DossierModify(SessionDossierMixin, UpdateView):
 
 class DossierLastForm(forms.ModelForm):
     '''
-    Formulaire de modification des données personnelles
+    Formulaire de confirmation de demande d'inscription
     '''
     error_css_class = 'error'
     required_css_class = 'required'
+    confirm = forms.BooleanField(label='Je reconnais', required=True)
 
-    assurance_confirm = forms.BooleanField(label='Je reconnais', required=False)
-
-    class Media:
-        js = ('js/assurance.js',)
-    
     class Meta:
         model = Dossier
         fields = ['notes', 'assurance', 'caf']
         widgets = {
             'notes': widgets.Textarea(attrs={'rows' : 5}),
-            'assurance' :  widgets.RadioSelect(
-                choices=[(False,'Non'), (True,'Avec assurance (6€ par stagiaire)')]),
             'caf' :  widgets.RadioSelect,
+            'assurance' :  widgets.RadioSelect,
             }
         help_texts = {
-            'notes': "N'hésitez pas à nous signaler toute situation particulière.",
+            'notes': "N'hésitez pas à nous signaler toute situation particulière",
         }
 
-    def clean_assurance_confirm(self):
-        confirm = self.cleaned_data['assurance_confirm']
-        if not confirm and not self.instance.prix_assurance():
-            return True
-        if not confirm and not self.cleaned_data['assurance']:
+    def clean_confirm(self):
+        confirm = self.cleaned_data['confirm']
+        if not confirm:
             raise ValidationError('Veuillez cocher la case')
         return confirm
             
@@ -214,6 +207,7 @@ class DossierConfirm(SessionDossierMixin, UpdateView):
     model = Dossier
     form_class = DossierLastForm
     success_url = reverse_lazy('dossier_view')
+    initial = { 'assurance': None }
     
     def is_not_confirmable(self):
         if not self.dossier.is_complete():

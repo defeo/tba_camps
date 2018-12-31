@@ -59,7 +59,7 @@ Remember. Workflow is:
 [X] +33€ en formule 3 quand on reste le week-end
 [] Prix différents par semaine (en formule 3).
 [X] Je suis inscrit / je m'inscris en fonction du login
-[] Admin Django regrouper champs
+[?] Admin Django regrouper champs (this breaks randomly)
 [X] Fixer CSS
 [X] Navette plus incluse dans le train
-[] Revoir assurances (3 choix, doivent forcément cocher)
+[X] Revoir assurances (3 choix, doivent forcément cocher)

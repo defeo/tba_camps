@@ -264,7 +264,11 @@ class Dossier(ModelWFiles):
                                             default=False)
     ###
     notes = models.TextField(default='', blank=True)
-    assurance = models.BooleanField('Assurance annulation', default=True)
+    assurance = models.DecimalField('Assurance annulation', default=Decimal('0.00'),
+                                    max_digits=10, decimal_places=2,
+                                    choices=[(Decimal('0.00'), "Pas d'assurance"),
+                                             (Decimal('8.00'), 'Mini-assurance (8€)'),
+                                             (Decimal('20.00'), 'Maxi-assurance (20€)')])
     caf = models.CharField("Je bénéficie d'une aide CAF ou VACAF", max_length=1,
                            choices=[('O', 'Oui'), ('N', 'Non')], default='N')
     
@@ -301,11 +305,15 @@ class Dossier(ModelWFiles):
     def avance_stagiaires(self):
         return sum(s.avance() for s in self.stagiaire_set.iterator())
 
+    def needs_assurance(self):
+        return any(s.formule.affiche_assurance for s in self.stagiaire_set.iterator())
+
     def prix_assurance(self):
-        return sum(s.formule.affiche_assurance * 6 for s in self.stagiaire_set.iterator())
+        return sum(s.formule.affiche_assurance * self.assurance
+                       for s in self.stagiaire_set.iterator())
     
     def prix_total(self):
-        return self.prix_stagiaires() + self.assurance*self.prix_assurance() + self.prix_hebergement + self.supplement - self.remise
+        return self.prix_stagiaires() + self.prix_assurance() + self.prix_hebergement + self.supplement - self.remise
 
     def avance(self):
         return self.assurance*self.prix_assurance() + bool(self.hebergement and self.hebergement.managed == MANAGED) * 150
