@@ -11,6 +11,11 @@
 <h2>Mon profil</h2>
 {% endif %}
 
+<p class="centered">Votre dossier vous permet d'inscrire plusieurs
+    stagiaires dans les étapes suivantes.</p>
+
+<hr>
+
 {% if form.errors %}
 <div class="error">
   <p>ERREUR&nbsp;: Veuillez corriger les erreurs ci-dessous.</p>
@@ -22,7 +27,7 @@
 </div>
 {% endif %}
 
-<p><small>Tous les champs sont obligatoires</small></p>
+<h4>Données du responsable <small>(tous les champs sont obligatoires)</small></h4>
 
 <form action="" method="post" class="pure-form pure-form-aligned">
   {% csrf_token %}
