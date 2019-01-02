@@ -17,6 +17,7 @@ from .models import Dossier, Stagiaire, Formule, Hebergement, Semaine
 from captcha.fields import ReCaptchaField
 from . import widgets as my_widgets
 from django.utils.html import format_html
+from django.utils.text import format_lazy
 from django.utils.translation import ugettext_lazy as _
 import weasyprint
 from unidecode import unidecode
@@ -182,7 +183,11 @@ class DossierLastForm(forms.ModelForm):
     '''
     error_css_class = 'error'
     required_css_class = 'required'
+    assurance_confirm = forms.BooleanField(label='Je reconnais', required=False)
     confirm = forms.BooleanField(label='Je reconnais', required=True)
+
+    class Media:
+        js = ('js/assurance.js',)
 
     class Meta:
         model = Dossier
@@ -194,14 +199,21 @@ class DossierLastForm(forms.ModelForm):
             }
         help_texts = {
             'notes': "N'hésitez pas à nous signaler toute situation particulière",
+            'assurance': format_lazy('<a href="{}" target="_blank">Voir conditions</a>',
+                                         reverse_lazy('static_pages',
+                                                          args=['assurance-desistement']))
         }
 
-    def clean_confirm(self):
-        confirm = self.cleaned_data['confirm']
-        if not confirm:
+    def clean_assurance_confirm(self):
+        confirm = self.cleaned_data['assurance_confirm']
+        if not confirm and not self.instance.needs_assurance():
+            return True
+        if not confirm and ('assurance' not in self.cleaned_data
+                    or self.cleaned_data['assurance'] == 0):
             raise ValidationError('Veuillez cocher la case')
         return confirm
-            
+
+
 class DossierConfirm(SessionDossierMixin, UpdateView):
     template_name = 'dossier_confirm.html'
     model = Dossier

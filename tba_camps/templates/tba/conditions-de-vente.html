@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Conditions de vente et d’annulation{% endblock %}
+
+{% block description %}Conditions de vente et d’annulation du séjour.{% endblock %}
+
+{% block content %}
+<article class="featured">
+  <h2>Conditions de vente et d’annulation du séjour</h2>
+
+  <p>En validant votre inscription, vous acceptez les conditions de
+    vente et d’annulation du séjour.</p>
+  
+  <p>Votre inscription n’est validée définitivement par notre
+    association qu’après réception de votre acompte. A partir du
+    moment où le dossier d’inscription est validé, vous vous engagez à
+    régler toute somme due à TBA, à assumer les frais supplémentaires
+    qui seraient engagés pour votre enfant (frais médicaux, frais de
+    dégradations, frais postaux).</p>
+  
+  <p>En cas d’annulation avant le stage (même pour des raisons
+    médicales) des indemnités seront retenues.</p>
+  
+  <p>Tout stage commencé est dû et ne fera l’objet d’aucun
+    remboursement, quel que soit le motif de l’interruption.</p>
+    
+  <p>Nous vous conseillons vivement de souscrire une
+    <a href="{% url 'static_pages' 'assurance-desistement' %}">assurance
+      annulation</a> avant de valider votre inscription.</p>
+    
+  <p>Prestations comprises dans le prix indiqué :</p>
+  <ul>
+    <li>L’hébergement (draps et couvertures fournis). Pensez à
+      apporter des serviettes de toilette.</li>
+    <li>Les repas.</li>
+    <li>L’encadrement diplômé.</li>
+    <li>Le matériel nécessaire au déroulement de chaque activité.</li>
+    <li>Une tenue de stage vous sera donnée le jour de l’arrivée (1
+      short, 1 maillot réversible) ainsi qu’une gourde). La photo de
+      votre groupe vous sera donnée en fin de séjour.</li>
+    <li>Une autre tenue de stage sera donnée pour toute semaine
+      supplémentaire.</li>
+    <li>La soirée du vendredi.</li>
+  </ul>
+  
+  <p>Le prix du séjour est forfaitaire ; aucun remboursement
+    d’éventuelles prestations non consommées n’est possible.</p>
+  <p>En cas d’annulation du séjour de notre fait, TBA s’engage à vous
+    rembourser l’intégralité du montant des sommes versées pour le
+    camp.</p>
+  <p>Alcool, tabac et produits stupéfiants sont naturellement
+    interdits. Le non-respect des consignes données par l’équipe
+    d’encadrement et l’inadaptation du stagiaire à l’esprit du camp
+    peuvent entrainer l’exclusion immédiate sans aucun
+    remboursement.</p>
+</article>
+{% endblock %}

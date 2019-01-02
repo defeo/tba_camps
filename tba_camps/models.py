@@ -309,8 +309,7 @@ class Dossier(ModelWFiles):
         return any(s.formule.affiche_assurance for s in self.stagiaire_set.iterator())
 
     def prix_assurance(self):
-        return sum(s.formule.affiche_assurance * self.assurance
-                       for s in self.stagiaire_set.iterator())
+        return self.assurance
     
     def prix_total(self):
         return self.prix_stagiaires() + self.prix_assurance() + self.prix_hebergement + self.supplement - self.remise
