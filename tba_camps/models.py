@@ -315,7 +315,7 @@ class Dossier(ModelWFiles):
         return self.prix_stagiaires() + self.prix_assurance() + self.prix_hebergement + self.supplement - self.remise
 
     def avance(self):
-        return self.prix_assurance() + bool(self.hebergement and self.hebergement.managed == MANAGED) * 150
+        return self.prix_assurance() + bool(self.hebergement and self.hebergement.managed == MANAGED) * 200
 
     def avance_total(self):
         return self.avance_stagiaires() + self.avance()
