@@ -20,6 +20,7 @@ from django.utils.functional import cached_property
 from django.utils.html import strip_tags
 from decimal import Decimal
 from tinymce.models import HTMLField
+from .context_processor import cp
 
 class Manager(models.Model):
     'Options en plus pour les utilisateurs'
@@ -73,7 +74,7 @@ class Hebergement(OrderedModel):
         return self.nom
 
     def md_commentaire(self):
-        return mark_safe(markdown(Template(self.commentaire).render(Context(settings.PIECES))))
+        return mark_safe(markdown(Template(self.commentaire).render(Context(cp(None)))))
 
 class Formule(OrderedModel):
     groupe = models.CharField(max_length=255, blank=True, default='')
@@ -315,7 +316,7 @@ class Dossier(ModelWFiles):
         return self.prix_stagiaires() + self.prix_assurance() + self.prix_hebergement + self.supplement - self.remise
 
     def avance(self):
-        return self.prix_assurance() + bool(self.hebergement and self.hebergement.managed == MANAGED) * 200
+        return self.prix_assurance() + bool(self.hebergement and self.hebergement.managed == MANAGED) * settings.AVANCE_HEBERGEMENT
 
     def avance_total(self):
         return self.avance_stagiaires() + self.avance()

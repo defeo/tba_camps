@@ -144,3 +144,8 @@ PIECES = {
 IMAGES = {
     # see settings_deploy.py
 }
+
+
+# Import all constants
+from .settings_constants import *
+
