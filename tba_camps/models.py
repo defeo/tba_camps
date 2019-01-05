@@ -134,6 +134,9 @@ class Semaine(models.Model):
     formule_complet.verbose_name = 'Formules complètes'
 
     objects = SemaineQuerySet.as_manager()
+
+    class Meta:
+        ordering = ('debut',)
     
     def __str__(self):
         from datetime import timedelta
