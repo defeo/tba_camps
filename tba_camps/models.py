@@ -92,10 +92,6 @@ class Formule(OrderedModel):
                                           default=False)
     affiche_navette = models.BooleanField("Opt. navette",
                                           default=True)
-    affiche_assurance = models.BooleanField("Opt. assurance",
-                                            default=True)
-    affiche_mode = models.BooleanField("Opt. mode réglément",
-                                       default=True)
     affiche_accompagnateur = models.BooleanField("Opt. accompagnateur",
                                                  default=False)
     publique = models.BooleanField("Tout publique", default=True)
@@ -107,6 +103,10 @@ class Formule(OrderedModel):
     def __str__(self):
         return self.nom
 
+    @property
+    def needs_assurance(self):
+        return self.prix > 0
+    
     def costs(self, weeks, weekends=0):
         '''
         Takes a number of weeks, gives back breakdown of costs as:
@@ -268,11 +268,6 @@ class Dossier(ModelWFiles):
                                             default=False)
     ###
     notes = models.TextField(default='', blank=True)
-    assurance = models.DecimalField('Assurance annulation', default=Decimal('0.00'),
-                                    max_digits=10, decimal_places=2,
-                                    choices=[(Decimal('0.00'), "Pas d'assurance"),
-                                             (Decimal('8.00'), 'Mini-assurance (8€)'),
-                                             (Decimal('20.00'), 'Maxi-assurance (20€)')])
     caf = models.CharField("Je bénéficie d'une aide CAF ou VACAF", max_length=1,
                            choices=[('O', 'Oui'), ('N', 'Non')], default='N')
     
@@ -309,17 +304,11 @@ class Dossier(ModelWFiles):
     def avance_stagiaires(self):
         return sum(s.avance() for s in self.stagiaire_set.iterator())
 
-    def needs_assurance(self):
-        return any(s.formule.affiche_assurance for s in self.stagiaire_set.iterator())
-
-    def prix_assurance(self):
-        return self.assurance
-    
     def prix_total(self):
-        return self.prix_stagiaires() + self.prix_assurance() + self.prix_hebergement + self.supplement - self.remise
+        return self.prix_stagiaires() + self.prix_hebergement + self.supplement - self.remise
 
     def avance(self):
-        return self.prix_assurance() + bool(self.hebergement and self.hebergement.managed == MANAGED) * settings.AVANCE_HEBERGEMENT
+        return bool(self.hebergement and self.hebergement.managed == MANAGED) * settings.AVANCE_HEBERGEMENT
 
     def avance_total(self):
         return self.avance_stagiaires() + self.avance()
@@ -459,6 +448,11 @@ class Stagiaire(ModelWFiles):
                                     max_digits=10, decimal_places=2,
                                     choices=[(Decimal('0.00'), 'Non'),
                                              (Decimal('6.00'), 'Oui (6€)')])
+    assurance = models.DecimalField('Assurance annulation', default=Decimal('0.00'),
+                                    max_digits=10, decimal_places=2,
+                                    choices=[(Decimal('0.00'), "Pas d'assurance"),
+                                             (Decimal('8.00'), 'Mini-assurance (8€)'),
+                                             (Decimal('20.00'), 'Maxi-assurance (20€)')])
     acompte = models.DecimalField(default=0, max_digits=10, decimal_places=2)
     parrain = models.BooleanField("Parrain", default=False)
     nom_parrain = models.CharField('NOM Prénom parrain', max_length=255, blank=True)
@@ -526,6 +520,7 @@ class Stagiaire(ModelWFiles):
     def costs(self):
         costs = self.costs_formule()
         costs.update(OrderedDict([
+            (Stagiaire._meta.get_field('assurance')  , (self.assurance, self.assurance)),
             (Stagiaire._meta.get_field('train')      , (self.train.quantize(Decimal('0.00')), self.train.quantize(Decimal('0.00')) / 2)),
             (Stagiaire._meta.get_field('navette_a')  , (self.navette_a, self.navette_a)),
             (Stagiaire._meta.get_field('navette_r')  , (self.navette_r, self.navette_r)),

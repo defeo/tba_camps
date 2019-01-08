@@ -14,19 +14,19 @@ $(function() {
 	$('#id_navette_a, #id_navette_r').trigger($this.data('navette')
 						  ? 'show.formule'
 						  : 'hide.formule');
-	$('#id_mode').trigger($this.data('mode')
-			      ? 'show.formule'
-			      : 'hide.formule');
+	$('#assurance').trigger($this.data('assurance')
+				? 'show.formule'
+				: 'hide.formule');
 	$('#note_menage').trigger($this.data('taxe') != '0.00'
 				  ? 'show.formule'
 				  : 'hide.formule');
     });
-    $('#id_accompagnateur, #id_train, #id_chambre, #id_navette_a, #id_navette_r, #id_mode').parent()
-	.add('#note_menage')
+    $('#id_accompagnateur, #id_train, #id_chambre, #id_navette_a, #id_navette_r').parent()
+	.add('#assurance, #note_menage')
 	.hide()
 	.on('show.formule hide.formule', function(e, speed) {
-	    console.log(this, e.type);
-	    $(this)[e.type]('slow');
+	    $this = $(this);
+	    $this[e.type]('slow');
 	});
 
     $('#id_licencie').on('change', 'input:checked', function() {
@@ -39,6 +39,17 @@ $(function() {
 	.on('show.licence hide.licence', function(e, speed) {
 	    $(this)[e.type]('slow');
 	});
+
+    $('#id_assurance').on('change', function() {
+        $('#id_assurance_confirm').trigger('change.assurance');
+    });
+    $('#id_assurance_confirm').on('change.assurance', function(e) {
+        var $this = $(this);
+        var val = $('#id_assurance input:checked').val() !== '0.00';
+        $this.prop('disabled', val);
+        //$this.prop('required', !val);
+        $this.parent()[val ? 'hide' : 'show']('slow');
+    }).parent().hide();
 
     // Complete formule/hebergement managemet
     $('#id_semaines').on('change', function() {
@@ -75,6 +86,8 @@ $(function() {
     // Trigger events if dependee fields are checked
     $('#id_formule input:checked, #id_semaines input:checked, #id_hebergement input:checked').trigger('change');
     $('#id_licencie input:checked').trigger('change');
+    // Always trigger assurance
+    $('#id_assurance_confirm').trigger('change.assurance');    
 
     // Async fetch license no from ffbb.com
     $('#id_nom, #id_prenom, #id_naissance, #id_sexe, #id_sexe').on('change', function() {

@@ -125,10 +125,8 @@ class FormuleField(forms.ModelChoiceField):
             attrs['data-chambre'] = '1'
         if obj.affiche_navette:
             attrs['data-navette'] = '1'
-        if obj.affiche_assurance:
+        if obj.needs_assurance:
             attrs['data-assurance'] = '1'
-        if obj.affiche_mode:
-            attrs['data-mode'] = '1'
         for field, (val, _) in obj.costs(1).items():
             attrs['data-%s' % field.name] = val
 

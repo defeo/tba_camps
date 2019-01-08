@@ -69,6 +69,24 @@
       3€ est due pour tout séjour dans le Centre de Vacances. Cette
       somme est rajoutée à votre solde dû.</p>
   </div>
+  
+  <div id="assurance" class="fieldgroup">
+    <h3>Assurance annulation</h3>
+    
+    <fieldset>
+      {{ form.assurance | cgroup }}
+    </fieldset>
+    
+    <div class="pure-control-group {{ form.assurance_confirm.css_classes }}">
+      
+      {{ form.assurance_confirm }}
+      J’ai pris connaissance que,
+      n’ayant pas souscrit d’assurance annulation, en cas
+      d’annulation de ma part des pénalités seront
+      retenues.
+      {{ form.assurance_confirm.errors }}
+    </div>
+  </div>
 
   <div id="parrain-data" class="fieldgroup">
     <h3>Parrainage <small>(facultatif)</small></h3>

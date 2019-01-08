@@ -134,12 +134,12 @@ class FormuleAdmin(OrderedModelAdmin):
     list_display = ('groupe', 'nom', 'description', 'prix', 'acompte',
                     'weekend', 'taxe', 'taxe_gym', 'cotisation',
                     'has_hebergement',
-                    'affiche_train', 'affiche_chambre', 'affiche_navette', 'affiche_assurance',
-                    'affiche_mode', 'affiche_accompagnateur', 'publique', 'adulte', 'move_up_down_links')
+                    'affiche_train', 'affiche_chambre', 'affiche_navette',
+                    'affiche_accompagnateur', 'publique', 'adulte', 'move_up_down_links')
     list_display_links = ('nom',)
     list_editable = ('prix', 'acompte', 'weekend',
                      'taxe', 'taxe_gym', 'cotisation', 'has_hebergement', 'affiche_train',
-                     'affiche_chambre', 'affiche_navette', 'affiche_assurance', 'affiche_mode',
+                     'affiche_chambre', 'affiche_navette',
                      'affiche_accompagnateur', 'publique', 'adulte')
     formfield_overrides = {
         models.DecimalField: {'widget': widgets.NumberInput(attrs={'style' : 'width: 6em'})},

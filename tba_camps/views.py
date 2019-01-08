@@ -183,35 +183,18 @@ class DossierLastForm(forms.ModelForm):
     '''
     error_css_class = 'error'
     required_css_class = 'required'
-    assurance_confirm = forms.BooleanField(label='Je reconnais', required=False)
     confirm = forms.BooleanField(label='Je reconnais', required=True)
-
-    class Media:
-        js = ('js/assurance.js',)
 
     class Meta:
         model = Dossier
-        fields = ['notes', 'assurance', 'caf']
+        fields = ['notes', 'caf']
         widgets = {
             'notes': widgets.Textarea(attrs={'rows' : 5}),
             'caf' :  widgets.RadioSelect,
-            'assurance' :  widgets.RadioSelect,
             }
         help_texts = {
             'notes': "N'hésitez pas à nous signaler toute situation particulière",
-            'assurance': format_lazy('<a href="{}" target="_blank">Voir conditions</a>',
-                                         reverse_lazy('static_pages',
-                                                          args=['assurance-desistement']))
         }
-
-    def clean_assurance_confirm(self):
-        confirm = self.cleaned_data['assurance_confirm']
-        if not confirm and not self.instance.needs_assurance():
-            return True
-        if not confirm and ('assurance' not in self.cleaned_data
-                    or self.cleaned_data['assurance'] == 0):
-            raise ValidationError('Veuillez cocher la case')
-        return confirm
 
 
 class DossierConfirm(SessionDossierMixin, UpdateView):
@@ -219,7 +202,6 @@ class DossierConfirm(SessionDossierMixin, UpdateView):
     model = Dossier
     form_class = DossierLastForm
     success_url = reverse_lazy('dossier_view')
-    initial = { 'assurance': None }
     
     def is_not_confirmable(self):
         if not self.dossier.is_complete():
@@ -265,18 +247,20 @@ class StagiaireForm(forms.ModelForm):
                                  widget=widgets.RadioSelect,
                                  choices=[('O','Oui'), ('N','Non')])
     taille = forms.Field(label='Taille (cm)', required=True, widget=widgets.NumberInput)
+    assurance_confirm = forms.BooleanField(required=False)
 
     class Meta:
         model = Stagiaire
         fields = ['nom', 'prenom', 'naissance', 'lieu', 'sexe', 'taille',
                       'niveau', 'licence', 'club', 'venu',
-                      'semaines', 'formule',
+                      'semaines', 'formule', 'assurance',
                       'chambre', 'accompagnateur', 'train',
                       'navette_a', 'navette_r',
                       'nom_parrain', 'adr_parrain']
         widgets = {
             'sexe' : widgets.RadioSelect,
             'naissance' : my_widgets.DatePicker,
+            'assurance' :  widgets.RadioSelect,
             'navette_a' : widgets.RadioSelect,
             'navette_r' : widgets.RadioSelect,
             'venu' :  widgets.RadioSelect,
@@ -285,6 +269,9 @@ class StagiaireForm(forms.ModelForm):
         }
         help_texts = {
             'licence': '<a target="_blank" href="http://www.ffbb.com/jouer/recherche-avancee">Chercher sur ffbb.com</a>',
+            'assurance': format_lazy('<a href="{}" target="_blank">Voir conditions</a>',
+                                         reverse_lazy('static_pages',
+                                                          args=['assurance-desistement'])),
             'chambre': 'facultatif',
         }
 
@@ -306,7 +293,7 @@ class StagiaireForm(forms.ModelForm):
         if any(s.fermer for s in semaines):
             raise ValidationError('Ces semaines sont fermées.')
         return semaines
-    
+
     def clean(self):
         cleaned_data = super().clean()
         if cleaned_data.get('licencie') == 'O':
@@ -324,6 +311,12 @@ class StagiaireForm(forms.ModelForm):
                 cleaned_data['accompagnateur'] = ''
             elif not cleaned_data.get('accompagnateur'):
                 self.add_error('accompagnateur', self.error_class([_('This field is required.')]))
+
+            if not formule.needs_assurance:
+                cleaned_data['assurance'] = 0
+                cleaned_data['assurance_confirm'] = True
+            elif not cleaned_data.get('assurance_confirm') and not cleaned_data.get('assurance'):
+                self.add_error('assurance_confirm', self.error_class(['Veuillez confirmer.']))
         return cleaned_data
 
 class DossierIsNotBlocked(HasSessionMixin):
