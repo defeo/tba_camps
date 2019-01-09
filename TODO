@@ -18,7 +18,6 @@
 [] add stagiare to dossier
 [] move stagiaire between dossiers
 [] Add 2D table for hebergement prices + Remise hbgt.
-[x] Excel export
 
 # Workflow
 
@@ -33,34 +32,19 @@ Remember. Workflow is:
 ...
 6. Cancel → CANCELED
 
-[x] Rewrite emails
-[x] Rewrite confirmation messages
-
 # Other
 
-[x] Fix backups!
-[x] Handle broken Chrome autocompletion
+[] Redo fixtures
+[] Clean inscription.js
 [~] Acompte accompagnateur
-[x] Redo fixtures
-[x] Update sms
-[x] Fix ordered models
-[x] Fix error 500 when mail does not exist
 [x] Modifier stagiaire breaks again boolean fields
 [] Write a test for this ↑↑↑ (Decimal + choice)
-[x] Make dossier clickable in stagiare list view
 [] Clean hebergement after dossier contains no more F2
-[] Rewrite cleaning script
 [] Rewrite tests
 [] Allow messages to cover more than one state
+[] Dossier.mode?
 
+# Important!
 
-# 28 nov 2018
-
-[X] +33€ en formule 3 quand on reste le week-end
 [] Prix différents par semaine (en formule 3).
-[X] Je suis inscrit / je m'inscris en fonction du login
-[?] Admin Django regrouper champs (this breaks randomly)
-[X] Fixer CSS
-[X] Navette plus incluse dans le train
-[X] Revoir assurances (3 choix, doivent forcément cocher)
-[] Dossier->mode?
+[] Fix error 500 when mail fails
