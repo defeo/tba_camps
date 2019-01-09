@@ -32,6 +32,12 @@ Remember. Workflow is:
 ...
 6. Cancel → CANCELED
 
+# Needs info
+
+[] Par contre dès qu’ils choisissent  un voyage accompagné aller-retour il faut que navette
+   aller et navette retour se coche automatiquement ; si ce n’est qu’un voyage aller , que
+   navette aller qui se coche automatiquement idem si ce n’est que retour.
+
 # Other
 
 [] Redo fixtures
