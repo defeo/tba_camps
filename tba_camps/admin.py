@@ -342,6 +342,7 @@ class StagiaireAdmin(ExportMixin, admin.ModelAdmin):
     fields  = (
         ('etat', 'venu'),
         ('nom', 'prenom'),
+        ('age', 'naissance', 'sexe'),
         ('dossier_link'),
         ('type_chambre', 'num_chambre', 'chambre'),
         ('accompagnateur',),
@@ -352,8 +353,7 @@ class StagiaireAdmin(ExportMixin, admin.ModelAdmin):
         ('auth_paren', 'auth_paren_snail'),
         ('fiche_sanit', 'fiche_sanit_snail'),
         ('licence', 'club', 'certificat', 'certificat_snail'),
-        ('age', 'sexe', 'taille'),
-        ('naissance', 'lieu', 'niveau'),
+        ('taille', 'niveau', 'lieu'),
         ('train'),
         ('navette_a', 'navette_r'),
         ('email', 'tel'),
