@@ -5,14 +5,14 @@
 
   {% if object.misses %}
   <p>Pour valider votre inscription vous devez:
-    {% if object.avance %}envoyer un acompte,{% endif %}
+    {% if object.avance_total %}envoyer un acompte,{% endif %}
     imprimer, remplir et
     <a href="{{ host }}{% url 'dossier_view' %}#stagiaires">téléverser</a>
     l’autorisation parentale et la fiche sanitaire, remplir votre numéro de
     licence.</p>
   {% endif %}
 
-  {% if object.avance and object.acompte_total < object.avance_total %}
+  {% if object.avance_total and object.acompte_total < object.avance_total %}
   <p><strong>Merci d’envoyer, avant 8 jours, votre règlement à l’ordre
       de TBA par courrier à l’adresse</strong></p>
 
