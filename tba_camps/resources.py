@@ -24,6 +24,8 @@ class SemaineField(fields.Field):
 class StagiaireResource(resources.ModelResource):
     email = fields.Field('dossier__email')
     tel = fields.Field()
+    adresse = fields.Field('dossier__adresse')
+    cp = fields.Field('dossier__cp')
     age = fields.Field()
     lien = fields.Field()
     date = fields.Field('dossier__date')
@@ -42,7 +44,7 @@ class StagiaireResource(resources.ModelResource):
     class Meta:
         model = Stagiaire
         export_base = fields = [
-            'nom', 'prenom', 'email', 'tel', 'sexe', 'naissance', 'age', 'taille',
+            'nom', 'prenom', 'email', 'tel', 'adresse', 'cp', 'sexe', 'naissance', 'age', 'taille',
             'niveau', 'venu', 'lieu', 'formule', 'train', 'navette_a', 'navette_r',
             'chambre', 'type_chambre', 'num_chambre', 'accompagnateur',
             'nom_parrain', 'adr_parrain', 'date', 'etat', 'lien',
