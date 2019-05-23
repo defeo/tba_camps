@@ -146,7 +146,10 @@ class DossierResource(resources.ModelResource):
 
     def dehydrate_prix_hebergement(self, inscr):
         return inscr.prix_hebergement if inscr.hebergement is not None else ''
-    
+
+    def dehydrate_supplement(self, inscr):
+        return inscr.supplement if inscr.supplement else ''
+        
     def dehydrate_prix_total(self, inscr):
         return inscr.prix_total()
     
