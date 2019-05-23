@@ -115,6 +115,7 @@ class DossierResource(resources.ModelResource):
         export_base = fields = [
             'nom', 'prenom', 'stagiaires',
             'hebergement', 'prix_hebergement',
+            'supplement', 'motif',
             'prix_total', 'acompte_total', 'reste',
             'mode', 'mode_solde',
             'email', 'tel', 'adresse', 'cp', 'ville',
