@@ -332,6 +332,9 @@ class StagiaireFilter(admin.SimpleListFilter):
         
 @admin.register(Stagiaire, site=site)
 class StagiaireAdmin(ExportMixin, admin.ModelAdmin):
+    class Media:
+        css = { 'all': ('admin/css/extra.css',) }
+
     list_display   = ('nom', 'prenom', 'dossier_link', 'semaines_str', 'formule', 'num_chambre', 'prix', 'parrain', 'pieces', 'etat')
     list_display_links = ('nom', 'prenom')
     list_editable  = ('num_chambre', 'parrain',)
