@@ -335,9 +335,9 @@ class StagiaireAdmin(ExportMixin, admin.ModelAdmin):
     class Media:
         css = { 'all': ('admin/css/extra.css',) }
 
-    list_display   = ('nom', 'prenom', 'dossier_link', 'semaines_str', 'formule', 'num_chambre', 'prix', 'parrain', 'pieces', 'etat')
+    list_display   = ('nom', 'prenom', 'dossier_link', 'semaines_str', 'formule', 'type_chambre', 'num_chambre', 'prix', 'parrain', 'pieces', 'etat')
     list_display_links = ('nom', 'prenom')
-    list_editable  = ('num_chambre', 'parrain',)
+    list_editable  = ('type_chambre', 'num_chambre', 'parrain',)
     list_filter    = (StagiaireFilter, 'semaines')
     search_fields  = ('nom', 'prenom', 'dossier__nom', 'dossier__prenom')
     readonly_fields = ('age', 'prix', 'prix_formule', 'email', 'etat', 'tel', 'dossier_link', 'acompte')
