@@ -67,7 +67,7 @@ class BasicTests(TestCase):
             'licence' : '10101001', 'club' : 'club', 'venu' : 'O',
             'train' : '0.000', 'navette_a' : '0.00',
             'navette_r' : '0.00', 'assurance' : '0.00',
-            'caf' : 'N'
+            'caf' : 'N',
             })
         self.assertEqual(response.status_code, 302)
         response = self.client.get(response.url)

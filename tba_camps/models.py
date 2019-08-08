@@ -269,7 +269,8 @@ class Dossier(ModelWFiles):
     ###
     notes = models.TextField(default='', blank=True)
     caf = models.CharField("Je bénéficie d'une aide CAF ou VACAF", max_length=1,
-                           choices=[('O', 'Oui'), ('N', 'Non')], default='N')
+                           choices=[('N', 'Non'), ('C', 'CAF'), ('V', 'VACAF')], default='N')
+    cafno = models.CharField("Numéro d'allocataire", max_length=20, blank=True, null=True)
     
     def __str__(self):
         return '%s %s <%s>' % (self.nom or '??', self.prenom or '??', self.email)

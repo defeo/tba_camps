@@ -184,10 +184,13 @@ class DossierLastForm(forms.ModelForm):
     error_css_class = 'error'
     required_css_class = 'required'
     confirm = forms.BooleanField(label='Je reconnais', required=True)
+    
+    class Media:
+        js = ('js/caf.js',)
 
     class Meta:
         model = Dossier
-        fields = ['notes', 'caf']
+        fields = ['notes', 'caf', 'cafno']
         widgets = {
             'notes': widgets.Textarea(attrs={'rows' : 5}),
             'caf' :  widgets.RadioSelect,
@@ -196,6 +199,14 @@ class DossierLastForm(forms.ModelForm):
             'notes': "N'hésitez pas à nous signaler toute situation particulière",
         }
 
+    def clean_cafno(self):
+        caf = self.cleaned_data['caf']
+        cafno = self.cleaned_data.get('cafno')
+        if caf == 'N':
+            cafno = None
+        elif not cafno:
+            raise ValidationError("Veuillez rentrer votre numéro d'allocataire.")
+        return cafno
 
 class DossierConfirm(SessionDossierMixin, UpdateView):
     template_name = 'dossier_confirm.html'

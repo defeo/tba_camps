@@ -235,7 +235,7 @@ class DossierAdmin(ExportMixin, admin.ModelAdmin):
                 ('remise', 'motif_rem'),
                 ('supplement', 'motif'),
                 ('prix_total', 'acompte', 'acompte_stagiaires', 'acompte_total', 'mode', 'reste'),
-                ('notes', 'caf'),
+                ('notes', 'caf', 'cafno'),
                 ('mode_solde',),
                 ),
         }),
