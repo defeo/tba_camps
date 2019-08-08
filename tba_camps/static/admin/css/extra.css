@@ -1,3 +1,6 @@
 .field-num_chambre .vTextField {
     width: 5em;
 }
+.field-formule.nowrap {
+    white-space: normal;
+}
