@@ -215,15 +215,16 @@ class StagiaireInline(admin.TabularInline):
 #     verbose_name = 'Ajouter stagiaire'
 #     def get_queryset(self, *args, **kwds):
 #         return Stagiaire.objects.none()
-    
+
 @admin.register(Dossier, site=site)
 class DossierAdmin(ExportMixin, admin.ModelAdmin):
     list_display   = ('nom', 'prenom', 'stagiaires_short', 'semaines_str', 'hebergement', 'prix_hebergement', 'prix_total', 'acompte', 'acompte_total', 'reste', 'etat', 'date', 'date_valid')
     list_display_links = ('nom', 'prenom')
     list_editable  = ('prix_hebergement', 'acompte', 'etat')
-    list_filter    = ('date', DossierFilter, DossierSemaineFilter)
+    list_filter    = ('date', 'etat', DossierFilter, DossierSemaineFilter)
     search_fields  = ('nom', 'prenom', 'email', 'stagiaire__nom', 'stagiaire__prenom')
     readonly_fields = ('stagiaires', 'prix_total', 'reste', 'num', 'acompte_total', 'acompte_stagiaires')
+    actions = ( 'bulk_email', )
     save_on_top = True
     inlines = ( StagiaireInline, ) #StagiaireCreateInline )
     fieldsets  = (
@@ -266,6 +267,17 @@ class DossierAdmin(ExportMixin, admin.ModelAdmin):
                      name='tba_camps_dossier_send_mail')
         return [my_url] + urls 
 
+    def bulk_email(self, req, qs):
+        try:
+            for d in qs:
+                d.send_mail()
+        except:
+            self.message_user(req, "Une erreur est survenue, il se pourrait que certains mails n'aient pas été envoyés.",
+                                  level=messages.ERROR)
+        else:
+            self.message_user(req, "%d emails envoyés." % len(qs))
+    bulk_email.short_description = "Envoyer email aux dossiers sélectionnés"
+    
     def num(self, obj):
         return obj.pk
     num.short_description = 'Numero de dossier'
