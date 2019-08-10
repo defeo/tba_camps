@@ -64,12 +64,14 @@
         </tr>
         {% endif %}
       {% endfor %}
+      {% if original %}
 	<tr><td></td></tr>
         <tr class="add-row">
 	  <td><a href="{% url 'admin:tba_camps_stagiaire_add' %}?dossier={{ original.pk }}">
 	      Ajouter stagiaire
 	  </a></td>
 	</tr>
+      {% endif %}
      </tbody>
 
      <tfoot style="border-top:solid 2px black;">
