@@ -15,7 +15,7 @@
 # Admin
 
 [] use subviews
-[] add stagiare to dossier
+[X] add stagiare to dossier
 [] move stagiaire between dossiers
 [] Add 2D table for hebergement prices + Remise hbgt.
 
@@ -40,7 +40,7 @@ Remember. Workflow is:
 
 # Other
 
-[] Redo fixtures
+[x] Redo fixtures
 [] Clean inscription.js
 [~] Acompte accompagnateur
 [x] Modifier stagiaire breaks again boolean fields
@@ -54,3 +54,9 @@ Remember. Workflow is:
 
 [] Prix différents par semaine (en formule 3).
 [] Fix error 500 when mail fails
+
+# 08/08/2019
+
+[] Prix différent par semaine
+[] Sacs à dos
+[] Rendre lien infos plus visible
