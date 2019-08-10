@@ -199,23 +199,6 @@ class StagiaireInline(admin.TabularInline):
     def has_add_permission(self, obj, *args, **kwds):
         return False
 
-# class StagiaireCreateInline(admin.StackedInline):
-#     model = Stagiaire
-#     fields = (
-#         ('nom', 'prenom'),
-#         ( 'naissance', 'lieu'),
-#         ( 'niveau'),
-#         ('formule', 'semaines'),
-#         )
-#     can_delete = False
-#     classes = ('collapse', )
-#     extra = 1
-#     max_num = 1
-#     title = 'aaa'
-#     verbose_name = 'Ajouter stagiaire'
-#     def get_queryset(self, *args, **kwds):
-#         return Stagiaire.objects.none()
-
 @admin.register(Dossier, site=site)
 class DossierAdmin(ExportMixin, admin.ModelAdmin):
     list_display   = ('nom', 'prenom', 'stagiaires_short', 'semaines_str', 'hebergement', 'prix_hebergement', 'prix_total', 'acompte', 'acompte_total', 'reste', 'etat', 'date', 'date_valid')
@@ -232,7 +215,6 @@ class DossierAdmin(ExportMixin, admin.ModelAdmin):
             'fields' : (
                 ('etat', 'num', 'date_valid'),
                 ('nom', 'prenom'),
-#                ('stagiaires',),
                 ('remise', 'motif_rem'),
                 ('supplement', 'motif'),
                 ('prix_total', 'acompte', 'acompte_stagiaires', 'acompte_total', 'mode', 'reste'),
@@ -358,7 +340,7 @@ class StagiaireAdmin(ExportMixin, admin.ModelAdmin):
         ('etat', 'venu'),
         ('nom', 'prenom'),
         ('age', 'naissance', 'sexe'),
-        ('dossier_link'),
+        ('dossier', 'dossier_link'),
         ('type_chambre', 'num_chambre', 'chambre'),
         ('accompagnateur',),
         ('semaines',),
@@ -380,8 +362,23 @@ class StagiaireAdmin(ExportMixin, admin.ModelAdmin):
     }
     resource_class = StagiaireResource
 
-    def has_add_permission(self, *args, **kwds):
-       return False
+    def get_form(self, request, obj=None, **kwargs):
+        kwargs['widgets'] = kwargs.get('widgets', {})
+        kwargs['widgets']['dossier'] = widgets.HiddenInput()
+        return super().get_form(request, obj, **kwargs)
+
+    def add_view(self, request, form_url='', extra_context=None):
+        if 'dossier' not in request.GET:
+            self.message_user(request, "Veuillez choisir d'abord un dossier auquel ajouter le stagiaire", level=messages.WARNING)
+            return redirect('admin:tba_camps_dossier_changelist')
+        pk = request.GET['dossier']
+        try:
+            Dossier.objects.get(pk=pk)
+        except:
+            self.message_user(request, "Dossier inexistant (n° %s)" % pk, level=messages.ERROR)
+            return redirect('admin:tba_camps_dossier_changelist')
+        else:
+            return super().add_view(request, form_url, extra_context)
     
     def etat(self, obj):
         return Dossier._etat_dict[obj.dossier.etat]
