@@ -1,5 +1,6 @@
 # -:- encoding: utf-8
 
+import logging
 from django.contrib import admin
 from ordered_model.admin import OrderedModelAdmin
 from .models import Manager, Semaine, Formule, Hebergement, Dossier, Stagiaire, Message
@@ -253,7 +254,8 @@ class DossierAdmin(ExportMixin, admin.ModelAdmin):
         try:
             for d in qs:
                 d.send_mail()
-        except:
+        except BaseException as e:
+            logging.error('Sending email: %s' % e)
             self.message_user(req, "Une erreur est survenue, il se pourrait que certains mails n'aient pas été envoyés.",
                                   level=messages.ERROR)
         else:
@@ -293,8 +295,13 @@ class DossierAdmin(ExportMixin, admin.ModelAdmin):
     
     def send_mail(self, request, obj_id):
         obj = Dossier.objects.get(pk=obj_id)
-        obj.send_mail()
-        messages.info(request, "Email envoyé à <%s>." %obj.email )
+        try:
+            obj.send_mail()
+        except BaseException as e:
+            logging.error('Sending email: %s', e)
+            messages.error(request, "Une erreur est survenue en envoyant l'email à <%s>" % obj.email)
+        else:
+            messages.info(request, "Email envoyé à <%s>." %obj.email)
         return redirect('./')
 
 ####

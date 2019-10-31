@@ -1,5 +1,6 @@
 # -:- encoding: utf-8
 
+import logging
 from django.http import Http404, HttpResponseRedirect
 from django import forms
 from django.forms import widgets, ValidationError
@@ -64,7 +65,8 @@ Un email de rappel vient de vous être envoyé."""
 
         try:
             dossier.send_mail()
-        except:
+        except BaseException as e:
+            logging.error('Sending email: %s' % e)
             messages.error(self.request, format_html("Une erreur s'est produite en envoyant un email à l'adresse <em>{email}<em>. Veuillez ressayer.", email=dossier.email))
         else:
             messages.info(self.request, format_html(info, email=dossier.email))
