@@ -38,7 +38,7 @@ pycrypto==2.6.1
 pyphen==0.9.5             # via weasyprint
 python-http-client==3.1.0  # via sendgrid
 pytz==2018.7              # via django
-pyyaml==3.13              # via tablib
+pyyaml==5.1               # via tablib
 requests==2.20.1          # via django-downloadview
 sendgrid-django==4.2.0
 sendgrid==3.6.5           # via sendgrid-django
