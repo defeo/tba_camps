@@ -1,4 +1,4 @@
-django>=2.0
+django>=3.0
 
 # Dependencies
 django-ordered-model
@@ -6,7 +6,6 @@ django-import-export
 pycrypto
 markdown
 django-downloadview
-django-recaptcha
 WeasyPrint
 unidecode
 django-tinymce4-lite
