@@ -5,6 +5,9 @@ from .settings import *
 import dj_database_url
 
 DEBUG = False
+ADMINS = [('Luca De Feo', 'tba@defeo.lu')]
+SERVER_EMAIL = 'error-report@camps-basket.com'
+
 HOST_NAME = os.environ.get('HOST_NAME') or 'localhost'
 ALLOWED_HOSTS = [ HOST_NAME ]
 HOST = 'https://%s' % HOST_NAME
@@ -42,12 +45,12 @@ FROM_EMAIL = os.environ.get('MAIL_FROM') or 'Camps de basket TBA <tba@camps-bask
 
 # Pieces PDF, Word, etc.
 PIECES = {
-    'inscription':           '/tba/pdf/Bulletin-inscription-2019.pdf',
-    'TBA':                   '/tba/pdf/TBA-2019.pdf',
+    'inscription':           '/tba/pdf/Bulletin-inscription-2020.pdf',
+    'TBA':                   '/tba/pdf/TBA-2020.pdf',
     'renseignements_doc':    '/tba/pdf/Renseignements-pour-le-camp-2017.doc',
     'renseignements_pdf':    '/tba/pdf/Renseignements-pour-le-camp-2017.pdf',
-    'sanitaire_doc':         '/tba/pdf/Fiche-sanitaire-2018.docx',
-    'sanitaire_pdf':         '/tba/pdf/Fiche-sanitaire-2018.pdf',
+    'sanitaire_doc':         '/tba/pdf/Fiche-sanitaire-2019.docx',
+    'sanitaire_pdf':         '/tba/pdf/Fiche-sanitaire-2019.pdf',
     'autorisation_doc':      '/tba/pdf/2016-autorisation-parentale.doc',
     'autorisation_pdf':      '/tba/pdf/2016-autorisation-parentale.pdf',
     'margot':                '/tba/pdf/CHALETS-RESIDENCE-ETE-2018-PRIX-PUBLIC.pdf',
@@ -61,4 +64,8 @@ PIECES = {
 IMAGES = {
     'Plan Dévoluy':          '/tba/images/plan_devoluy.jpg',
     'Sherpa':                '/tba/images/sherpa.jpg',
+    'Sacs à dos (Antoine)':  '/tba/images/sacs-a-dos-antoine.jpg',
+    'Sacs à dos (Emma)':     '/tba/images/sacs-a-dos-emma.jpg',
+    'Sacs à dos (Simon)':    '/tba/images/sacs-a-dos-simon.jpg',
+    'Sacs à dos (Thomas)':   '/tba/images/sacs-a-dos-thomas.jpg',
 }
