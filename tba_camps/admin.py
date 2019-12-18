@@ -13,7 +13,7 @@ from django.shortcuts import redirect
 from django.conf.urls import url
 from django.urls import path
 from django.utils.html import mark_safe, format_html
-from django.contrib.admin.templatetags.admin_static import static
+from django.templatetags.static import static
 from django.db import models
 from django.forms import widgets
 from django.contrib import messages
