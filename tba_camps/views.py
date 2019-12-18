@@ -15,7 +15,6 @@ from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from . import models
 from .models import Dossier, Stagiaire, Formule, Hebergement, Semaine
-from captcha.fields import ReCaptchaField
 from . import widgets as my_widgets
 from django.utils.html import format_html
 from django.utils.text import format_lazy
