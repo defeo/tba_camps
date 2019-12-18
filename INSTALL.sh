@@ -6,7 +6,7 @@ exit
 ########## CONFIGURATION DE L'ENVIRONNEMENT PYTHON
 
 # On commence par installer quelques dépendences
-apt-get install git python3 python3-virtualenv python3-pip python3-dev libcairo2 libpango1.0-0 libgdk-pixbuf2.0-0 shared-mime-info libpq-dev libmysqlclient-dev libffi-dev 
+apt-get install git python3 python3-virtualenv python3-pip python3-dev libcairo2 libpango1.0-0 libgdk-pixbuf2.0-0 shared-mime-info libpq-dev libmariadb-dev libffi-dev 
 
 # On télécharge les sources du site.  Il faut avoir accès au repo
 # (privé) sur github.  Si vous lisez ce fichier, normalement vous
@@ -24,7 +24,7 @@ pip install -r requirements.txt
 
 # Le projet marche aussi bien avec Postgres, mais par défaut on va
 # configurer MySQL.
-apt-get install mysql-server
+apt-get install mariadb-server
 
 # On crée la base de données pour le projet. Dans un hébergement
 # partagé, il est probablement plus approprié de créer un utilisateur
