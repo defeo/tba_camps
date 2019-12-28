@@ -300,10 +300,10 @@ class Dossier(ModelWFiles):
         return any(s.misses() for s in self.stagiaire_set.iterator())
 
     def prix_stagiaires(self):
-        return sum(s.prix() for s in self.stagiaire_set.iterator())
+        return sum((s.prix() for s in self.stagiaire_set.iterator()), Decimal('0.00'))
 
     def avance_stagiaires(self):
-        return sum(s.avance() for s in self.stagiaire_set.iterator())
+        return sum((s.avance() for s in self.stagiaire_set.iterator()), Decimal('0.00'))
 
     def describe_backpacks(self):
         n = self.backpack_set.count()
@@ -315,7 +315,7 @@ class Dossier(ModelWFiles):
             return "%d %s" % (n, Backpack._meta.verbose_name_plural)
 
     def prix_backpacks(self):
-        return sum(b.cost() for b in self.backpack_set.iterator())
+        return sum((b.cost() for b in self.backpack_set.iterator()), Decimal('0.00'))
     
     def prix_total(self):
         return self.prix_stagiaires() + self.prix_backpacks() + self.prix_hebergement + self.supplement - self.remise
@@ -580,7 +580,7 @@ class Backpack(models.Model):
         verbose_name_plural = 'sacs à dos'
         
     def cost(self):
-        return 29
+        return Decimal('29.00')
     
     def __str__(self):
         return self.prenom + (' (%s)' % self.numero) * bool(self.numero)
