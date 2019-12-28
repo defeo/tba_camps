@@ -96,6 +96,7 @@ class StagiaireResource(resources.ModelResource):
 class DossierResource(resources.ModelResource):
     lien = fields.Field()
     stagiaires = fields.Field()
+    prix_backpacks = fields.Field(column_name='prix sacs a dos')
     prix_total = fields.Field()
     acompte_total = fields.Field()
     reste = fields.Field()
@@ -115,7 +116,7 @@ class DossierResource(resources.ModelResource):
         export_base = fields = [
             'nom', 'prenom', 'stagiaires',
             'hebergement', 'prix_hebergement',
-            'supplement', 'motif',
+            'supplement', 'motif', 'prix_backpacks',
             'prix_total', 'acompte_total', 'reste',
             'mode', 'mode_solde',
             'email', 'tel', 'adresse', 'cp', 'ville',
@@ -150,6 +151,9 @@ class DossierResource(resources.ModelResource):
     def dehydrate_supplement(self, inscr):
         return inscr.supplement if inscr.supplement else ''
         
+    def dehydrate_prix_backpacks(self, inscr):
+        return inscr.prix_backpacks()
+    
     def dehydrate_prix_total(self, inscr):
         return inscr.prix_total()
     

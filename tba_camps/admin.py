@@ -218,7 +218,7 @@ class DossierAdmin(ExportMixin, admin.ModelAdmin):
     list_editable  = ('prix_hebergement', 'acompte', 'etat')
     list_filter    = ('date', 'etat', DossierFilter, DossierSemaineFilter)
     search_fields  = ('nom', 'prenom', 'email', 'stagiaire__nom', 'stagiaire__prenom')
-    readonly_fields = ('stagiaires', 'prix_total', 'reste', 'num', 'acompte_total', 'acompte_stagiaires')
+    readonly_fields = ('stagiaires', 'num_backpacks', 'prix_backpacks', 'prix_total', 'reste', 'num', 'acompte_total', 'acompte_stagiaires')
     actions = ( 'bulk_email', )
     save_on_top = True
     inlines = ( StagiaireInline, BackpackInline )
@@ -229,6 +229,7 @@ class DossierAdmin(ExportMixin, admin.ModelAdmin):
                 ('nom', 'prenom'),
                 ('remise', 'motif_rem'),
                 ('supplement', 'motif'),
+                ('num_backpacks', 'prix_backpacks'),
                 ('prix_total', 'acompte', 'acompte_stagiaires', 'acompte_total', 'mode', 'reste'),
                 ('notes', 'caf', 'cafno'),
                 ('mode_solde',),
@@ -272,6 +273,10 @@ class DossierAdmin(ExportMixin, admin.ModelAdmin):
         else:
             self.message_user(req, "%d emails envoyés." % len(qs))
     bulk_email.short_description = "Envoyer email aux dossiers sélectionnés"
+
+    def num_backpacks(self, obj):
+        return mark_safe('<a href="#backpack_set-group">%s</a>' % obj.describe_backpacks())
+    num_backpacks.short_description = mark_safe('<a href="#backpack_set-group">Nombre de sacs</a>')
     
     def num(self, obj):
         return obj.pk

@@ -313,9 +313,10 @@ class Dossier(ModelWFiles):
             return "1 %s" % Backpack._meta.verbose_name
         else:
             return "%d %s" % (n, Backpack._meta.verbose_name_plural)
-
+    
     def prix_backpacks(self):
         return sum((b.cost() for b in self.backpack_set.iterator()), Decimal('0.00'))
+    prix_backpacks.short_description = 'Prix total sacs à dos'
     
     def prix_total(self):
         return self.prix_stagiaires() + self.prix_backpacks() + self.prix_hebergement + self.supplement - self.remise
