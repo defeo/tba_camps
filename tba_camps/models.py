@@ -640,6 +640,7 @@ class Backpack(models.Model):
 
     def semaines_str(self):
         return ', '.join('S%d' % s.ord() for s in self.semaines().iterator())
+    semaines_str.short_description = 'Semaines'
 
     def stagiaires(self):
         return ', '.join(str(s) for s in self.dossier.stagiaire_set.iterator())
