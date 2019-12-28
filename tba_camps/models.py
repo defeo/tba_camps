@@ -4,7 +4,7 @@ from collections import OrderedDict
 from django.db import models
 from django.contrib.auth.models import User
 from ordered_model.models import OrderedModel
-from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
+from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator, ValidationError
 from django.urls import reverse
 from django.conf import settings
 import base64, random
@@ -409,6 +409,51 @@ class Message(OrderedModel):
     def __str__(self):
         return self.titre
 
+#### Reversibles
+
+class ReversibleQuerySet(models.QuerySet):
+    def table(self):
+        return mark_safe('''<table class="reversible-table">
+<tr><th></th>%s</tr>
+<tr><th>Stature (cm)</th>%s</tr>
+<tr><th>Age</th>%s</tr>
+</table>''' % (
+    ''.join('<th>%s</th>' % r.taille for r in self.iterator()),
+    ''.join('<td>%s</td>' % r.stature() for r in self.iterator()),
+    ''.join('<td>%s</td>' % (r.age or '') for r in self.iterator()),
+    ))
+        
+class Reversible(models.Model):
+    taille = models.CharField('Taille', max_length=6, primary_key=True)
+    min_stature = models.IntegerField('Stature min (cm)',
+                                          validators=[MaxValueValidator(300), MinValueValidator(100)],
+                                          null=True, blank=True)
+    max_stature = models.IntegerField('Stature max (cm)',
+                                          validators=[MaxValueValidator(300), MinValueValidator(100)],
+                                          null=True, blank=True)
+    age = models.CharField('Age (ans)', max_length=6, null=True, blank=True)
+
+    objects = ReversibleQuerySet.as_manager()
+    
+    class Meta:
+        ordering = ('min_stature',)
+
+    def clean(self):
+         if self.min_stature is None and self.max_stature is None:
+             raise ValidationError('Donner au moins une stature minimale ou une maximale.')
+
+    def stature(self):
+        if self.min_stature is None:
+            return "jusqu'à %d" % self.max_stature
+        if self.max_stature is None:
+            return "%d et +" % self.min_stature
+        else:
+            return '%d-%d' % (self.min_stature, self.max_stature)
+    
+    def __str__(self):
+        return '%s (%s)' % (self.taille, self.stature())
+
+
 ### Stagiaire
 
 class Stagiaire(ModelWFiles):
@@ -427,6 +472,7 @@ class Stagiaire(ModelWFiles):
     taille = models.IntegerField('Taille (cm)', 
                                  validators=[MaxValueValidator(300),
                                              MinValueValidator(30)], null=True, blank=True)
+    reversible = models.ForeignKey(Reversible, on_delete=models.PROTECT, null=True, blank=True)
     niveau = models.CharField('Niveau de pratique', max_length=1,
                                   choices=[('B', 'Débutant'),
                                                ('D', 'Départemental'),
@@ -516,6 +562,9 @@ class Stagiaire(ModelWFiles):
         return ', '.join(getattr(self, f).field.verbose_name
                              for f in self._file_fields
                              if getattr(self, 'misses_' + f)())
+
+    def first_semaine(self):
+        return self.semaines.first()
     
     def semaines_str(self):
         return ', '.join('S%d' % s.ord() for s in self.semaines.iterator())

@@ -3,7 +3,7 @@
 import logging
 from django.contrib import admin
 from ordered_model.admin import OrderedModelAdmin
-from .models import Manager, Semaine, Formule, Hebergement, Dossier, Stagiaire, Message, Backpack
+from .models import Manager, Semaine, Formule, Hebergement, Dossier, Stagiaire, Message, Backpack, Reversible
 from .models import PREINSCRIPTION, VALID, COMPLETE
 from import_export.admin import ExportMixin
 from .resources import StagiaireResource, DossierResource, BackpackResource
@@ -373,7 +373,8 @@ class StagiaireAdmin(ExportMixin, admin.ModelAdmin):
         ('auth_paren', 'auth_paren_snail'),
         ('fiche_sanit', 'fiche_sanit_snail'),
         ('licence', 'club', 'certificat', 'certificat_snail'),
-        ('taille', 'niveau', 'lieu'),
+        ('taille', 'reversible'),
+        ('niveau', 'lieu'),
         ('train'),
         ('navette_a', 'navette_r'),
         ('email', 'tel'),
@@ -522,3 +523,26 @@ class BackpackAdmin(ExportMixin, admin.ModelAdmin):
             return redirect('admin:tba_camps_dossier_changelist')
         else:
             return super().add_view(request, form_url, extra_context)
+
+####
+class SemaineColumn():
+    def __init__(self, semaine):
+        self.semaine = semaine
+        self.__name__ = 'S%d' % semaine.ord()
+
+    def __call__(self, reversible):
+        stags = self.semaine.stagiaire_set.filter(reversible=reversible)
+        # Seems hard to do this in the db, let's use some python
+        stags = list(filter(lambda s: s.first_semaine() == self.semaine, stags))
+        return len(stags)
+
+@admin.register(Reversible, site=site)
+class ReversibleAdmin(admin.ModelAdmin):
+    list_display = ('taille', 'stature', 'age')
+    fields = ('taille', 'min_stature', 'max_stature', 'age')
+
+    def get_list_display(self, request):
+        dp = list(self.list_display)
+        for s in Semaine.objects.iterator():
+            dp.append(SemaineColumn(s))
+        return dp

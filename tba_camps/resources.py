@@ -1,6 +1,6 @@
 import functools
 from import_export import resources, fields, widgets
-from .models import Semaine, Stagiaire, Dossier, Backpack
+from .models import Semaine, Stagiaire, Dossier, Backpack, Reversible
 from django.conf import settings
 from django.urls import reverse
 
@@ -45,7 +45,7 @@ class StagiaireResource(resources.ModelResource):
         model = Stagiaire
         export_base = fields = [
             'nom', 'prenom', 'email', 'tel', 'adresse', 'cp', 'sexe', 'naissance', 'age', 'taille',
-            'niveau', 'venu', 'lieu', 'formule', 'train', 'navette_a', 'navette_r',
+            'reversible', 'niveau', 'venu', 'lieu', 'formule', 'train', 'navette_a', 'navette_r',
             'chambre', 'type_chambre', 'num_chambre', 'accompagnateur',
             'nom_parrain', 'adr_parrain', 'date', 'etat', 'lien',
             ]

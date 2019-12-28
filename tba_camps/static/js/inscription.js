@@ -110,4 +110,32 @@ $(function() {
 	    }
 	})
     });
+
+    // Reversible show/hide table
+    $('[for="id_reversible"]').on('click', function(e) {
+	$(this).find('table').toggleClass('active');
+	return false;
+    });
+    $('body').on('click', function() {
+	$('[for="id_reversible"] table').removeClass('active');
+    });
+
+    // Reversible auto-select
+    $('#id_taille').on('keyup', function() {
+	var rev = $('#id_reversible');
+	var t = parseInt(this.value);
+	rev.find('option').filter(function(i, o) {
+	    return parseInt(o.dataset.min) <= t && t <= parseInt(o.dataset.max);
+	}).attr('selected', true);
+    });
+    $('#id_reversible').on('change', function() {
+	var $this = $(this);
+	var t = parseInt($('#id_taille').val());
+	var o = $this.parent().find(':selected');
+	if (parseInt(o.data('min')) > t || t > parseInt(o.data('max'))) {
+	    $this.parent().addClass('taille-mismatch');
+	} else {
+	    $this.parent().removeClass('taille-mismatch');
+	}
+    });
 });

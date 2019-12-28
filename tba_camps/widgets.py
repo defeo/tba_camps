@@ -6,11 +6,11 @@ from django.utils.safestring import mark_safe
 from django import forms
 from django.utils.encoding import force_text
 from .templatetags.decimal import strip_cents
-from .models import Hebergement, Semaine, Formule
+from .models import Hebergement, Semaine, Formule, Reversible
 
 # The Formule-Semaine-Hebergement mess has a complicated logic and UI
 # We need custom fiedls and widgets that extract more custom
-# information from the mode.
+# information from the model.
 #
 # Django has no native system to do that, so we hack the "label" of
 # the various choice fields to hold more data than it is supposed to.
@@ -140,6 +140,45 @@ class FormuleField(forms.ModelChoiceField):
             'attrs': attrs,
             }
 
+### Reversible
+
+class ReversibleWidget(forms.widgets.Select):
+    class Media:
+        js = ('js/inscription.js',)
+            
+    def create_option(self, *args, **kwds):
+        opt = super().create_option(*args, **kwds)
+        opt['attrs'].update(opt['label']['attrs'])
+        opt['label'] = opt['label']['label']
+        return opt        
+    
+class ReversibleField(forms.ModelChoiceField):
+    widget = ReversibleWidget
+
+    def __init__(self, *args, **kwds):
+        super().__init__(queryset=Reversible.objects.all(), *args, **kwds)
+        self.empty_label = { 'label' : self.empty_label, 'attrs' : {
+            'data-min' : 0,
+            'data-max' : 0
+            } }
+    
+    def label_from_instance(self, obj):
+        return { 'label': str(obj), 'attrs': {
+            'data-min' : obj.min_stature or 0,
+            'data-max' : obj.max_stature or 300,
+            }}
+
+    @property
+    def help_text(self):
+        if self._help_text:
+            return self._help_text
+        else:
+            return '<a>voir la grille des tailles</a>' + self.queryset.table()
+
+    @help_text.setter
+    def help_text(self, v):
+        self._help_text = v
+        
 ### Date Picker
 
 class DatePicker(forms.widgets.DateInput):

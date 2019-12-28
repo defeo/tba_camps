@@ -225,3 +225,43 @@ li.stagiaire .nom {
 #backpacks form.inactive button:not(.toggle) { display: none; }
 #backpacks form.inactive button.toggle :nth-child(2) { display: none; }
 #backpacks form.active button.toggle :nth-child(1) { display: none; }
+
+/************* Reversibles **************/
+[for="id_reversible"] {
+    cursor: pointer;
+}
+.reversible-table {
+    display: none;
+    position: absolute;
+    background-color: #cc6600;
+    color: white;
+    box-shadow: 0 0 2px 2px #cc6600;
+    padding: 1ex 4ex 1ex 1ex;
+    font-size: 120%;
+    transform: translateX(-50%);
+}
+.reversible-table td, .reversible-table th {
+    text-align: center;
+    padding: 0 1ex;
+}
+.reversible-table td {
+    font-weight: normal;
+}
+.reversible-table::after {
+    content: '×';
+    font-size: 150%;
+    position: absolute;
+    top: 0;
+    right: .5ex;
+    cursor: pointer;
+}
+
+.reversible-table.active {
+    display: block;
+}
+
+.taille-mismatch::after {
+    content: ' une taille plus juste est disponible!';
+    color: gray;
+    position: relative
+}

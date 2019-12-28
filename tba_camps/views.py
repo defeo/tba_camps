@@ -14,7 +14,7 @@ from django.template.response import TemplateResponse
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from . import models
-from .models import Dossier, Stagiaire, Formule, Hebergement, Semaine, Backpack
+from .models import Dossier, Stagiaire, Formule, Hebergement, Semaine, Backpack, Reversible
 from . import widgets as my_widgets
 from django.utils.html import format_html
 from django.utils.text import format_lazy
@@ -255,12 +255,13 @@ class StagiaireForm(forms.ModelForm):
                                  widget=widgets.RadioSelect,
                                  choices=[('O','Oui'), ('N','Non')])
     taille = forms.Field(label='Taille (cm)', required=True, widget=widgets.NumberInput)
+    reversible = my_widgets.ReversibleField(required=True)
     assurance_confirm = forms.BooleanField(required=False)
 
     class Meta:
         model = Stagiaire
         fields = ['nom', 'prenom', 'naissance', 'lieu', 'sexe', 'taille',
-                      'niveau', 'licence', 'club', 'venu',
+                      'reversible', 'niveau', 'licence', 'club', 'venu',
                       'semaines', 'formule', 'assurance',
                       'chambre', 'accompagnateur', 'train',
                       'navette_a', 'navette_r',
