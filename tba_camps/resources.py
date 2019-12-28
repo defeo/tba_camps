@@ -1,6 +1,6 @@
 import functools
 from import_export import resources, fields, widgets
-from .models import Semaine, Stagiaire, Dossier
+from .models import Semaine, Stagiaire, Dossier, Backpack
 from django.conf import settings
 from django.urls import reverse
 
@@ -164,3 +164,24 @@ class DossierResource(resources.ModelResource):
 
     def dehydrate_etat(self, inscr):
         return Dossier._etat_dict[inscr.etat]
+
+class BackpackResource(resources.ModelResource):
+    parent = fields.Field()
+    email = fields.Field('dossier__email')
+    prenom = fields.Field()
+    numero = fields.Field()
+    semaines = fields.Field()
+    stagiaires = fields.Field()
+    
+    class Meta:
+        model = Backpack
+        export_base = fields = ('prenom', 'numero')
+
+    def dehydrate_parent(self, bp):
+        return '%s %s' % (bp.dossier.nom, bp.dossier.prenom)
+
+    def dehydrate_semaines(self, bp):
+        return bp.semaines_str()
+    
+    def dehydrate_stagiaires(self, bp):
+        return bp.stagiaires()

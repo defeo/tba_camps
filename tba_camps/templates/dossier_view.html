@@ -15,7 +15,7 @@
 
 <div class="dossier-block" id="profile">
   <h3>Mon profil
-    <a href="{% url 'dossier_modify' %}">editer</a>
+    <a href="{% url 'dossier_modify' %}">éditer</a>
   </h3>
   <p><strong>{% if object.titre == 'M' %}M. {% elif object.titre == 'F' %}Mme. {% endif %}{{ object.prenom }} {{ object.nom }}</strong></p>
   <p><em>email:</em> {{ object.email }}</p>
@@ -40,44 +40,44 @@
     <li class="stagiaire">
       <div class="links">
 	{% if object.is_editable %}
-	<a href="{% url 'stagiaire_modify' s.object.pk %}">modifier</a>
-	<a href="{% url 'stagiaire_delete' s.object.pk %}">effacer</a>
+	<a href="{% url 'stagiaire_modify' s.instance.pk %}">modifier</a>
+	<a href="{% url 'stagiaire_delete' s.instance.pk %}">effacer</a>
 	{% endif %}
       </div>
-      <div class="nom">{{ s.object.prenom }} {{ s.object.nom }}</div>
-      <div class="formule"><em>Formule :</em> {{ s.object.formule }}</div>
-      <div class="semaines"><em>Semaines :</em> {{ s.object.semaines_str }}</div>
+      <div class="nom">{{ s.instance.prenom }} {{ s.instance.nom }}</div>
+      <div class="formule"><em>Formule :</em> {{ s.instance.formule }}</div>
+      <div class="semaines"><em>Semaines :</em> {{ s.instance.semaines_str }}</div>
       <div class="pieces">
 	{% if object.accepts_uploads %}
-	<form action="{% url 'stagiaire_upload' s.object.pk %}" method="post" class="pure-form pure-form-aligned uploads"
+	<form action="{% url 'stagiaire_upload' s.instance.pk %}" method="post" class="pure-form pure-form-aligned uploads"
 	      enctype="multipart/form-data">
 	  {% csrf_token %}
 	  <div class="fieldgroup">
-	    {% if not s.object.majeur %}
+	    {% if not s.instance.majeur %}
 	    <div class="pure-control-group">
-	      <label>{{ s.form.auth_paren.label }}<br>
-		<small><a href="{% url 'stagiaire_pdf_view' s.object.pk %}"
+	      <label>{{ s.auth_paren.label }}<br>
+		<small><a href="{% url 'stagiaire_pdf_view' s.instance.pk %}"
 			  target="_blank">télécharger</a></small>
 	      </label>
-	      {{ s.form.auth_paren }}
+	      {{ s.auth_paren }}
 	    </div>
 
 	    <div class="pure-control-group">
-	      <label>{{ s.form.fiche_sanit.label }}<br>
+	      <label>{{ s.fiche_sanit.label }}<br>
 	      	<small>
 		  télécharger
 		  (<a href="{{ settings.PIECES.sanitaire_doc }}" target="_blank">doc</a>)
 		  (<a href="{{ settings.PIECES.sanitaire_pdf }}" target="_blank">pdf</a>)
 		</small>
 	      </label>
-	      {{ s.form.fiche_sanit }}
+	      {{ s.fiche_sanit }}
 	    </div>
 	    {% endif %}
 	    
-	    {% if not s.object.licence %}
+	    {% if not s.instance.licence %}
 	    <div class="pure-control-group">
-	      <label>{{ s.form.certificat.label }}</label>
-	      {{ s.form.certificat }}
+	      <label>{{ s.certificat.label }}</label>
+	      {{ s.certificat }}
 	    </div>
 	    {% endif %}
 	    
@@ -163,6 +163,13 @@
     {% endif %}
 
     <tbody>
+      {% if object.prix_backpacks %}
+      <tr><td class="total">{{ object.describe_backpacks }}</td>
+	<td class="price">{{ object.prix_backpacks }}€</td></tr>
+      {% endif %}
+    </tbody>
+    
+    <tbody>
       {% if object.supplement %}
       <tr><td>{{ object.motif }}</td><td class="price">{{ object.supplement }}€</td></tr>
       {% endif %}
@@ -208,7 +215,53 @@
      {% if not object.is_complete %}disabled{% endif %}>
     Confirmer les demandes d'inscription</a>
 </div>
-{% else %}{% include "includes/messages.html" %}{% endif %}
+{% else %}
+<div class="dossier-block" id="backpacks">
+  <h3>Sacs à dos avec prénom</h3>
+
+  <div class="bp-table">
+    <div class="col"></div><div class="col"></div><div class="last-col col"></div>
+    <div class="bp-row header">
+      <span>Prénom</span><span>Numero</span>
+      <span class="bp-count">{{ object.describe_backpacks }}
+	commandé{{ backpacks | length_is:"2" | yesno:",s" }}</span>
+    </div>
+    {% for b in backpacks %}
+    <form method="post"
+	  {% if b.instance.pk %}
+	  action="{% url 'backpack_edit' b.instance.pk %}"
+	  {% else %}
+	  action="{% url 'backpack_create' %}"
+	  {% endif %}
+	  class="pure-form bp-row {% if b.instance.pk %}has_original{% endif %} inactive">
+      <span class="prenom">{{ b.prenom }}</span>
+      <span class="numero">{{ b.numero }}</span>
+      <span>
+	{% if b.instance.pk %}
+	<button class="pure-button toggle" type="button">
+	  <span>changer</span>
+	  <span>annuler</span>
+	</button>
+	<button class="pure-button pure-button-primary">sauvegarder</button>
+	<button class="pure-button pure-button-primary"
+		formaction="{% url 'backpack_delete' b.instance.pk %}">supprimer</button>
+	{% else %}
+	<button class="pure-button toggle" type="button">
+	  <span><strong>ajouter un sac</strong></span>
+	  <span>annuler</span>
+	</button>
+	<button class="pure-button pure-button-primary">sauvegarder</button>
+	{% endif %}
+	{% csrf_token %}
+      </span>
+    </form>
+    {% endfor %}
+  </div>
+
+  {% include "includes/backpacks.html" %}
+</div>
+
+  {% include "includes/messages.html" %}
+{% endif %}
 
 {% endblock %}
-

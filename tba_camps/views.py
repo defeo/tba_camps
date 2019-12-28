@@ -8,13 +8,13 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import View, DetailView, TemplateView
 from django.views.generic.base import ContextMixin
 from django.views.generic.detail import SingleObjectMixin
-from django.views.generic.edit import CreateView, UpdateView, DeleteView, ModelFormMixin, FormView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView, ModelFormMixin, FormView, DeletionMixin
 from django.template import TemplateDoesNotExist
 from django.template.response import TemplateResponse
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from . import models
-from .models import Dossier, Stagiaire, Formule, Hebergement, Semaine
+from .models import Dossier, Stagiaire, Formule, Hebergement, Semaine, Backpack
 from . import widgets as my_widgets
 from django.utils.html import format_html
 from django.utils.text import format_lazy
@@ -26,6 +26,7 @@ from . import mails
 from django.urls import reverse_lazy
 from django_downloadview import ObjectDownloadView
 from django.urls import path
+from .forms import SimpleModelFormset
 
 ### Register email
 
@@ -132,15 +133,10 @@ class DossierView(SessionDossierMixin, DetailView):
     template_name = 'dossier_view.html'
     
     def get_context_data(self, **kwds):
-        stags = []
-        for s in self.object.stagiaire_set.iterator():
-            stags.append({
-                'object' : s,
-                'form' : StagiaireUploadForm(instance=s, prefix=s.pk),
-                })
-        context = dict(stagiaires=stags, **kwds)
-        if stags:
-            context['form'] = { 'media': stags[0]['form'].media }
+        stags = SimpleModelFormset(self.object.stagiaire_set, StagiaireUploadForm)
+        bp = SimpleModelFormset(self.object.backpack_set, BackpackForm, extra=1)
+        context = dict(stagiaires=stags, backpacks=bp, **kwds)
+        context['form'] = { 'media': stags.media + bp.media }
         return super().get_context_data(**context)
         
     def get(self, *args, **kwds):
@@ -371,7 +367,7 @@ class StagiaireCreate(DossierIsNotBlocked, CreateView):
 
 class CheckDossierMixin(SingleObjectMixin, HasSessionMixin):
     """
-    A SO mixin that checks whether the Stagiaire belongs to the dossier
+    A SO mixin that checks whether the object belongs to the dossier
     """
     def get_object(self, queryset=None):
         obj = super().get_object(queryset=queryset)
@@ -482,6 +478,92 @@ stagiaire_up_views = { f : ObjectDownloadView.as_view(model=Stagiaire, file_fiel
 stagiaire_up_urls = [ path(r'%s' % f, v) for f, v in stagiaire_up_views.items() ]
 
 
+### Backpacks
+class BackpackForm(forms.ModelForm):
+    class Meta:
+        model = Backpack
+        exclude = ('dossier',)
+
+    class Media:
+        js = ('js/backpack.js',)
+
+    prenom = forms.CharField(required=False, widget=forms.TextInput(attrs={
+        'placeholder' : 'sans nom',
+        'size' : 15,
+        }))
+    numero = forms.CharField(required=False, widget=forms.TextInput(attrs={
+        'placeholder' : '–',
+        'size' : 2,
+        }))
+        
+class BackpackCreate(CheckDossierMixin, CreateView):
+    """
+    Create a backpack
+    """
+    model = Backpack
+    form_class = BackpackForm
+    success_url = reverse_lazy('dossier_view')
+
+    def form_valid(self, form):
+        messages.info(self.request, "Le sac à dos a été ajouté avec succès.")
+        form.instance.dossier = self.dossier
+        return super().form_valid(form)
+        
+    def form_invalid(self, form):
+        for e in form.non_field_errors():
+            messages.error(self.request, e)
+        
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get(self, *args, **kwds):
+        return redirect('dossier_view')
+        
+    def put(self, *args, **kwds):
+        # Add check for order deadline
+        return super().put(*args, **kwds)
+
+class BackpackDelete(CheckDossierMixin, DeletionMixin, SingleObjectMixin, View):
+    """
+    Delete a backpack
+    """
+    model = Backpack
+    success_url = reverse_lazy('dossier_view')
+
+    def delete(self, *args, **kwds):
+        # Add check for order deadline
+        res = super().delete(*args, **kwds)
+        messages.info(self.request, "Le sac à dos a été supprimé avec succès.")
+        return res
+
+class BackpackEdit(CheckDossierMixin, ModelFormMixin, View):
+    """
+    Edit/Delete a backpack
+    """
+    model = Backpack
+    form_class = BackpackForm
+    success_url = reverse_lazy('dossier_view')
+
+    def form_valid(self, *args, **kwds):
+        messages.info(self.request, "Le sac à dos a été modifié avec succès.")
+        return super().form_valid(*args, **kwds)
+        
+    def form_invalid(self, form):
+        for e in form.non_field_errors():
+            messages.error(self.request, e)
+        
+        return HttpResponseRedirect(self.get_success_url())
+    
+    def post(self, request, *args, **kwargs):
+        # Add check for order deadline
+        self.object = self.get_object()
+        # allow prefixed forms to call this edpoint
+        self.prefix = self.object.pk
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+        
 ### Handle hebergement
 
 class HebergementForm(forms.ModelForm):

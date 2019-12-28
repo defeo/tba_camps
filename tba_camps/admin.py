@@ -3,10 +3,10 @@
 import logging
 from django.contrib import admin
 from ordered_model.admin import OrderedModelAdmin
-from .models import Manager, Semaine, Formule, Hebergement, Dossier, Stagiaire, Message
+from .models import Manager, Semaine, Formule, Hebergement, Dossier, Stagiaire, Message, Backpack
 from .models import PREINSCRIPTION, VALID, COMPLETE
 from import_export.admin import ExportMixin
-from .resources import StagiaireResource, DossierResource
+from .resources import StagiaireResource, DossierResource, BackpackResource
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User, Group
 from django.shortcuts import redirect
@@ -200,8 +200,19 @@ class StagiaireInline(admin.TabularInline):
     def has_add_permission(self, obj, *args, **kwds):
         return False
 
+class BackpackInline(admin.TabularInline):
+    model = Backpack
+    show_change_link = True
+    fields = ('prenom', 'numero')
+    can_delete = True
+    extra = 0
+#    template = 'admin/edit_inline/backpacks.html'
+
 @admin.register(Dossier, site=site)
 class DossierAdmin(ExportMixin, admin.ModelAdmin):
+    class Media:
+        css = { 'all': ('admin/css/extra.css',) }
+    
     list_display   = ('nom', 'prenom', 'stagiaires_short', 'semaines_str', 'hebergement', 'prix_hebergement', 'prix_total', 'acompte', 'acompte_total', 'reste', 'etat', 'date', 'date_valid')
     list_display_links = ('nom', 'prenom')
     list_editable  = ('prix_hebergement', 'acompte', 'etat')
@@ -210,7 +221,7 @@ class DossierAdmin(ExportMixin, admin.ModelAdmin):
     readonly_fields = ('stagiaires', 'prix_total', 'reste', 'num', 'acompte_total', 'acompte_stagiaires')
     actions = ( 'bulk_email', )
     save_on_top = True
-    inlines = ( StagiaireInline, ) #StagiaireCreateInline )
+    inlines = ( StagiaireInline, BackpackInline )
     fieldsets  = (
         (None, {
             'fields' : (
@@ -462,3 +473,47 @@ class MessageAdmin(OrderedModelAdmin):
     def hs(self, obj):
         return mark_safe('<br>'.join(str(h) for h in obj.hebergement.iterator()))
     hs.short_description = 'Envoyer aux hebergements'
+
+
+####
+
+class BackpackSemaineFilter(admin.SimpleListFilter):
+    title = 'semaines'
+    parameter_name = 'semaine'
+
+    def lookups(self, req, model):
+        return [(s.pk, s) for s in Semaine.objects.iterator()]
+
+    def queryset(self, req, queryset):
+        if self.value() is None:
+            return queryset
+        else:
+            return queryset.filter(dossier__stagiaire__semaines=self.value()).distinct()
+
+@admin.register(Backpack, site=site)
+class BackpackAdmin(ExportMixin, admin.ModelAdmin):
+    list_display = ('prenom', 'numero', 'dossier_link', 'semaines_str', 'stagiaires')
+    list_display_links = None
+    list_filter = (BackpackSemaineFilter,)
+    resource_class = BackpackResource
+    
+    def dossier_link(self, obj):
+        return mark_safe('<a href="{url}">{dossier} &lt;{email}&gt;</a>'.format(
+            url=reverse_lazy('admin:tba_camps_dossier_change', args=(obj.dossier.pk,)),
+            dossier=obj.dossier,
+            email=obj.dossier.email,
+            ))
+    dossier_link.short_description = "Dossier d'inscription"
+
+    def add_view(self, request, form_url='', extra_context=None):
+        if 'dossier' not in request.GET:
+            self.message_user(request, "Veuillez choisir d'abord un dossier auquel ajouter le sac à dos", level=messages.WARNING)
+            return redirect('admin:tba_camps_dossier_changelist')
+        pk = request.GET['dossier']
+        try:
+            Dossier.objects.get(pk=pk)
+        except:
+            self.message_user(request, "Dossier inexistant (n° %s)" % pk, level=messages.ERROR)
+            return redirect('admin:tba_camps_dossier_changelist')
+        else:
+            return super().add_view(request, form_url, extra_context)

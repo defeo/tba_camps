@@ -187,3 +187,41 @@ li.stagiaire .nom {
 #total tr:first-child td {
     padding-top: 1em;
 }
+
+/************* Backpacks **************/
+#backpacks figure {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-evenly;
+    padding: 1ex;
+}
+
+#backpacks .bp-table {
+    display: table;
+    margin: 1em;
+}
+#backpacks .col { display: table-column; }
+#backpacks .last-col { width: 100%; }
+#backpacks .bp-count { text-align: right; }
+#backpacks .bp-row {
+    display: table-row;
+}
+#backpacks .bp-row > span {
+    display: table-cell;
+}
+#backpacks .header {
+    font-weight: bold;
+}
+
+#backpacks form.inactive input[type="text"] {
+    background-color: transparent;
+    border-color: transparent;
+    box-shadow: none;
+    pointer-events: none;
+}
+#backpacks form.inactive:not(.has_original) input[type="text"] {
+    color: transparent;
+}
+#backpacks form.inactive button:not(.toggle) { display: none; }
+#backpacks form.inactive button.toggle :nth-child(2) { display: none; }
+#backpacks form.active button.toggle :nth-child(1) { display: none; }

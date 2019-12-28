@@ -305,8 +305,20 @@ class Dossier(ModelWFiles):
     def avance_stagiaires(self):
         return sum(s.avance() for s in self.stagiaire_set.iterator())
 
+    def describe_backpacks(self):
+        n = self.backpack_set.count()
+        if n == 0:
+            return "pas de %s" % Backpack._meta.verbose_name_plural
+        elif n == 1:
+            return "1 %s" % Backpack._meta.verbose_name
+        else:
+            return "%d %s" % (n, Backpack._meta.verbose_name_plural)
+
+    def prix_backpacks(self):
+        return sum(b.cost() for b in self.backpack_set.iterator())
+    
     def prix_total(self):
-        return self.prix_stagiaires() + self.prix_hebergement + self.supplement - self.remise
+        return self.prix_stagiaires() + self.prix_backpacks() + self.prix_hebergement + self.supplement - self.remise
 
     def avance(self):
         return bool(self.hebergement and self.hebergement.managed == MANAGED) * settings.AVANCE_HEBERGEMENT
@@ -554,3 +566,30 @@ class Stagiaire(ModelWFiles):
         self.nom = self.nom.upper()
         self.prenom = self.prenom.title()
         super().save(*args, **kwds)
+
+
+#### Sacs à dos
+
+class Backpack(models.Model):
+    dossier = models.ForeignKey(Dossier, on_delete=models.CASCADE)
+    prenom = models.CharField('Prénom', max_length=15, blank=True)
+    numero = models.CharField('Numéro', max_length=2, blank=True)
+
+    class Meta:
+        verbose_name = 'sac à dos'
+        verbose_name_plural = 'sacs à dos'
+        
+    def cost(self):
+        return 29
+    
+    def __str__(self):
+        return self.prenom + (' (%s)' % self.numero) * bool(self.numero)
+
+    def semaines(self):
+        return Semaine.objects.filter(stagiaire__dossier=self.dossier).distinct()
+
+    def semaines_str(self):
+        return ', '.join('S%d' % s.ord() for s in self.semaines().iterator())
+
+    def stagiaires(self):
+        return ', '.join(str(s) for s in self.dossier.stagiaire_set.iterator())

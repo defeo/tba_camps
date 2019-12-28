@@ -46,6 +46,14 @@
 </ul>
 {% endif %}
 
+<div class="dossier-block">
+  <h3>Sacs à dos avec prénom</h3>
+  {% include "includes/backpacks.html" with host=settings.HOST %}
+
+  <p>Pour commander vos sacs,
+    <a href="{{ obj.get_full_url }}">rendez-vous sur le site de TBA</a>.</p>
+</div>
+
 {% include "includes/messages.html" with object=obj host=settings.HOST %}
 
 

@@ -4,3 +4,18 @@
 .field-formule.nowrap {
     white-space: normal;
 }
+
+/* Backpacks */
+#backpack_set-group td {
+    padding: 0;
+}
+#backpack_set-group .original p {
+    display: none;
+}
+#backpack_set-group .has_original .vTextField {
+    border-color: transparent;
+    background-color: transparent;
+}
+#backpack_set-group .has_original .vTextField:hover {
+    border-color: #888;
+}
