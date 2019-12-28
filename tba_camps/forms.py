@@ -1,3 +1,5 @@
+from django.forms import Media
+
 class SimpleModelFormset:
     def __init__(self, queryset, modelform_class, extra=0, prefix=''):
         self.forms = []
@@ -11,7 +13,7 @@ class SimpleModelFormset:
         if self.forms:
             return self.forms[0].media
         else:
-            return []
+            return Media()
 
     def __iter__(self):
         return iter(self.forms)
