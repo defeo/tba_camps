@@ -1,4 +1,4 @@
-.field-num_chambre .vTextField {
+.fieldBox.field-num_chambre .vTextField {
     width: 5em;
 }
 .field-formule.nowrap {
@@ -19,3 +19,4 @@
 #backpack_set-group .has_original .vTextField:hover {
     border-color: #888;
 }
+
