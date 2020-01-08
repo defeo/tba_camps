@@ -623,7 +623,7 @@ class Stagiaire(ModelWFiles):
 class Backpack(models.Model):
     dossier = models.ForeignKey(Dossier, on_delete=models.CASCADE)
     prenom = models.CharField('Prénom', max_length=15, blank=True)
-    numero = models.CharField('Numéro', max_length=2, blank=True)
+    numero = models.CharField('Numéro', max_length=5, blank=True)
 
     class Meta:
         verbose_name = 'sac à dos'

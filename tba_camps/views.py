@@ -490,11 +490,13 @@ class BackpackForm(forms.ModelForm):
 
     prenom = forms.CharField(required=False, widget=forms.TextInput(attrs={
         'placeholder' : 'sans nom',
-        'size' : 15,
+        'size' : Backpack.prenom.field.max_length,
+        'maxlength': Backpack.prenom.field.max_length,
         }))
     numero = forms.CharField(required=False, widget=forms.TextInput(attrs={
         'placeholder' : '–',
-        'size' : 2,
+        'size' : Backpack.numero.field.max_length,
+        'maxlength': Backpack.numero.field.max_length,
         }))
         
 class BackpackCreate(CheckDossierMixin, CreateView):
