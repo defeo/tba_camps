@@ -513,10 +513,14 @@ class BackpackCreate(CheckDossierMixin, CreateView):
         return super().form_valid(form)
         
     def form_invalid(self, form):
-        for e in form.non_field_errors():
-            messages.error(self.request, e)
+        for e, ms in form.errors.items():
+            if e is None:
+                messages.error(self.request, ms)
+            else:
+                for m in ms:
+                    messages.error(self.request, '%s: %s' % (e,m))
         
-        return HttpResponseRedirect(self.get_success_url())
+        return HttpResponseRedirect(self.success_url)
 
     def get(self, *args, **kwds):
         return redirect('dossier_view')
@@ -551,10 +555,14 @@ class BackpackEdit(CheckDossierMixin, ModelFormMixin, View):
         return super().form_valid(*args, **kwds)
         
     def form_invalid(self, form):
-        for e in form.non_field_errors():
-            messages.error(self.request, e)
+        for e, ms in form.errors.items():
+            if e is None:
+                messages.error(self.request, ms)
+            else:
+                for m in ms:
+                    messages.error(self.request, '%s: %s' % (e,m))
         
-        return HttpResponseRedirect(self.get_success_url())
+        return HttpResponseRedirect(self.success_url)
     
     def post(self, request, *args, **kwargs):
         # Add check for order deadline
