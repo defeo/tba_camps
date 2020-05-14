@@ -173,8 +173,6 @@ class DossierResource(resources.ModelResource):
 class BackpackResource(resources.ModelResource):
     parent = fields.Field()
     email = fields.Field('dossier__email')
-    prenom = fields.Field()
-    numero = fields.Field()
     semaines = fields.Field()
     stagiaires = fields.Field()
     
