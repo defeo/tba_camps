@@ -131,6 +131,7 @@ MAX_FILE_SIZE = 1
 FROM_EMAIL = 'Camps de basket TBA <tba@camps-basket.com>'
 HOST = 'https://www.camps-basket.com'
 USE_CAPTCHA = False
+SACS_A_DOS_OUVERT = True
 
 ## Sessions
 SESSION_COOKIE_AGE = 3600*24*90

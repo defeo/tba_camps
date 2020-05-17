@@ -237,6 +237,7 @@
       <span class="prenom">{{ b.prenom }}</span>
       <span class="numero">{{ b.numero }}</span>
       <span>
+	{% if settings.SACS_A_DOS_OUVERT %}
 	{% if b.instance.pk %}
 	<button class="pure-button toggle" type="button">
 	  <span>changer</span>
@@ -251,6 +252,7 @@
 	  <span>annuler</span>
 	</button>
 	<button class="pure-button pure-button-primary">sauvegarder</button>
+	{% endif %}
 	{% endif %}
 	{% csrf_token %}
       </span>

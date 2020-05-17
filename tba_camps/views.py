@@ -498,7 +498,12 @@ class BackpackForm(forms.ModelForm):
         'size' : Backpack.numero.field.max_length,
         'maxlength': Backpack.numero.field.max_length,
         }))
-        
+
+    def clean(self, *args, **kwds):
+        if not settings.SACS_A_DOS_OUVERT:
+            raise ValidationError("Il n'est plus possible de modifier votre commande de sacs à dos.")
+        return super().clean(*args, **kwds)        
+
 class BackpackCreate(CheckDossierMixin, CreateView):
     """
     Create a backpack
@@ -526,7 +531,6 @@ class BackpackCreate(CheckDossierMixin, CreateView):
         return redirect('dossier_view')
         
     def put(self, *args, **kwds):
-        # Add check for order deadline
         return super().put(*args, **kwds)
 
 class BackpackDelete(CheckDossierMixin, DeletionMixin, SingleObjectMixin, View):
@@ -537,10 +541,13 @@ class BackpackDelete(CheckDossierMixin, DeletionMixin, SingleObjectMixin, View):
     success_url = reverse_lazy('dossier_view')
 
     def delete(self, *args, **kwds):
-        # Add check for order deadline
-        res = super().delete(*args, **kwds)
-        messages.info(self.request, "Le sac à dos a été supprimé avec succès.")
-        return res
+        if settings.SACS_A_DOS_OUVERT:
+            res = super().delete(*args, **kwds)
+            messages.info(self.request, "Le sac à dos a été supprimé avec succès.")
+            return res
+        else:
+            messages.error(self.request, "Il n'est plus possible de modifier votre commande de sacs à dos.")
+            return HttpResponseRedirect(self.success_url)
 
 class BackpackEdit(CheckDossierMixin, ModelFormMixin, View):
     """
@@ -565,7 +572,6 @@ class BackpackEdit(CheckDossierMixin, ModelFormMixin, View):
         return HttpResponseRedirect(self.success_url)
     
     def post(self, request, *args, **kwargs):
-        # Add check for order deadline
         self.object = self.get_object()
         # allow prefixed forms to call this edpoint
         self.prefix = self.object.pk
