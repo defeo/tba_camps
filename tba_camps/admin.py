@@ -483,6 +483,31 @@ class MessageAdmin(OrderedModelAdmin):
 
 ####
 
+class BackpackDossierFilter(admin.SimpleListFilter):
+    title = 'Montrer pour dossiers annulées ou incomplets'
+    parameter_name = 'canceled'
+    template = 'filter_no_by.html'
+    
+    def lookups(self, req, model):
+        return ( (None, 'Non',), ('y', 'Oui') )
+
+    # http://stackoverflow.com/questions/851636/default-filter-in-django-admin/3783930#3783930
+    def choices(self, cl):
+        for lookup, title in self.lookup_choices:
+            yield {
+                'selected': self.value() == lookup,
+                'query_string': cl.get_query_string({
+                    self.parameter_name: lookup,
+                }, []),
+                'display': title,
+            }
+    
+    def queryset(self, req, queryset):
+        if self.value() == 'y':
+            return queryset
+        else:
+            return queryset.filter(dossier__etat__in=(PREINSCRIPTION, VALID, COMPLETE))
+
 class BackpackSemaineFilter(admin.SimpleListFilter):
     title = 'semaines'
     parameter_name = 'semaine'
@@ -500,7 +525,7 @@ class BackpackSemaineFilter(admin.SimpleListFilter):
 class BackpackAdmin(ExportMixin, admin.ModelAdmin):
     list_display = ('prenom', 'numero', 'dossier_link', 'semaines_str', 'stagiaires')
     list_display_links = None
-    list_filter = (BackpackSemaineFilter,)
+    list_filter = (BackpackSemaineFilter, BackpackDossierFilter)
     resource_class = BackpackResource
     
     def dossier_link(self, obj):
@@ -531,7 +556,8 @@ class SemaineColumn():
         self.__name__ = 'S%d' % semaine.ord()
 
     def __call__(self, reversible):
-        stags = self.semaine.stagiaire_set.filter(reversible=reversible)
+        stags = self.semaine.stagiaire_set.filter(dossier__etat__in=(PREINSCRIPTION, VALID, COMPLETE),
+                                                      reversible=reversible)
         # Seems hard to do this in the db, let's use some python
         stags = list(filter(lambda s: s.first_semaine() == self.semaine, stags))
         return len(stags)
