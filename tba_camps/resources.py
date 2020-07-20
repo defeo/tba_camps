@@ -45,7 +45,7 @@ class StagiaireResource(resources.ModelResource):
     class Meta:
         model = Stagiaire
         export_base = fields = [
-            'nom', 'prenom', 'email', 'tel', 'adresse', 'cp', 'ville', 'sexe', 'naissance', 'age', 'taille',
+            'nom', 'prenom', 'email', 'tel', 'adresse', 'club', 'cp', 'ville', 'sexe', 'naissance', 'age', 'taille',
             'reversible', 'niveau', 'venu', 'lieu', 'formule', 'train', 'navette_a', 'navette_r',
             'chambre', 'type_chambre', 'num_chambre', 'accompagnateur',
             'nom_parrain', 'adr_parrain', 'date', 'etat', 'lien',
