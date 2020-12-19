@@ -14,7 +14,8 @@
 
   {% if object.avance_total and object.acompte_total < object.avance_total %}
   <p><strong>Merci d’envoyer, avant 8 jours, votre règlement à l’ordre
-      de TBA par courrier à l’adresse</strong></p>
+      de TBA par courrier à l’adresse suivante, ou faire un
+      virement.</strong></p>
 
   <blockquote class="address">{{ settings.ADRESSE }}</blockquote>
 
@@ -28,8 +29,11 @@
     le(s) numéro(s) de
     semaine(s), et la date d’encaissement désirée.</p>
 
-  <p><strong>Vous pouvez faire un virement,</strong> demandez par
-    <a href="mailto:{{settings.FROM_EMAIL}}">mail</a> notre RIB.</p>
+  <p><strong>Vous pouvez faire un virement, c'est rapide et plus
+      sûr!</strong> Demandez par
+    <a href="mailto:{{settings.FROM_EMAIL}}">mail</a>
+    notre <strong>RIB</strong>. Vous pourrez régler votre solde de la
+    même façon.</p>
   
   {% if object.avance_total > 50 %}
   <p>TBA accepte les Chèques Vacances et coupons sports ANCV, les bons
@@ -64,12 +68,13 @@
 <div class="dossier-block">
   <h3>Informations pratiques</h3>
 
-  <p>Trouvez <a href="{{ host }}{% url 'static_pages' 'inscrit' %}">ICI</a>
-    tous les
-    <a href="{{ host }}{% url 'static_pages' 'inscrit' %}">renseignements
-    pratiques</a> dont vous pouvez avoir besoin après avoir fait votre
-    pré-inscription, <strong>qui ne sera validée qu’après la réception
-    d’un acompte</strong>.
+  <p><strong>TOUTES les informations dont vous pouvez avoir besoin
+      sont dans ce lien :</strong>
+    <a href="{{ host }}{% url 'static_pages' 'inscrit' %}">Trouvez ICI
+      tous les renseignements pratiques</a>.
+  </p>
+  <p>Votre inscription ne sera validée qu’après la réception de votre
+    acompte par courrier ou virement bancaire.
   </p>
 </div>
 

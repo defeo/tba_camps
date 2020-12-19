@@ -255,7 +255,8 @@ class StagiaireForm(forms.ModelForm):
                                  widget=widgets.RadioSelect,
                                  choices=[('O','Oui'), ('N','Non')])
     taille = forms.Field(label='Taille (cm)', required=True, widget=widgets.NumberInput)
-    reversible = my_widgets.ReversibleField(required=True)
+    reversible = my_widgets.ReversibleField(required=True,
+                                            label="Taille de l'ensemble Réversible")
     assurance_confirm = forms.BooleanField(required=False)
 
     class Meta:
