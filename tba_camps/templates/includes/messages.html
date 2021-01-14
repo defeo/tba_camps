@@ -30,10 +30,11 @@
     semaine(s), et la date d’encaissement désirée.</p>
 
   <p><strong>Vous pouvez faire un virement, c'est rapide et plus
-      sûr!</strong> Demandez par
-    <a href="mailto:{{settings.FROM_EMAIL}}">mail</a>
-    notre <strong>RIB</strong>. Vous pourrez régler votre solde de la
-    même façon.</p>
+      sûr!</strong> Trouvez ici notre
+    <a href="{{ host }}{% url 'protected' settings.PROTECTED.RIB %}"><strong>RIB</strong></a>.
+
+    Vous pouvez prévoir plusieurs virements à 1 mois d’intervalle.
+      Vous pourrez régler votre solde de la même façon.</p>
   
   {% if object.avance_total > 50 %}
   <p>TBA accepte les Chèques Vacances et coupons sports ANCV, les bons

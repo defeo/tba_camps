@@ -27,6 +27,7 @@ from django.urls import reverse_lazy
 from django_downloadview import ObjectDownloadView
 from django.urls import path
 from .forms import SimpleModelFormset
+from django.views.static import serve
 
 ### Register email
 
@@ -646,3 +647,10 @@ def static_page(request, page):
         return render(request, 'tba/%s.html' % page, {})
     except TemplateDoesNotExist:
         raise Http404
+
+class Protected(HasSessionMixin, View):
+    """
+    Serve documents from the protected folder only if request has session
+    """
+    def get(self, request, path):
+        return serve(request, path, settings.PROTECTED_MEDIA_ROOT)

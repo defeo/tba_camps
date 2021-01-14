@@ -89,6 +89,7 @@ except locale.Error:
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 STATIC_ROOT = 'staticfiles'
 STATIC_URL = '/static/'
+PROTECTED_MEDIA_ROOT = BASE_DIR + '/protected/'
 
 # Uploaded files
 MEDIA_ROOT = BASE_DIR + '/uploads/'
@@ -138,6 +139,9 @@ SESSION_COOKIE_AGE = 3600*24*90
 
 
 # Pieces PDF, Word, etc.
+PROTECTED = {
+    'RIB': 'RIB.pdf',
+}
 PIECES = {
     # see settings_deploy.py
 }

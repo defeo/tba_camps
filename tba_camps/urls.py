@@ -34,4 +34,5 @@ urlpatterns = [
     path('tba/date.htm', views.pratique, name='pratique'),
     path('tba/', views.static_page, kwargs={'page' : 'index'}, name='static_index'),
     path('tba/<slug:page>.htm', views.static_page, name='static_pages'),
+    path('tba/protected/<path>', views.Protected.as_view(), name='protected'),
 ]
