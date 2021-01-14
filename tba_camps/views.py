@@ -267,7 +267,7 @@ class StagiaireForm(forms.ModelForm):
                       'semaines', 'formule', 'assurance',
                       'chambre', 'accompagnateur', 'train',
                       'navette_a', 'navette_r',
-                      'nom_parrain', 'adr_parrain']
+                      'nom_parrain', 'noms_parraines']
         widgets = {
             'sexe' : widgets.RadioSelect,
             'naissance' : my_widgets.DatePicker,
@@ -276,7 +276,7 @@ class StagiaireForm(forms.ModelForm):
             'navette_r' : widgets.RadioSelect,
             'venu' :  widgets.RadioSelect,
             'nom_parrain': widgets.TextInput(attrs={'autocomplete': 'other'}),
-            'adr_parrain': widgets.TextInput(attrs={'autocomplete': 'other'}),
+#            'noms_parraines': widgets.TextInput(attrs={'autocomplete': 'other'}),
         }
         help_texts = {
             'licence': '<a target="_blank" href="http://www.ffbb.com/jouer/recherche-avancee">Chercher sur ffbb.com</a>',

@@ -378,7 +378,7 @@ class StagiaireAdmin(ExportMixin, admin.ModelAdmin):
         ('train'),
         ('navette_a', 'navette_r'),
         ('email', 'tel'),
-        ('parrain', 'nom_parrain', 'adr_parrain'),
+        ('parrain', 'nom_parrain', 'noms_parraines'),
      )
     formfield_overrides = {
         models.TextField: {'widget': widgets.Textarea(attrs={'rows' : 3})},

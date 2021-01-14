@@ -513,8 +513,10 @@ class Stagiaire(ModelWFiles):
                                              (Decimal('20.00'), 'Maxi-assurance (20€)')])
     acompte = models.DecimalField(default=0, max_digits=10, decimal_places=2)
     parrain = models.BooleanField("Parrain", default=False)
-    nom_parrain = models.CharField('NOM Prénom parrain', max_length=255, blank=True)
-    adr_parrain = models.CharField('Adresse parrain', max_length=255, blank=True)
+    nom_parrain = models.CharField('Je suis parrainé par', max_length=255, blank=True,
+                                   help_text='NOM Prénom')
+    noms_parraines = models.TextField('Je parraine', blank=True,
+                                      help_text='NOMS Prénoms, plusieurs noms possibles')
     auth_paren = FileField("Autorisation parentale", blank=True, null=True)
     auth_paren_snail = models.BooleanField("Autorisation parentale reçue",
                                             default=False)
