@@ -7,7 +7,7 @@ from ordered_model.models import OrderedModel
 from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator, ValidationError
 from django.urls import reverse
 from django.conf import settings
-import base64, random
+import secrets
 import datetime
 from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
@@ -369,9 +369,7 @@ class Dossier(ModelWFiles):
             
         # S'il s'agit d'une création, on crée un token
         else:
-            self.secret = base64.b64encode(
-                random.SystemRandom().getrandbits(128).to_bytes(16, 'big'),
-                b'_-')[:-2].decode()
+            self.secret = secrets.token_urlsafe(16)
 
         super().save(*args, **kwds)
         
