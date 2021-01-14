@@ -1,6 +1,7 @@
 {% extends "dossier_base.html" %}
 {% load static %}
 {% load forms %}
+{% load decimal %}
 
 {% block title %}Fiche stagiaire TBA{% endblock %}
 
@@ -67,14 +68,16 @@
       {{ form.navette_r | cgroup }}
     </fieldset>
 
-    <p class="note">¹ Une cotisation de 15€ est demandée lors de toute
+    <p class="note" id="note_cotisation">¹ Une cotisation de
+      <span class="amount"></span>€ est demandée lors de toute
       inscription.</p>
-    <p class="note">² Mise à disposition du centre Sportif du
-      Dévoluy : 1€/jour (6€ par semaine). Cette somme est rajoutée à
-      votre solde dû.</p>
+    <p class="note" id="note_taxe_gym">² Mise à disposition du centre
+      Sportif du Dévoluy : 1€/jour (<span class="amount"></span>€ par
+      semaine).  Cette somme est rajoutée à votre solde dû.</p>
     <p class="note" id="note_menage">³ Une contribution de menage de
-      3€ est due pour tout séjour dans le Centre de Vacances. Cette
-      somme est rajoutée à votre solde dû.</p>
+      <span class="amount"></span>€ est due pour tout séjour dans le
+      Centre de Vacances. Cette somme est rajoutée à votre solde
+      dû.</p>
   </div>
   
   <div id="assurance" class="fieldgroup">

@@ -17,16 +17,28 @@ $(function() {
 	$('#assurance').trigger($this.data('assurance')
 				? 'show.formule'
 				: 'hide.formule');
+	$('#note_cotisation').trigger($this.data('cotisation') != '0.00'
+				      ? 'show.formule'
+				      : 'hide.formule',
+				      $this.data('cotisation'));
+	$('#note_taxe_gym').trigger($this.data('taxe_gym') != '0.00'
+				    ? 'show.formule'
+				    : 'hide.formule',
+				    $this.data('taxe_gym'));
 	$('#note_menage').trigger($this.data('taxe') != '0.00'
 				  ? 'show.formule'
-				  : 'hide.formule');
+				  : 'hide.formule',
+				  $this.data('taxe'));
     });
     $('#id_accompagnateur, #id_train, #id_chambre, #id_navette_a, #id_navette_r').parent()
-	.add('#assurance, #note_menage')
+	.add('#assurance, #note_cotisation, #note_taxe_gym, #note_menage')
 	.hide()
-	.on('show.formule hide.formule', function(e, speed) {
+	.on('show.formule hide.formule', function(e, amount) {
 	    $this = $(this);
 	    $this[e.type]('slow');
+	    if (amount) {
+		$this.find('.amount').text(amount.replace(/.00$/, ''));
+	    }
 	});
 
     $('#id_licencie').on('change', 'input:checked', function() {

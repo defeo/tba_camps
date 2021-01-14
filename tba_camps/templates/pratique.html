@@ -30,9 +30,9 @@
 	
         <p align="center" style="font-size:30px; font-weight:bold ">FORMULES ET PRIX</p>
 
-	<p align="center">Une cotisation de 15€ est demandée lors de toute
+	<p align="center">Une cotisation de {{ formules.0.cotisation | strip_cents }}€ est demandée lors de toute
 	  inscription.</p>
-	<p align="center">Mise à disposition du centre Sportif du Dévoluy : 1€/ jour (6€ par personne par semaine). Cette somme est rajoutée à votre solde dû.</p>
+	<p align="center">Mise à disposition du centre Sportif du Dévoluy : 1€/ jour ({{ formules.0.taxe_gym | strip_cents }}€ par personne par semaine). Cette somme est rajoutée à votre solde dû.</p>
 	
 	<table cellspacing="0" cellpadding="0" width="588" height="181" style="font-weight:bold">
 	  {% for f in formules %}

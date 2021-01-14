@@ -276,7 +276,6 @@ class StagiaireForm(forms.ModelForm):
             'navette_r' : widgets.RadioSelect,
             'venu' :  widgets.RadioSelect,
             'nom_parrain': widgets.TextInput(attrs={'autocomplete': 'other'}),
-#            'noms_parraines': widgets.TextInput(attrs={'autocomplete': 'other'}),
         }
         help_texts = {
             'licence': '<a target="_blank" href="http://www.ffbb.com/jouer/recherche-avancee">Chercher sur ffbb.com</a>',
@@ -357,7 +356,7 @@ class StagiaireCreate(DossierIsNotBlocked, CreateView):
     """
     template_name = 'stagiaire.html'
     form_class = StagiaireForm
-    extra_context = { 'view' : 'create' }
+    extra_context = { 'view' : 'create', 'formules' : Formule.objects.all() }
     success_url = reverse_lazy('dossier_view')
     
     def form_valid(self, form):
@@ -385,7 +384,7 @@ class StagiaireModify(DossierIsNotBlocked, CheckDossierMixin, UpdateView):
     model = Stagiaire
     template_name = 'stagiaire.html'
     form_class = StagiaireForm
-    extra_context = { 'view' : 'modify' }
+    extra_context = { 'view' : 'modify', 'formules' : Formule.objects.all() }
     success_url = reverse_lazy('dossier_view')
 
 class StagiaireDelete(DossierIsNotBlocked, CheckDossierMixin, DeleteView):
