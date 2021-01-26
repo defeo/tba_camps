@@ -10,7 +10,7 @@ cairocffi==1.1.0
     # via
     #   cairosvg
     #   weasyprint
-cairosvg==2.4.2
+cairosvg==2.5.1
     # via weasyprint
 certifi==2019.11.28
     # via requests
