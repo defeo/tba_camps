@@ -84,7 +84,7 @@ odfpy==1.4.0
     # via tablib
 openpyxl==3.0.2
     # via tablib
-pillow==6.2.1
+pillow==7.1.0
     # via cairosvg
 psycopg2==2.8.4
     # via django-toolbelt
