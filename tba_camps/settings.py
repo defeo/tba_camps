@@ -24,11 +24,12 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['localhost']
 
+# Store constance constants in DB
+CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
 
 # Application definition
 
 INSTALLED_APPS = (
-    'tba_camps',
     'django.contrib.admin.apps.SimpleAdminConfig',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -38,6 +39,9 @@ INSTALLED_APPS = (
     'import_export',
     'ordered_model',
     'tinymce',
+    'constance',
+    'constance.backends.database',
+    'tba_camps',
 )
 
 MIDDLEWARE = (
@@ -107,6 +111,7 @@ TEMPLATES = [
                                    "django.template.context_processors.static",
                                    "django.template.context_processors.tz",
                                    "django.contrib.messages.context_processors.messages",
+                                   "constance.context_processors.config",
                                    "tba_camps.context_processor.cp",
                                    "tba_camps.context_processor.has_dossier"],
             'debug': True,
@@ -132,7 +137,6 @@ MAX_FILE_SIZE = 1
 FROM_EMAIL = 'Camps de basket TBA <tba@camps-basket.com>'
 HOST = 'https://www.camps-basket.com'
 USE_CAPTCHA = False
-SACS_A_DOS_OUVERT = True
 
 ## Sessions
 SESSION_COOKIE_AGE = 3600*24*90
@@ -153,3 +157,10 @@ IMAGES = {
 # Import all constants
 from .settings_constants import *
 
+# Configurable constants
+CONSTANCE_SUPERUSER_ONLY = False
+CONSTANCE_CONFIG = {
+    'SACS_A_DOS_OUVERT': (True,
+                          "Est-il encore possible de commander des sacs à dos/serviettes?",
+                          bool),
+}

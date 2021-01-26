@@ -9,6 +9,7 @@ from import_export.admin import ExportMixin
 from .resources import StagiaireResource, DossierResource, BackpackResource
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User, Group
+from constance.admin import Config, ConstanceAdmin
 from django.shortcuts import redirect
 from django.conf.urls import url
 from django.urls import path
@@ -73,6 +74,7 @@ class MyAdmin(admin.AdminSite):
 
 site = admin.AdminSite()
 site.register(Group)
+site.register([Config], ConstanceAdmin)
 
 # Define a new User admin
 class ManagerInline(admin.StackedInline):

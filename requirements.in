@@ -9,6 +9,7 @@ django-downloadview
 WeasyPrint
 unidecode
 django-tinymce4-lite
+django-constance[database]
 
 # For production
 gunicorn
