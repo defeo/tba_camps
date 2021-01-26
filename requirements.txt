@@ -52,7 +52,7 @@ django-tinymce4-lite==1.7.5
     # via -r requirements.in
 django-toolbelt==0.0.1
     # via -r requirements.in
-django==3.0.1
+django==3.0.7
     # via
     #   -r requirements.in
     #   django-downloadview
