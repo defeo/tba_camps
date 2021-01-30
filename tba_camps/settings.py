@@ -28,6 +28,10 @@ ALLOWED_HOSTS = ['localhost']
 CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
 
 # Application definition
+from constance.apps import ConstanceConfig
+
+class RenamedConstance(ConstanceConfig):
+    verbose_name = 'Configuration'
 
 INSTALLED_APPS = (
     'django.contrib.admin.apps.SimpleAdminConfig',
@@ -39,7 +43,7 @@ INSTALLED_APPS = (
     'import_export',
     'ordered_model',
     'tinymce',
-    'constance',
+    'tba_camps.settings.RenamedConstance',
     'constance.backends.database',
     'tba_camps',
 )
