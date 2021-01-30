@@ -172,6 +172,5 @@ CONSTANCE_CONFIG = {
                        date),
 }
 
-@property
 def SACS_A_DOS_OUVERT():
     return date.today() <= config.Commandes_swag
