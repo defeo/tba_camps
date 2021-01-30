@@ -501,7 +501,7 @@ class SwagForm(forms.ModelForm):
         }))
 
     def clean(self, *args, **kwds):
-        if not settings.SACS_A_DOS_OUVERT:
+        if not settings.SACS_A_DOS_OUVERT():
             raise ValidationError("Il n'est plus possible de modifier votre commande de swag.")
         return super().clean(*args, **kwds)
 
@@ -555,7 +555,7 @@ class SwagDelete(CheckDossierMixin, DeletionMixin, SingleObjectMixin, View):
     success_url = reverse_lazy('dossier_view')
 
     def delete(self, *args, **kwds):
-        if settings.SACS_A_DOS_OUVERT:
+        if settings.SACS_A_DOS_OUVERT():
             res = super().delete(*args, **kwds)
             messages.info(self.request,
                           "Le %s a été supprimé avec succès." % self.model._meta.verbose_name)
