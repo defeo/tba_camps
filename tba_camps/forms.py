@@ -3,6 +3,7 @@ from django.forms import Media
 class SimpleModelFormset:
     def __init__(self, queryset, modelform_class, extra=0, prefix=''):
         self.forms = []
+        self.queryset = queryset
         for o in queryset.iterator():
             self.forms.append(modelform_class(instance=o, prefix=prefix + str(o.pk)))
         for i in range(extra):

@@ -193,12 +193,16 @@ li.stagiaire .nom {
     display: flex;
     flex-flow: row wrap;
     justify-content: space-evenly;
+    align-content: space-between;
+    height: 430px;
     padding: 1ex;
 }
 
 #backpacks .bp-table {
     display: table;
     margin: 1em;
+    padding: 1ex 0;
+    border-bottom: solid thin #cc6600;
 }
 #backpacks .col { display: table-column; }
 #backpacks .last-col { width: 100%; }

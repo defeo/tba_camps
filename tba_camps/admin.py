@@ -3,10 +3,10 @@
 import logging
 from django.contrib import admin
 from ordered_model.admin import OrderedModelAdmin
-from .models import Manager, Semaine, Formule, Hebergement, Dossier, Stagiaire, Message, Backpack, Reversible
+from .models import Manager, Semaine, Formule, Hebergement, Dossier, Stagiaire, Message, Backpack, Towel, Reversible
 from .models import PREINSCRIPTION, VALID, COMPLETE
 from import_export.admin import ExportMixin
-from .resources import StagiaireResource, DossierResource, BackpackResource
+from .resources import StagiaireResource, DossierResource, SwagResource
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User, Group
 from constance.admin import Config, ConstanceAdmin
@@ -26,6 +26,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.urls import reverse_lazy
 from functools import reduce
 from django.conf import settings
+from . import grammar
 
 class MyAdmin(admin.AdminSite):
     def get_urls(self):
@@ -202,13 +203,19 @@ class StagiaireInline(admin.TabularInline):
     def has_add_permission(self, obj, *args, **kwds):
         return False
 
-class BackpackInline(admin.TabularInline):
-    model = Backpack
+class SwagInline(admin.TabularInline):
     show_change_link = True
     fields = ('prenom', 'numero')
     can_delete = True
     extra = 0
+    classes = ['swag-set']
 #    template = 'admin/edit_inline/backpacks.html'
+
+class BackpackInline(SwagInline):
+    model = Backpack
+    
+class TowelInline(SwagInline):
+    model = Towel
 
 @admin.register(Dossier, site=site)
 class DossierAdmin(ExportMixin, admin.ModelAdmin):
@@ -220,10 +227,10 @@ class DossierAdmin(ExportMixin, admin.ModelAdmin):
     list_editable  = ('prix_hebergement', 'acompte', 'etat')
     list_filter    = ('date', 'etat', DossierFilter, DossierSemaineFilter)
     search_fields  = ('nom', 'prenom', 'email', 'stagiaire__nom', 'stagiaire__prenom')
-    readonly_fields = ('stagiaires', 'num_backpacks', 'prix_backpacks', 'prix_total', 'reste', 'num', 'acompte_total', 'acompte_stagiaires')
+    readonly_fields = ('stagiaires', 'desc_swag', 'prix_swag', 'prix_total', 'reste', 'num', 'acompte_total', 'acompte_stagiaires')
     actions = ( 'bulk_email', )
     save_on_top = True
-    inlines = ( StagiaireInline, BackpackInline )
+    inlines = ( StagiaireInline, BackpackInline, TowelInline )
     fieldsets  = (
         (None, {
             'fields' : (
@@ -231,7 +238,7 @@ class DossierAdmin(ExportMixin, admin.ModelAdmin):
                 ('nom', 'prenom'),
                 ('remise', 'motif_rem'),
                 ('supplement', 'motif'),
-                ('num_backpacks', 'prix_backpacks'),
+                ('desc_swag', 'prix_swag'),
                 ('prix_total', 'acompte', 'acompte_stagiaires', 'acompte_total', 'mode', 'reste'),
                 ('notes', 'caf', 'cafno'),
                 ('mode_solde',),
@@ -276,9 +283,10 @@ class DossierAdmin(ExportMixin, admin.ModelAdmin):
             self.message_user(req, "%d emails envoyés." % len(qs))
     bulk_email.short_description = "Envoyer email aux dossiers sélectionnés"
 
-    def num_backpacks(self, obj):
-        return mark_safe('<a href="#backpack_set-group">%s</a>' % obj.describe_backpacks())
-    num_backpacks.short_description = mark_safe('<a href="#backpack_set-group">Nombre de sacs</a>')
+    def desc_swag(self, obj):
+        return mark_safe('<a href="#backpack_set-group">%s</a>'
+                         % ', '.join(s.describe() for s in obj.get_swag()))
+    desc_swag.short_description = mark_safe('<a href="#backpack_set-group">Quantité de swag</a>')
     
     def num(self, obj):
         return obj.pk
@@ -485,7 +493,7 @@ class MessageAdmin(OrderedModelAdmin):
 
 ####
 
-class BackpackDossierFilter(admin.SimpleListFilter):
+class SwagDossierFilter(admin.SimpleListFilter):
     title = 'Montrer pour dossiers annulées ou incomplets'
     parameter_name = 'canceled'
     template = 'filter_no_by.html'
@@ -510,7 +518,7 @@ class BackpackDossierFilter(admin.SimpleListFilter):
         else:
             return queryset.filter(dossier__etat__in=(PREINSCRIPTION, VALID, COMPLETE))
 
-class BackpackSemaineFilter(admin.SimpleListFilter):
+class SwagSemaineFilter(admin.SimpleListFilter):
     title = 'semaines'
     parameter_name = 'semaine'
 
@@ -523,12 +531,12 @@ class BackpackSemaineFilter(admin.SimpleListFilter):
         else:
             return queryset.filter(dossier__stagiaire__semaines=self.value()).distinct()
 
-@admin.register(Backpack, site=site)
-class BackpackAdmin(ExportMixin, admin.ModelAdmin):
+@admin.register(Backpack, Towel, site=site)
+class SwagAdmin(ExportMixin, admin.ModelAdmin):
     list_display = ('prenom', 'numero', 'dossier_link', 'semaines_str', 'stagiaires')
     list_display_links = None
-    list_filter = (BackpackSemaineFilter, BackpackDossierFilter)
-    resource_class = BackpackResource
+    list_filter = (SwagSemaineFilter, SwagDossierFilter)
+    resource_class = SwagResource
     
     def dossier_link(self, obj):
         return mark_safe('<a href="{url}">{dossier} &lt;{email}&gt;</a>'.format(
@@ -540,7 +548,11 @@ class BackpackAdmin(ExportMixin, admin.ModelAdmin):
 
     def add_view(self, request, form_url='', extra_context=None):
         if 'dossier' not in request.GET:
-            self.message_user(request, "Veuillez choisir d'abord un dossier auquel ajouter le sac à dos", level=messages.WARNING)
+            self.message_user(request,
+                              "Veuillez choisir d'abord un dossier auquel ajouter %s"
+                              % grammar.determinate(self.model._meta.verbose_name,
+                                                    self.model.masculine),
+                              level=messages.WARNING)
             return redirect('admin:tba_camps_dossier_changelist')
         pk = request.GET['dossier']
         try:

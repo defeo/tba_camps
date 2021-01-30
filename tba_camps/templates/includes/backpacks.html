@@ -1,12 +1,23 @@
-{% load static %}
-
 <figure>
-  <img src="{{ host }}/tba/backpack.jpg" alt="" height="300">
-  <img src="{{ host }}/tba/backpack2.jpg" alt="" height="300">
+  <a href="{{ host }}/tba/backpack.jpg" target="_blank"><img src="{{ host }}/tba/backpack.jpg" alt="photo sac à dos" height="250"></a>
+  <a href="{{ host }}/tba/backpack2.jpg" target="_blank"><img src="{{ host }}/tba/backpack2.jpg" alt="photo sac à dos" height="250"></a>
+  <a href="{{ host }}/tba/towel.jpg" target="_blank"><img src="{{ host }}/tba/towel.jpg" alt="photo serviette" height="150"></a>
 </figure>
 
-<p>Gros succès en 2019 et 2020. On renouvelle l'opération. Si vous êtes
-  intéressé, vous avez la possibilité d’acheter un sac à dos avec
-  votre prénom (ou diminutif) et un numéro qui vous sera remis à votre arrivée au camp. Le prix
-  de ce sac avec votre prénom (on peut y rajouter un numéro) sera de
-  29 €. Il faudra le commander avant le 3 mai.</p>
+<p>Gros succès en 2019 et 2020, on renouvelle l'opération sac à dos
+  avec prénom (ou diminutif) et numéro. Deux lignes de texte sont
+  possibles. En plus, cette année il y a possibilité de commander la
+  serviette de bain (dimension 140 × 60) avec les mêmes
+  inscriptions.</p>
+
+<p>Si vous êtes intéressés, vous avez donc la possibilité de commander
+  soit le sac à dos avec votre prénom (ou diminutif) et un numéro,
+  soit la serviette de bain avec votre prénom (ou diminutif) et un
+  numéro.</p>
+
+<p>Ces articles vous seront remis à votre arrivée au camp mais il
+  faudra commander à l'inscription ou en tout cas avant le
+  {{ config.Commandes_swag | date:"j F"}}.</p>
+
+<p>Le prix du sac nominatif ou de la serviette nominative est de
+  29 €.</p>

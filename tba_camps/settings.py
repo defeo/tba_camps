@@ -162,9 +162,16 @@ IMAGES = {
 from .settings_constants import *
 
 # Configurable constants
+from constance import config
+from datetime import date 
+
 CONSTANCE_SUPERUSER_ONLY = False
 CONSTANCE_CONFIG = {
-    'SACS_A_DOS_OUVERT': (True,
-                          "Est-il encore possible de commander des sacs à dos/serviettes?",
-                          bool),
+    'Commandes_swag': (date(2021, 5, 3),
+                       "Date limite pour commander le swag (sacs à dos, etc.)",
+                       date),
 }
+
+@property
+def SACS_A_DOS_OUVERT():
+    return date.today() <= config.Commandes_swag

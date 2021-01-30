@@ -21,6 +21,8 @@ from django.utils.html import strip_tags
 from decimal import Decimal
 from tinymce.models import HTMLField
 from .context_processor import cp
+from . import grammar
+import constance
 
 class Manager(models.Model):
     'Options en plus pour les utilisateurs'
@@ -305,21 +307,14 @@ class Dossier(ModelWFiles):
     def avance_stagiaires(self):
         return sum((s.avance() for s in self.stagiaire_set.iterator()), Decimal('0.00'))
 
-    def describe_backpacks(self):
-        n = self.backpack_set.count()
-        if n == 0:
-            return "pas de %s" % Backpack._meta.verbose_name_plural
-        elif n == 1:
-            return "1 %s" % Backpack._meta.verbose_name
-        else:
-            return "%d %s" % (n, Backpack._meta.verbose_name_plural)
+    def get_swag(self):
+        return [self.backpack_set, self.towel_set]
     
-    def prix_backpacks(self):
-        return sum((b.cost() for b in self.backpack_set.iterator()), Decimal('0.00'))
-    prix_backpacks.short_description = 'Prix total sacs à dos'
+    def prix_swag(self):
+        return sum(s.prix() for s in self.get_swag())
     
     def prix_total(self):
-        return self.prix_stagiaires() + self.prix_backpacks() + self.prix_hebergement + self.supplement - self.remise
+        return self.prix_stagiaires() + self.prix_swag() + self.prix_hebergement + self.supplement - self.remise
 
     def avance(self):
         return bool(self.hebergement and self.hebergement.managed == MANAGED) * settings.AVANCE_HEBERGEMENT
@@ -380,7 +375,7 @@ class Dossier(ModelWFiles):
                 recipients=[ self.email ],
                 template='confirm_email',
                 obj=self,
-                ctx={ 'host' : settings.HOST }
+                ctx={ 'host' : settings.HOST, 'config': constance.config }
             )
         elif self.etat in (CONFIRME, PREINSCRIPTION, VALID, COMPLETE, CANCELED):
             mails.send_mail(
@@ -388,7 +383,7 @@ class Dossier(ModelWFiles):
                 recipients=[ self.email ],
                 template='user',
                 obj=self,
-                ctx={ 'host' : settings.HOST }
+                ctx={ 'host' : settings.HOST, 'config': constance.config }
             )
 
 ### Messages ciblés
@@ -620,15 +615,31 @@ class Stagiaire(ModelWFiles):
 
 #### Sacs à dos
 
-class Backpack(models.Model):
+class SwagQuerySet(models.QuerySet):
+    def describe(self):
+        return grammar.count(self.model, self.count())
+    
+    def prix(self):
+        return sum((b.cost() for b in self.iterator()), Decimal('0.00'))
+
+class Swag(models.Model):
     dossier = models.ForeignKey(Dossier, on_delete=models.CASCADE)
     prenom = models.CharField('Prénom', max_length=15, blank=True)
     numero = models.CharField('Numéro', max_length=5, blank=True)
 
+    objects = SwagQuerySet.as_manager()
+    
     class Meta:
-        verbose_name = 'sac à dos'
-        verbose_name_plural = 'sacs à dos'
-        
+        abstract = True
+
+    @classmethod
+    def describe(cls):
+        return cls._meta.verbose_name
+    
+    @classmethod
+    def describes(cls):
+        return cls._meta.verbose_name_plural
+
     def cost(self):
         return Decimal('29.00')
     
@@ -644,3 +655,15 @@ class Backpack(models.Model):
 
     def stagiaires(self):
         return ', '.join(str(s) for s in self.dossier.stagiaire_set.iterator())
+
+class Backpack(Swag):
+    masculine = True
+    class Meta:
+        verbose_name = 'sac à dos'
+        verbose_name_plural = 'sacs à dos'
+
+class Towel(Swag):
+    masculine = False
+    class Meta:
+        verbose_name = 'serviette'
+        verbose_name_plural = 'serviettes'

@@ -14,7 +14,7 @@ from django.template.response import TemplateResponse
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from . import models
-from .models import Dossier, Stagiaire, Formule, Hebergement, Semaine, Backpack, Reversible
+from .models import Dossier, Stagiaire, Formule, Hebergement, Semaine, Swag, Backpack, Towel, Reversible
 from . import widgets as my_widgets
 from django.utils.html import format_html
 from django.utils.text import format_lazy
@@ -25,7 +25,7 @@ from django.conf import settings
 from . import mails
 from django.urls import reverse_lazy
 from django_downloadview import ObjectDownloadView
-from django.urls import path
+from django.urls import include, path
 from .forms import SimpleModelFormset
 from django.views.static import serve
 
@@ -135,9 +135,10 @@ class DossierView(SessionDossierMixin, DetailView):
     
     def get_context_data(self, **kwds):
         stags = SimpleModelFormset(self.object.stagiaire_set, StagiaireUploadForm)
-        bp = SimpleModelFormset(self.object.backpack_set, BackpackForm, extra=1)
-        context = dict(stagiaires=stags, backpacks=bp, **kwds)
-        context['form'] = { 'media': stags.media + bp.media }
+        bp = SimpleModelFormset(self.object.backpack_set, BackpackFact.Form, extra=1)
+        tw = SimpleModelFormset(self.object.towel_set, TowelFact.Form, extra=1)
+        context = dict(stagiaires=stags, swag=[bp, tw], **kwds)
+        context['form'] = { 'media': stags.media + bp.media + tw.media }
         return super().get_context_data(**context)
         
     def get(self, *args, **kwds):
@@ -480,10 +481,9 @@ stagiaire_up_views = { f : ObjectDownloadView.as_view(model=Stagiaire, file_fiel
 stagiaire_up_urls = [ path(r'%s' % f, v) for f, v in stagiaire_up_views.items() ]
 
 
-### Backpacks
-class BackpackForm(forms.ModelForm):
+### Swag: backpacks, towels...
+class SwagForm(forms.ModelForm):
     class Meta:
-        model = Backpack
         exclude = ('dossier',)
 
     class Media:
@@ -491,30 +491,44 @@ class BackpackForm(forms.ModelForm):
 
     prenom = forms.CharField(required=False, widget=forms.TextInput(attrs={
         'placeholder' : 'sans nom',
-        'size' : Backpack.prenom.field.max_length,
-        'maxlength': Backpack.prenom.field.max_length,
+        'size' : Swag.prenom.field.max_length,
+        'maxlength': Swag.prenom.field.max_length,
         }))
     numero = forms.CharField(required=False, widget=forms.TextInput(attrs={
         'placeholder' : '–',
-        'size' : Backpack.numero.field.max_length,
-        'maxlength': Backpack.numero.field.max_length,
+        'size' : Swag.numero.field.max_length,
+        'maxlength': Swag.numero.field.max_length,
         }))
 
     def clean(self, *args, **kwds):
         if not settings.SACS_A_DOS_OUVERT:
-            raise ValidationError("Il n'est plus possible de modifier votre commande de sacs à dos.")
-        return super().clean(*args, **kwds)        
+            raise ValidationError("Il n'est plus possible de modifier votre commande de swag.")
+        return super().clean(*args, **kwds)
 
-class BackpackCreate(CheckDossierMixin, CreateView):
+    def url_create(self):
+        return reverse_lazy(self._rev_create)
+
+    def url_modify(self):
+        if self.instance.pk:
+            return reverse_lazy(self._rev_edit, args=[self.instance.pk])
+        else:
+            return None
+
+    def url_delete(self):
+        if self.instance.pk:
+            return reverse_lazy(self._rev_delete, args=[self.instance.pk])
+        else:
+            return None
+
+class SwagCreate(CheckDossierMixin, CreateView):
     """
-    Create a backpack
+    Create a swag
     """
-    model = Backpack
-    form_class = BackpackForm
     success_url = reverse_lazy('dossier_view')
 
     def form_valid(self, form):
-        messages.info(self.request, "Le sac à dos a été ajouté avec succès.")
+        messages.info(self.request,
+                      "Le %s a été ajouté avec succès." % self.model._meta.verbose_name)
         form.instance.dossier = self.dossier
         return super().form_valid(form)
         
@@ -534,32 +548,34 @@ class BackpackCreate(CheckDossierMixin, CreateView):
     def put(self, *args, **kwds):
         return super().put(*args, **kwds)
 
-class BackpackDelete(CheckDossierMixin, DeletionMixin, SingleObjectMixin, View):
+class SwagDelete(CheckDossierMixin, DeletionMixin, SingleObjectMixin, View):
     """
-    Delete a backpack
+    Delete a Swag
     """
-    model = Backpack
     success_url = reverse_lazy('dossier_view')
 
     def delete(self, *args, **kwds):
         if settings.SACS_A_DOS_OUVERT:
             res = super().delete(*args, **kwds)
-            messages.info(self.request, "Le sac à dos a été supprimé avec succès.")
+            messages.info(self.request,
+                          "Le %s a été supprimé avec succès." % self.model._meta.verbose_name)
             return res
         else:
-            messages.error(self.request, "Il n'est plus possible de modifier votre commande de sacs à dos.")
+            messages.error(self.request,
+                           "Il n'est plus possible de modifier votre commande de %s."
+                           % self.model._meta.verbose_name_plural)
             return HttpResponseRedirect(self.success_url)
 
-class BackpackEdit(CheckDossierMixin, ModelFormMixin, View):
+class SwagEdit(CheckDossierMixin, ModelFormMixin, View):
     """
-    Edit/Delete a backpack
+    Edit/Delete a swag
     """
-    model = Backpack
-    form_class = BackpackForm
+    form_class = SwagForm
     success_url = reverse_lazy('dossier_view')
 
     def form_valid(self, *args, **kwds):
-        messages.info(self.request, "Le sac à dos a été modifié avec succès.")
+        messages.info(self.request,
+                      "Le %s a été modifié avec succès." % self.model._meta.verbose_name)
         return super().form_valid(*args, **kwds)
         
     def form_invalid(self, form):
@@ -581,7 +597,45 @@ class BackpackEdit(CheckDossierMixin, ModelFormMixin, View):
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
+
+class SwagFactory():
+    def __init__(self, model):
+        self.model = model
+        self.prefix = model.__name__
+        low = self.prefix.lower()
         
+        self.Form = type(self.prefix + 'Form', (SwagForm,), {
+            '_rev_create' : '%s_create' % low,
+            '_rev_edit'   : '%s_edit'   % low,
+            '_rev_delete' : '%s_delete' % low,
+        })
+        self.Form._meta.model = self.model
+
+        self.CreateView = type(self.prefix + 'CreateView', (SwagCreate,), {
+            'form_class' : self.Form,
+            'model' : self.model,
+        })
+        
+        self.EditView = type(self.prefix + 'EditView', (SwagEdit,), {
+            'form_class' : self.Form,
+            'model' : self.model,
+        })
+        
+        self.DeleteView = type(self.prefix + 'DeleteView', (SwagDelete,), {
+            'model' : self.model,
+        })
+
+        self.urls = [
+            path('%s/' % low, self.CreateView.as_view(), name=self.Form._rev_create),
+            path('%s/<int:pk>/' % low, include([
+                path('', self.EditView.as_view(), name=self.Form._rev_edit),
+                path('delete', self.DeleteView.as_view(), name=self.Form._rev_delete),
+            ]))
+        ]
+
+BackpackFact = SwagFactory(Backpack)
+TowelFact = SwagFactory(Towel)
+
 ### Handle hebergement
 
 class HebergementForm(forms.ModelForm):

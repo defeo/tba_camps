@@ -24,11 +24,8 @@ urlpatterns = [
                 path('', views.StagiaireUpload.as_view(), name='stagiaire_upload'),
             ] + views.stagiaire_up_urls)),
         ])),
-        path('backpack/', views.BackpackCreate.as_view(), name='backpack_create'),
-        path('backpack/<int:pk>/', include([
-            path('', views.BackpackEdit.as_view(), name='backpack_edit'),
-            path('delete', views.BackpackDelete.as_view(), name='backpack_delete'),
-            ])),
+        *views.BackpackFact.urls,
+        *views.TowelFact.urls,
         path('hebergement/', views.HebergementView.as_view(), name='hebergement_edit'),
     ])),
     path('tba/date.htm', views.pratique, name='pratique'),

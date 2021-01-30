@@ -163,10 +163,12 @@
     {% endif %}
 
     <tbody>
-      {% if object.prix_backpacks %}
-      <tr><td class="total">{{ object.describe_backpacks }}</td>
-	<td class="price">{{ object.prix_backpacks }}€</td></tr>
+      {% for s in object.get_swag %}
+      {% if s.prix %}
+      <tr><td class="total">{{ s.describe }}</td>
+	<td class="price">{{ s.prix }}€</td></tr>
       {% endif %}
+      {% endfor %}
     </tbody>
     
     <tbody>
@@ -217,27 +219,30 @@
 </div>
 {% else %}
 <div class="dossier-block" id="backpacks">
-  <h3>Sacs à dos avec prénom {% if not config.SACS_A_DOS_OUVERT %}<small>(les commandes de sacs sont fermées)</small>{% endif %}</h3>
+  <h3>Swag personnalisé
+    {% if settings.SACS_A_DOS_OUVERT %}
+    <small>(à commander avant le {{ config.Commandes_swag | date:"j F"}})</small>
+    {% else %}
+    <small>(les commandes de swags sont fermées)</small>
+    {% endif %}
+  </h3>
 
+  {% for s in swag %}
   <div class="bp-table">
     <div class="col"></div><div class="col"></div><div class="last-col col"></div>
     <div class="bp-row header">
       <span>Prénom</span><span>Numero</span>
-      <span class="bp-count">{{ object.describe_backpacks }}
-	commandé{{ backpacks | length_is:"2" | yesno:",s" }}</span>
+      <span class="bp-count">{{ s.queryset.describe }}
+	commandé{{ s.queryset.model.masculine | yesno:",e" }}{{ s | length_is:"2" | yesno:",s" }}</span>
     </div>
-    {% for b in backpacks %}
+    {% for b in s %}
     <form method="post"
-	  {% if b.instance.pk %}
-	  action="{% url 'backpack_edit' b.instance.pk %}"
-	  {% else %}
-	  action="{% url 'backpack_create' %}"
-	  {% endif %}
+	  action="{{ b.url_modify | default:b.url_create }}"
 	  class="pure-form bp-row {% if b.instance.pk %}has_original{% endif %} inactive">
       <span class="prenom">{{ b.prenom }}</span>
       <span class="numero">{{ b.numero }}</span>
       <span>
-	{% if config.SACS_A_DOS_OUVERT %}
+	{% if settings.SACS_A_DOS_OUVERT %}
 	{% if b.instance.pk %}
 	<button class="pure-button toggle" type="button">
 	  <span>changer</span>
@@ -245,10 +250,10 @@
 	</button>
 	<button class="pure-button pure-button-primary">sauvegarder</button>
 	<button class="pure-button pure-button-primary"
-		formaction="{% url 'backpack_delete' b.instance.pk %}">supprimer</button>
+		formaction="{{ b.url_delete }}">supprimer</button>
 	{% else %}
 	<button class="pure-button toggle" type="button">
-	  <span><strong>ajouter un sac</strong></span>
+	  <span><strong>ajouter {{ s.queryset.model.describe }}</strong></span>
 	  <span>annuler</span>
 	</button>
 	<button class="pure-button pure-button-primary">sauvegarder</button>
@@ -259,6 +264,7 @@
     </form>
     {% endfor %}
   </div>
+  {% endfor %}
 
   {% include "includes/backpacks.html" %}
 </div>
