@@ -229,9 +229,12 @@
 
   {% for s in swag %}
   <div class="bp-table">
-    <div class="col"></div><div class="col"></div><div class="last-col col"></div>
+    {% for k, f in s.base_fields.items %}<div class="col"></div>{% endfor %}
+    <div class="last-col col"></div>
     <div class="bp-row header">
-      <span>Prénom</span><span>Numero</span>
+      {% for k, f in s.base_fields.items %}
+      <span>{{ f.label }}</span>
+      {% endfor %}
       <span class="bp-count">{{ s.queryset.describe }}
 	commandé{{ s.queryset.model.masculine | yesno:",e" }}{{ s | length_is:"2" | yesno:",s" }}</span>
     </div>
@@ -239,8 +242,9 @@
     <form method="post"
 	  action="{{ b.url_modify | default:b.url_create }}"
 	  class="pure-form bp-row {% if b.instance.pk %}has_original{% endif %} inactive">
-      <span class="prenom">{{ b.prenom }}</span>
-      <span class="numero">{{ b.numero }}</span>
+      {% for f in b %}
+      <span class="{{ f.name }}">{{ f }}</span>
+      {% endfor %}
       <span>
 	{% if settings.SACS_A_DOS_OUVERT %}
 	{% if b.instance.pk %}

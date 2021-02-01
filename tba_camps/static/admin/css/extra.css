@@ -12,11 +12,19 @@
 .swag-set .original p {
     display: none;
 }
-.swag-set .has_original .vTextField {
+.swag-set .has_original .vTextField,
+.swag-set .has_original select {
     border-color: transparent;
     background-color: transparent;
+    appearance: none;
 }
-.swag-set .has_original .vTextField:hover {
+.swag-set .has_original select {
+    width: 8em;
+}
+.swag-set .has_original .vTextField:hover,
+.swag-set .has_original select:hover,
+.swag-set .has_original select:focus {
     border-color: #888;
+    appearance: auto;
 }
 

@@ -511,7 +511,7 @@ class Stagiaire(ModelWFiles):
     nom_parrain = models.CharField('Je suis parrainé par', max_length=255, blank=True,
                                    help_text='NOM Prénom')
     noms_parraines = models.TextField('Je parraine', blank=True,
-                                      help_text='NOMS Prénoms, plusieurs noms possibles')
+                                      help_text='NOMS Prénoms, plusieurs noms possibles. Ce doit être un NOUVEAU stagiaire, donc jamais venu à TBA Superdévoluy.')
     auth_paren = FileField("Autorisation parentale", blank=True, null=True)
     auth_paren_snail = models.BooleanField("Autorisation parentale reçue",
                                             default=False)
@@ -664,6 +664,8 @@ class Backpack(Swag):
 
 class Towel(Swag):
     masculine = False
+    color = models.CharField('Couleur', max_length=20,
+                             choices=[('ciel', 'Bleu ciel'), ('blanc', 'Blanc')])
     class Meta:
         verbose_name = 'serviette'
         verbose_name_plural = 'serviettes'

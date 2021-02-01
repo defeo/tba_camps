@@ -6,7 +6,7 @@ from ordered_model.admin import OrderedModelAdmin
 from .models import Manager, Semaine, Formule, Hebergement, Dossier, Stagiaire, Message, Backpack, Towel, Reversible
 from .models import PREINSCRIPTION, VALID, COMPLETE
 from import_export.admin import ExportMixin
-from .resources import StagiaireResource, DossierResource, SwagResource
+from .resources import StagiaireResource, DossierResource, SwagResource, TowelResource
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User, Group
 from constance.admin import Config, ConstanceAdmin
@@ -216,6 +216,7 @@ class BackpackInline(SwagInline):
     
 class TowelInline(SwagInline):
     model = Towel
+    fields = ('prenom', 'numero', 'color')
 
 @admin.register(Dossier, site=site)
 class DossierAdmin(ExportMixin, admin.ModelAdmin):
@@ -531,7 +532,7 @@ class SwagSemaineFilter(admin.SimpleListFilter):
         else:
             return queryset.filter(dossier__stagiaire__semaines=self.value()).distinct()
 
-@admin.register(Backpack, Towel, site=site)
+@admin.register(Backpack, site=site)
 class SwagAdmin(ExportMixin, admin.ModelAdmin):
     list_display = ('prenom', 'numero', 'dossier_link', 'semaines_str', 'stagiaires')
     list_display_links = None
@@ -562,6 +563,12 @@ class SwagAdmin(ExportMixin, admin.ModelAdmin):
             return redirect('admin:tba_camps_dossier_changelist')
         else:
             return super().add_view(request, form_url, extra_context)
+
+@admin.register(Towel, site=site)
+class TowelAdmin(SwagAdmin):
+    list_display = ('prenom', 'numero', 'color', 'dossier_link', 'semaines_str', 'stagiaires')
+    list_filter = SwagAdmin.list_filter + ('color',)
+    resource_class = TowelResource
 
 ####
 class SemaineColumn():

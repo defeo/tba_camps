@@ -489,12 +489,12 @@ class SwagForm(forms.ModelForm):
     class Media:
         js = ('js/backpack.js',)
 
-    prenom = forms.CharField(required=False, widget=forms.TextInput(attrs={
+    prenom = forms.CharField(label='Prénom', required=False, widget=forms.TextInput(attrs={
         'placeholder' : 'sans nom',
         'size' : Swag.prenom.field.max_length,
         'maxlength': Swag.prenom.field.max_length,
         }))
-    numero = forms.CharField(required=False, widget=forms.TextInput(attrs={
+    numero = forms.CharField(label='Numéro', required=False, widget=forms.TextInput(attrs={
         'placeholder' : '–',
         'size' : Swag.numero.field.max_length,
         'maxlength': Swag.numero.field.max_length,
@@ -603,13 +603,16 @@ class SwagFactory():
         self.model = model
         self.prefix = model.__name__
         low = self.prefix.lower()
-        
+
+        metaform = type('Meta', (SwagForm.Meta,), {
+            'model' : self.model,
+        })
         self.Form = type(self.prefix + 'Form', (SwagForm,), {
             '_rev_create' : '%s_create' % low,
             '_rev_edit'   : '%s_edit'   % low,
             '_rev_delete' : '%s_delete' % low,
+            'Meta' : metaform,
         })
-        self.Form._meta.model = self.model
 
         self.CreateView = type(self.prefix + 'CreateView', (SwagCreate,), {
             'form_class' : self.Form,

@@ -194,7 +194,6 @@ li.stagiaire .nom {
     flex-flow: row wrap;
     justify-content: space-evenly;
     align-content: space-between;
-    height: 430px;
     padding: 1ex;
 }
 
@@ -217,15 +216,20 @@ li.stagiaire .nom {
     font-weight: bold;
 }
 
-#backpacks form.inactive input[type="text"] {
+#backpacks form.inactive select { width: 6.5em; }
+#backpacks form.inactive input[type="text"],
+#backpacks form.inactive select {
     background-color: transparent;
     border-color: transparent;
     box-shadow: none;
     pointer-events: none;
+    appearance: none;
 }
-#backpacks form.inactive:not(.has_original) input[type="text"] {
+#backpacks form.inactive:not(.has_original) input[type="text"],
+#backpacks form.inactive:not(.has_original) select {
     color: transparent;
 }
+#backpacks form button { padding: .5em .5em; }
 #backpacks form.inactive button:not(.toggle) { display: none; }
 #backpacks form.inactive button.toggle :nth-child(2) { display: none; }
 #backpacks form.active button.toggle :nth-child(1) { display: none; }
