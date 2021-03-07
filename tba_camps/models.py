@@ -357,9 +357,8 @@ class Dossier(ModelWFiles):
 
         # S'il s'agit d'une mise à jour
         if self.pk is not None:
-            orig = self.__class__.objects.get(pk=self.pk)
             # Si l'inscription a été validée, enregistre la date
-            if self.etat == VALID != orig.etat:
+            if self.etat in (VALID, COMPLETE) and self.date_valid is None:
                 self.date_valid = datetime.datetime.now()
             
         # S'il s'agit d'une création, on crée un token
