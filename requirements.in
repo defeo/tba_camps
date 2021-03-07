@@ -10,6 +10,7 @@ WeasyPrint
 unidecode
 django-tinymce4-lite
 django-constance[database]
+django-admin-logs
 
 # For production
 gunicorn

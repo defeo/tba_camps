@@ -7,8 +7,10 @@ from .models import Manager, Semaine, Formule, Hebergement, Dossier, Stagiaire, 
 from .models import PREINSCRIPTION, VALID, COMPLETE
 from import_export.admin import ExportMixin
 from .resources import StagiaireResource, DossierResource, SwagResource, TowelResource
+from django.contrib.admin.models import LogEntry
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User, Group
+from django_admin_logs.admin import LogEntryAdmin
 from constance.admin import Config, ConstanceAdmin
 from django.shortcuts import redirect
 from django.conf.urls import url
@@ -76,6 +78,7 @@ class MyAdmin(admin.AdminSite):
 site = admin.AdminSite()
 site.register(Group)
 site.register([Config], ConstanceAdmin)
+site.register(LogEntry, LogEntryAdmin)
 
 # Define a new User admin
 class ManagerInline(admin.StackedInline):

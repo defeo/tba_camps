@@ -38,6 +38,8 @@ dj-static==0.0.6
     # via
     #   -r requirements.in
     #   django-toolbelt
+django-admin-logs==1.0.1
+    # via -r requirements.in
 django-constance[database]==2.8.0
     # via -r requirements.in
 django-downloadview==1.9
@@ -55,6 +57,7 @@ django-toolbelt==0.0.1
 django==3.0.1
     # via
     #   -r requirements.in
+    #   django-admin-logs
     #   django-downloadview
     #   django-import-export
     #   django-picklefield
