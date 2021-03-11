@@ -4,6 +4,7 @@
 <html lang="fr">
   <head>
     <meta charset="utf-8" />
+    <meta http-equiv="Cache-Control" content="no-store,max-age=0" />
     <title>{% block title %}Les camps de Basket TBA : 30 ans d'expérience au service du Basket{% endblock %}</title>
     <meta name="description" content="{% block description %}Le premier camp de basket de SUPERDEVOLUY a vu le jour en 1984, c'est le plus grand camp de Basket de France avec 8 terrains de basket. Sa renommé et sa réputation, il les doit aux milliers de stagiaires qui ont participé aux camps TBA  et parmi eux certains sont devenus des stars comme Aymeric JEANNEAU, Eric MICOUD, Laure SAVASTA… et le futur grand Edwin JACKSON{% endblock %}">    
     <link rel="stylesheet" type="text/css" href="{% static "css/styles.css" %}"  media="screen" />
@@ -105,9 +106,19 @@
       </nav>
 
 
-
-
       <section id="main"><!-- #main content and sidebar area -->
+
+
+    <div id="banner">
+      <strong>11/03/2021:</strong> En ce moment, notre site rencontre
+      des difficultés à cause de la <a target="_blank"
+      href="https://www.ovh.com/fr/news/presse/cpl1785.incendie-notre-site-strasbourg">panne
+      de notre hébergeur web OVH</a>.<br>  Les inscriptions en ligne
+      sont temporairement suspendues, nous travaillons pour rétablir
+      la fonctionnalité du site dans les plus brefs délais.<br>  TBA
+      vous remercie de votre compréhension.
+    </div>
+    
 	<section id="content"><!-- #content -->
 
 	  {% block content %}{% endblock %}

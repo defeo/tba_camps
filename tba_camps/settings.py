@@ -152,7 +152,14 @@ PROTECTED = {
     'RIB': 'RIB.pdf',
 }
 PIECES = {
-    # see settings_deploy.py
+#    'inscription':           '/tba/pdf/Bulletin-inscription-2021.pdf',
+    'TBA':                   '/static/pdf/TBA-2021.pdf',
+    'sanitaire_doc':         '/static/pdf/Fiche sanitaire 2019.docx',
+    'sanitaire_pdf':         '/static/pdf/Fiche sanitaire 2019.pdf',
+    'margot':                '/static/pdf/TARIFS CHALETS ET APT ETE 2021.pdf',
+    'hameau_resa_pdf':       '/static/pdf/2021 Fiche de réservation Hameau du Puy.pdf',
+    'hameau_tarif_pdf':      '/static/pdf/2021 OFFICIELRenseignements et tarifs Hameau du puy.pdf',
+    'devoluy' :              '/static/pdf/RESERVATION EN DEVOLUY TARIFS TBA ETE 2021.pdf',
 }
 IMAGES = {
     # see settings_deploy.py

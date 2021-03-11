@@ -23,7 +23,8 @@
 	{% for s in semaines %}
         <p align="center">
 	  <span style="font-size:14px; font-weight:bold ">Semaine {{ forloop.counter }}: {{ s }}</span><br>
-	  <span style="font-size:10px; font-weight:bold ">{% if s.restantes > 0 and not s.fermer %}{{ s.restantes }}{% else %}pas de{% endif %} places disponibles</span><br>
+	  <!--span style="font-size:10px; font-weight:bold ">{% if s.restantes > 0 and not s.fermer %}{{ s.restantes }}{% else %}pas de{% endif %} places disponibles</span><br-->
+	  <span style="font-size:10px; font-weight:bold ">inscriptions ouvertes</span><br>
 	  <span style="font-size:12px; font-weight:bold; color:#0000FF ">{{ s.commentaire | urlize }}</span>
 	</p>
 	{% endfor %}

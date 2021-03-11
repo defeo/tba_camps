@@ -1,5 +1,14 @@
 /* Created by http://freehtml5templates.com */
 
+/*** OVH fixes ***/
+img { display: none; }
+#banner {
+    background-color: #fffd62;
+    padding: 4px;
+    text-align: center;
+}
+/*** end OVH fixes ***/
+
 /* reset */
 * {
 margin: 0;
