@@ -64,8 +64,5 @@ PIECES = {
 IMAGES = {
     'Plan Dévoluy':          '/tba/images/plan_devoluy.jpg',
     'Sherpa':                '/tba/images/sherpa.jpg',
-    'Sacs à dos (Antoine)':  '/tba/images/sacs-a-dos-antoine.jpg',
-    'Sacs à dos (Emma)':     '/tba/images/sacs-a-dos-emma.jpg',
-    'Sacs à dos (Simon)':    '/tba/images/sacs-a-dos-simon.jpg',
-    'Sacs à dos (Thomas)':   '/tba/images/sacs-a-dos-thomas.jpg',
+    'Sac à dos':  '/tba/images/sac-a-dos.jpg',
 }
