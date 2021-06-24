@@ -486,6 +486,7 @@ class Stagiaire(ModelWFiles):
                                     (Decimal('40.000'), 'Aller moins de 12 ans (40€)'),
                                     (Decimal('80.002'), 'Retour tarif normal (80€)'),
                                     (Decimal('40.001'), 'Retour moins de 12 ans (40€)')])
+    arrivee = models.TimeField('Horaire arrivée', null=True, blank=True)
     chambre = models.CharField('En chambre avec', max_length=255,
                                default='', blank=True)
     type_chambre = models.CharField('Type chambre', max_length=20,

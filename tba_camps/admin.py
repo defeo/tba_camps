@@ -378,7 +378,7 @@ class StagiaireAdmin(ExportMixin, admin.ModelAdmin):
         ('nom', 'prenom'),
         ('age', 'naissance', 'sexe'),
         ('dossier', 'dossier_link'),
-        ('type_chambre', 'num_chambre', 'chambre'),
+        ('type_chambre', 'num_chambre', 'chambre', 'arrivee'),
         ('accompagnateur',),
         ('semaines',),
         ('formule', 'prix_formule'),
@@ -397,6 +397,7 @@ class StagiaireAdmin(ExportMixin, admin.ModelAdmin):
     formfield_overrides = {
         models.TextField: {'widget': widgets.Textarea(attrs={'rows' : 3})},
         models.DecimalField: {'widget': widgets.NumberInput(attrs={'style' : 'width: 6em'})},
+        models.TimeField: {'widget': widgets.TimeInput(attrs={'type' : 'time'}, format='%H:%M')},
     }
     resource_class = StagiaireResource
 
