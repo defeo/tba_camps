@@ -1,3 +1,11 @@
+/* List admin tweaks */
+th.field-hebergement, td.field-hebergement {
+    max-width: 12em;
+    min-width: 8em;
+    white-space: normal;
+}
+
+/* Editable fields tweaks */
 .fieldBox.field-num_chambre .vTextField {
     width: 5em;
 }
