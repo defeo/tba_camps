@@ -11,6 +11,7 @@ SERVER_EMAIL = 'error-report@camps-basket.com'
 HOST_NAME = os.environ.get('HOST_NAME') or 'localhost'
 ALLOWED_HOSTS = [ HOST_NAME ]
 HOST = 'https://%s' % HOST_NAME
+CSRF_TRUSTED_ORIGINS = [ HOST ]
 SESSION_COOKIE_SECURE = True
 
 if 'DATABASE_URL' in os.environ:
