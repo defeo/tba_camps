@@ -4,7 +4,7 @@ from django.utils.html import format_html
 from django.forms.utils import flatatt
 from django.utils.safestring import mark_safe
 from django import forms
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from .templatetags.decimal import strip_cents
 from .models import Hebergement, Semaine, Formule, Reversible
 
@@ -30,7 +30,7 @@ class HebergementField(forms.ModelChoiceField):
 
     def label_from_instance(self, obj):
         return format_html('''{nom} {commentaire}''',
-                               nom=force_text(obj.nom),
+                               nom=force_str(obj.nom),
                                commentaire=obj.md_commentaire())
 
 ### Semaines
@@ -133,10 +133,10 @@ class FormuleField(forms.ModelChoiceField):
         return {
             'label': format_html(
     '''{nom} <span class="prix">{prix}</span> <span class="description">{weekend}{description}</span>''',
-                nom=force_text(obj.nom),
+                nom=force_str(obj.nom),
                 prix=format_html('({}€)', strip_cents(obj.prix)) * obj.publique,
                 weekend=format_html('(<strong>+{}€</strong>/week-end si semaines consécutives) <br>', strip_cents(obj.weekend)) if obj.weekend > 0 else '',
-                description=force_text(obj.description)),
+                description=force_str(obj.description)),
             'attrs': attrs,
             }
 

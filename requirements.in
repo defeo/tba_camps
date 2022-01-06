@@ -1,4 +1,4 @@
-django>=3.0
+django>=4.0
 
 # Dependencies
 django-ordered-model
@@ -8,7 +8,7 @@ markdown
 django-downloadview
 WeasyPrint
 unidecode
-django-tinymce4-lite
+django-tinymce
 django-constance[database]
 django-admin-logs
 
@@ -19,5 +19,5 @@ dj-static
 dj-database-url
 
 # For Heroku
-django-toolbelt
+psycopg2
 sendgrid-django

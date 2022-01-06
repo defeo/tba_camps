@@ -18,7 +18,7 @@ from .models import Dossier, Stagiaire, Formule, Hebergement, Semaine, Swag, Bac
 from . import widgets as my_widgets
 from django.utils.html import format_html
 from django.utils.text import format_lazy
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 import weasyprint
 from unidecode import unidecode
 from django.conf import settings

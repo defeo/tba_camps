@@ -13,7 +13,6 @@ from django.contrib.auth.models import User, Group
 from django_admin_logs.admin import LogEntryAdmin
 from constance.admin import Config, ConstanceAdmin
 from django.shortcuts import redirect
-from django.conf.urls import url
 from django.urls import path
 from django.utils.html import mark_safe, format_html
 from django.templatetags.static import static
@@ -32,7 +31,7 @@ from . import grammar
 
 class MyAdmin(admin.AdminSite):
     def get_urls(self):
-        return super().get_urls() + [url(r'^complet/$', self.complet, name='complet')]
+        return super().get_urls() + [path('complet/', self.complet, name='complet')]
 
     def complet(self, req):
         context = self.each_context(req)
@@ -270,7 +269,7 @@ class DossierAdmin(ExportMixin, admin.ModelAdmin):
 
     def get_urls(self):
         urls = super().get_urls()
-        my_url = url(r'^([0-9]+)/send_mail$',  
+        my_url = path('<slug:obj_id>/send_mail',
                      self.admin_site.admin_view(self.send_mail), 
                      name='tba_camps_dossier_send_mail')
         return [my_url] + urls 

@@ -102,6 +102,7 @@ $(function() {
     $('#id_assurance_confirm').trigger('change.assurance');    
 
     // Async fetch license no from ffbb.com
+    /* This is deprecated
     $('#id_nom, #id_prenom, #id_naissance, #id_sexe, #id_sexe').on('change', function() {
 	data = {
 	    nom        : $('#id_nom').val() || null,
@@ -122,6 +123,7 @@ $(function() {
 	    }
 	})
     });
+    */
 
     // Reversible show/hide table
     $('[for="id_reversible"]').on('click', function(e) {

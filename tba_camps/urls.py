@@ -1,6 +1,6 @@
 from django.urls import include, path
 from django.views.generic import RedirectView, TemplateView
-from . import views, sms, ffbb_api, admin
+from . import views, sms, admin
 
 urlpatterns = [
     path('', RedirectView.as_view(url='/tba/', permanent=True)),

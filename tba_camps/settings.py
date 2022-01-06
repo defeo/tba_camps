@@ -1,20 +1,13 @@
 """
 Django settings for tba_camps project.
-
-For more information on this file, see
-https://docs.djangoproject.com/en/1.6/topics/settings/
-
-For the full list of settings and their values, see
-https://docs.djangoproject.com/en/1.6/ref/settings/
 """
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
+# New in Django 3.2: auto primary key creation must be declared
+DEFAULT_AUTO_FIELD='django.db.models.AutoField' 
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '$8!01^omw4lywz^(7-&wl2bsem20alqkbs_^^&gg45foktztsc'
@@ -115,6 +108,7 @@ TEMPLATES = [
                                    "django.template.context_processors.media",
                                    "django.template.context_processors.static",
                                    "django.template.context_processors.tz",
+                                   "django.template.context_processors.request",
                                    "django.contrib.messages.context_processors.messages",
                                    "constance.context_processors.config",
                                    "tba_camps.context_processor.cp",
