@@ -87,7 +87,7 @@
 
   {% if not object.etat == etats.COMPLETE and object.misses %}
   <p><strong>Attention&nbsp;!</strong> Il manque les pièces suivantes
-    à votre dossier, il faut les
+    à votre dossier, il faut EN PRIORITÉ les
     <a href="{{ host }}{% url 'dossier_view' %}#stagiaires">téléverser</a>
     ou nous les envoyer par courrier.</p>
 
@@ -98,8 +98,9 @@
     {% endfor %}
   </ul>
 
-  <p>On doit impérativement les avoir le jour de votre
-    arrivée. <em>Adresse postale pour l’envoi des pièces&nbsp;:</em></p>
+  <p>On doit impérativement les avoir le jour de votre arrivée. <em>Si
+    vous ne les avez pas téléversées dans votre dossier, vous pouvez
+    les envoyer par courrier à&nbsp;:</em></p>
 
   <blockquote class="adress">{{ settings.ADRESSE }}</blockquote><hr>
   {% endif %}
