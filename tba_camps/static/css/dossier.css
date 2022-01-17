@@ -7,18 +7,20 @@ a.pure-button:hover, a.pure-button:active, a.pure-button:focus {
 a.pure-button {
     color: inherit;
 }
-.pure-form-aligned  ul {
+/* These are brittle: break when Django changes form HTML */
+.pure-form-aligned .pure-control-group > div {
     display: inline-block;
-    list-style-type: none;
     vertical-align: top;
     max-width: 400px;
 }
-.pure-form-aligned .pure-control-group li label { 
+.pure-form-aligned .pure-control-group > div > div > label { 
     width: auto;
     text-align: left;
 }
-.pure-control-group li { border-radius: 4px }
-.pure-control-group li:hover { background-color: rgba(255,255,255,0.5) }
+.pure-form-aligned .pure-control-group > div > div label
+{ border-radius: 4px }
+.pure-form-aligned .pure-control-group > div > div label:hover
+{ background-color: rgba(255,255,255,0.5) }
 
 .pure-form.pure-form-aligned .fileinput label {
     width: 7em;
@@ -117,9 +119,9 @@ li.stagiaire .nom {
 }
 
 /************* Forms **************/
-
-#id_sexe li, #id_licencie li, #id_venu li, 
-#id_navette_a li, #id_navette_r li, #id_caf li { display: inline; }
+/* Also brittle */
+#id_sexe div, #id_licencie div, #id_venu div, 
+#id_navette_a div, #id_navette_r div, #id_caf div { display: inline; }
 
 #id_formule { font-weight: bold }
 #id_formule .prix { float: right }
@@ -130,9 +132,9 @@ li.stagiaire .nom {
 }
 
 #id_formule label, #id_hebergement label { width: 100% }
-#id_formule > li:hover { background-color: inherit }
-#id_formule > li > ul { margin: 1ex 0 2ex 2ex }
-#id_formule > li > .group {
+#id_formule > div > label:hover { background-color: inherit }
+#id_formule > div { padding: 1ex 0 2ex 2ex }
+#id_formule .group {
     font-size: 110%;
     font-weight: normal;
     background-color: #cc6600;
@@ -153,7 +155,7 @@ li.stagiaire .nom {
     -o-transition: max-height 2s;
 }
 #id_hebergement input:checked ~ p,
-#id_hebergement li:hover label:not(.complet) p {
+#id_hebergement div:hover label:not(.complet) p {
     max-height: 100ex;
 }
 
