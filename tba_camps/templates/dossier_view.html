@@ -218,60 +218,62 @@
     Confirmer les demandes d'inscription</a>
 </div>
 {% else %}
-<div class="dossier-block" id="backpacks">
-  <h3>Swag personnalisé
-    {% if settings.SACS_A_DOS_OUVERT %}
-    <small>(à commander avant le {{ config.Commandes_swag | date:"j F"}})</small>
-    {% else %}
-    <small>(les commandes de swags sont fermées)</small>
-    {% endif %}
-  </h3>
+  {% if settings.SWAG_ON %}
+  <div class="dossier-block" id="backpacks">
+    <h3>Swag personnalisé
+      {% if settings.SACS_A_DOS_OUVERT %}
+      <small>(à commander avant le {{ config.Commandes_swag | date:"j F"}})</small>
+      {% else %}
+      <small>(les commandes de swags sont fermées)</small>
+      {% endif %}
+    </h3>
 
-  {% for s in swag %}
-  <div class="bp-table">
-    {% for k, f in s.base_fields.items %}<div class="col"></div>{% endfor %}
-    <div class="last-col col"></div>
-    <div class="bp-row header">
-      {% for k, f in s.base_fields.items %}
-      <span>{{ f.label }}</span>
+    {% for s in swag %}
+    <div class="bp-table">
+      {% for k, f in s.base_fields.items %}<div class="col"></div>{% endfor %}
+      <div class="last-col col"></div>
+      <div class="bp-row header">
+	{% for k, f in s.base_fields.items %}
+	<span>{{ f.label }}</span>
+	{% endfor %}
+	<span class="bp-count">{{ s.queryset.describe }}
+	  commandé{{ s.queryset.model.masculine | yesno:",e" }}{{ s | length_is:"2" | yesno:",s" }}</span>
+      </div>
+      {% for b in s %}
+      <form method="post"
+	    action="{{ b.url_modify | default:b.url_create }}"
+	    class="pure-form bp-row {% if b.instance.pk %}has_original{% endif %} inactive">
+	{% for f in b %}
+	<span class="{{ f.name }}">{{ f }}</span>
+	{% endfor %}
+	<span>
+	  {% if settings.SACS_A_DOS_OUVERT %}
+	  {% if b.instance.pk %}
+	  <button class="pure-button toggle" type="button">
+	    <span>changer</span>
+	    <span>annuler</span>
+	  </button>
+	  <button class="pure-button pure-button-primary">sauvegarder</button>
+	  <button class="pure-button pure-button-primary"
+		  formaction="{{ b.url_delete }}">supprimer</button>
+	  {% else %}
+	  <button class="pure-button toggle" type="button">
+	    <span><strong>ajouter {{ s.queryset.model.describe }}</strong></span>
+	    <span>annuler</span>
+	  </button>
+	  <button class="pure-button pure-button-primary">sauvegarder</button>
+	  {% endif %}
+	  {% endif %}
+	  {% csrf_token %}
+	</span>
+      </form>
       {% endfor %}
-      <span class="bp-count">{{ s.queryset.describe }}
-	commandé{{ s.queryset.model.masculine | yesno:",e" }}{{ s | length_is:"2" | yesno:",s" }}</span>
     </div>
-    {% for b in s %}
-    <form method="post"
-	  action="{{ b.url_modify | default:b.url_create }}"
-	  class="pure-form bp-row {% if b.instance.pk %}has_original{% endif %} inactive">
-      {% for f in b %}
-      <span class="{{ f.name }}">{{ f }}</span>
-      {% endfor %}
-      <span>
-	{% if settings.SACS_A_DOS_OUVERT %}
-	{% if b.instance.pk %}
-	<button class="pure-button toggle" type="button">
-	  <span>changer</span>
-	  <span>annuler</span>
-	</button>
-	<button class="pure-button pure-button-primary">sauvegarder</button>
-	<button class="pure-button pure-button-primary"
-		formaction="{{ b.url_delete }}">supprimer</button>
-	{% else %}
-	<button class="pure-button toggle" type="button">
-	  <span><strong>ajouter {{ s.queryset.model.describe }}</strong></span>
-	  <span>annuler</span>
-	</button>
-	<button class="pure-button pure-button-primary">sauvegarder</button>
-	{% endif %}
-	{% endif %}
-	{% csrf_token %}
-      </span>
-    </form>
     {% endfor %}
-  </div>
-  {% endfor %}
 
-  {% include "includes/backpacks.html" %}
-</div>
+    {% include "includes/backpacks.html" %}
+  </div>
+  {% endif %}
 
   {% include "includes/messages.html" %}
 {% endif %}

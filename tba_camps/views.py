@@ -501,7 +501,7 @@ class SwagForm(forms.ModelForm):
         }))
 
     def clean(self, *args, **kwds):
-        if not settings.SACS_A_DOS_OUVERT():
+        if not (settings.SWAG_ON() and settings.SACS_A_DOS_OUVERT()):
             raise ValidationError("Il n'est plus possible de modifier votre commande de swag.")
         return super().clean(*args, **kwds)
 

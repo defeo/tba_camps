@@ -159,13 +159,17 @@ from .settings_constants import *
 # Configurable constants
 from constance import config
 from datetime import date 
+from collections import OrderedDict
 
 CONSTANCE_SUPERUSER_ONLY = False
-CONSTANCE_CONFIG = {
-    'Commandes_swag': (date(2021, 5, 3),
+CONSTANCE_CONFIG = OrderedDict([
+    ('Swag_active', (True, "Permettre de commander le swag (sacs à dos, etc.)", bool)),
+    ('Commandes_swag', (date(2021, 5, 3),
                        "Date limite pour commander le swag (sacs à dos, etc.)",
-                       date),
-}
+                       date)),
+])
 
+def SWAG_ON():
+    return config.Swag_active
 def SACS_A_DOS_OUVERT():
     return date.today() <= config.Commandes_swag
