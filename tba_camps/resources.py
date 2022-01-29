@@ -48,6 +48,7 @@ class StagiaireResource(resources.ModelResource):
             'nom', 'prenom', 'email', 'tel', 'adresse', 'club', 'cp', 'ville', 'sexe', 'naissance', 'age', 'taille',
             'reversible', 'niveau', 'venu', 'lieu', 'formule', 'train', 'navette_a', 'navette_r',
             'chambre', 'type_chambre', 'num_chambre', 'accompagnateur',
+            'pass_covid',
             'nom_parrain', 'noms_parraines', 'date', 'etat', 'lien',
             ]
         widgets = {
@@ -79,6 +80,9 @@ class StagiaireResource(resources.ModelResource):
 
     def dehydrate_etat(self, inscr):
         return Dossier._etat_dict[inscr.dossier.etat]
+
+    def dehydrate_pass_covid(self, inscr):
+        return "Oui" if inscr.pass_covid else "Non"
     
     # def dehydrate_cp(self, inscr):
     #     return " %s" % inscr.cp

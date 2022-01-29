@@ -521,7 +521,8 @@ class Stagiaire(ModelWFiles):
     certificat = FileField('Certificat médical', blank=True, null=True)
     certificat_snail = models.BooleanField('Certificat médical reçu',
                                            default=False)
-        
+    pass_covid = models.BooleanField('Pass sanitaire reçu', default=False)
+    
     def __str__(self):
         return '%s %s' % (self.nom, self.prenom)
 

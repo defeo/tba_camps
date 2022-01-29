@@ -383,6 +383,7 @@ class StagiaireAdmin(ExportMixin, admin.ModelAdmin):
         ('formule', 'prix_formule'),
         ('prix', 'acompte'),
         ('assurance',),
+        ('pass_covid',),
         ('auth_paren', 'auth_paren_snail'),
         ('fiche_sanit', 'fiche_sanit_snail'),
         ('licence', 'club', 'certificat', 'certificat_snail'),
