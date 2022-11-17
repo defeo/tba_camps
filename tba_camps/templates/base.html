@@ -36,6 +36,7 @@
 		<ul>
 		  <li><a title="Home | accueil" href="{% url 'static_index' %}">Accueil</a></li>
 		  <li><a href="{% url 'static_pages' 'superdevoluy' %}">Le site Superdévoluy</a></li>
+		  <li><a href="{% url 'static_pages' 'location-parents' %}">Location Parents</a></li>
 		</ul>
 	      </li>
           
@@ -59,15 +60,16 @@
 		<ul>
 		  <li><a href="{% url 'static_pages' 'depliant' %}">Le dépliant {{ settings.ANNEE }}</a></li>
 		  <li><a href="{% url 'pratique' %}">Dates, Formules et prix des places disponibles</a></li>
-		  <li><a href="{% url 'static_pages' 'conditions-de-vente' %}">Conditions de vente et d'annulation</a></li>
-		  <li><a href="{% url 'static_pages' 'assurance-desistement' %}">Annulation d'un séjour, assurances</a></li>
-		  <li><a href="{% url 'static_pages' 'camp-special' %}">Stages U9</a></li>		  
 		  <li><a href="{% url 'static_pages' 'location-parents' %}">Location Parents</a></li>
+		  <li><a href="{% url 'static_pages' 'special-club' %}">Spécial Club</a></li>		  
+		  <li><a href="{% url 'static_pages' 'camp-special' %}">Stages U9</a></li>		  
 		  <li><a href="{% url 'static_pages' 'stage-anglais' %}">Stage en immersion Anglais 24h sur 24</a></li>
 		  <li><a href="{% url 'static_pages' 'infos-pratiques' %}">Infos pratiques</a></li>
-		  <li><a href="{% url 'static_pages' 'special-club' %}">Spécial Club</a></li>		  
-		  <li><a href="{% url 'static_pages' 'aides-financieres-possibles' %}">Les aides financières possibles</a></li>
+		  <li><a href="{% url 'static_pages' 'conditions-de-vente' %}">Conditions de vente et d'annulation</a></li>
+		  <li><a href="{% url 'static_pages' 'assurance-desistement' %}">Annulation d'un séjour, assurances</a></li>
 		  <li><a href="{% url 'static_pages' 'parrainages' %}">Parrainages</a></li>
+		  <li><a href="{% url 'static_pages' 'aides-financieres-possibles' %}">Les aides financières possibles</a></li>
+		  
 
 		</ul>
 	      </li>
