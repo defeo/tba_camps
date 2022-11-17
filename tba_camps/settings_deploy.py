@@ -54,12 +54,12 @@ PIECES = {
     'sanitaire_pdf':         '/tba/pdf/Fiche-sanitaire-2019.pdf',
     'autorisation_doc':      '/tba/pdf/2016-autorisation-parentale.doc',
     'autorisation_pdf':      '/tba/pdf/2016-autorisation-parentale.pdf',
-    'margot':                '/tba/pdf/TARIFS-CHALETS-ET-APT-HOTEL-ETE-2021.pdf',
-    'hameau_resa':           '/tba/pdf/Fiche-de-reservation-Hameau-du-Puy-2021.doc',
-    'hameau_resa_pdf':       '/tba/pdf/Fiche-de-reservation-Hameau-du-Puy-2021.pdf',
+    'margot':                '/tba/pdf/TARIFS-CHALETS-ET-APT-HOTEL-ETE-2022.pdf',
+    'hameau_resa':           '/tba/pdf/Fiche-de-reservation-Hameau-du-Puy-2022.doc',
+    'hameau_resa_pdf':       '/tba/pdf/Fiche-de-reservation-Hameau-du-Puy-2022.pdf',
     'hameau_tarif':          '/tba/pdf/tarif-hameau-du-puy-TBA-2017.docx',
     'hameau_tarif_pdf':      '/tba/pdf/renseignements-locations-hameau-du-puy-2022.pdf',
-    'devoluy' :              '/tba/pdf/2021-RESERVATION-EN-DEVOLUY-TARIFS-PUBLICS-ETE.pdf',
+    'devoluy' :              '/tba/pdf/2022-RESERVATION-EN-DEVOLUY-TARIFS-PUBLICS-ETE.pdf',
     'info_pratiques' :       '/tba/pdf/INFOS-PRATIQUES-INSCRIPTION.pdf',
 }
 IMAGES = {
