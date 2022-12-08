@@ -8,6 +8,11 @@ exit
 # On commence par installer quelques dépendences
 apt-get install git python3 python3-venv python3-pip python3-dev libcairo2 libpango1.0-0 libgdk-pixbuf2.0-0 shared-mime-info libpq-dev libmariadb-dev libffi-dev 
 
+# On crée un utilisateur de système pour faire tourner le serveur sans
+# privilèges, et on se place dans son home
+adduser --system tba
+cd ~tba
+
 # On télécharge les sources du site.  Il faut avoir accès au repo
 # (privé) sur github.  Si vous lisez ce fichier, normalement vous
 # savez déjà comment y avoir accès. Sinon, me demander.
@@ -55,10 +60,14 @@ export HOST_NAME=
 ########## PRÉPARATION DU SERVEUR DJANGO
 
 # Le serveur Django va tourner en local sur le port 8001 (configuré
-# dans gunicorn_start).
+# dans gunicorn_start) sous le user tba (configuré dans
+# supervisor_tba_camps.conf)
 
 # On copie les fichiers statiques dans leur emplacement définitif
 ./manage.py collectstatic
+
+# On donne les droits en écriture dans le dossier uploads au serveur
+chown tba:nogroup uploads
 
 # Ouvrir le ficheir gunicorn_start et configurer la base de données et
 # l'adresse du site comme indiqué dans le fichier.
