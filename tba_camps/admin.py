@@ -243,7 +243,7 @@ class DossierAdmin(ExportMixin, admin.ModelAdmin):
                 ('supplement', 'motif'),
                 ('desc_swag', 'prix_swag'),
                 ('prix_total', 'acompte', 'acompte_stagiaires', 'acompte_total', 'mode', 'reste'),
-                ('notes', 'caf', 'cafno'),
+                ('notes',),# 'caf', 'cafno'),
                 ('mode_solde',),
                 ),
         }),

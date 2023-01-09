@@ -184,12 +184,12 @@ class DossierLastForm(forms.ModelForm):
     required_css_class = 'required'
     confirm = forms.BooleanField(label='Je reconnais', required=True)
     
-    class Media:
-        js = ('js/caf.js',)
+    #class Media:
+    #    js = ('js/caf.js',)
 
     class Meta:
         model = Dossier
-        fields = ['notes', 'caf', 'cafno']
+        fields = ['notes']#, 'caf', 'cafno']
         widgets = {
             'notes': widgets.Textarea(attrs={'rows' : 5}),
             'caf' :  widgets.RadioSelect,
@@ -199,7 +199,7 @@ class DossierLastForm(forms.ModelForm):
         }
 
     def clean_cafno(self):
-        caf = self.cleaned_data['caf']
+        caf = self.cleaned_data.get('caf')
         cafno = self.cleaned_data.get('cafno')
         if caf == 'N':
             cafno = None
