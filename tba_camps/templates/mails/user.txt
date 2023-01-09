@@ -15,7 +15,9 @@ Il contient les inscriptions suivantes :
 suivantes :
 {% for s in obj.semaines.all %}
 - {{ s }}{% if forloop.last %}.{% else %},{% endif %}
-{% endfor %}{% endif %}
+{% endfor %}
+Votre location commence le samedi, le stage de basket commence le dimanche.
+{% endif %}
 
 Pour plus d'informations, veuillez visiter
 
