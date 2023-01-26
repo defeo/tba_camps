@@ -192,7 +192,11 @@ class DossierSemaineFilter(admin.SimpleListFilter):
         if self.value() is None:
             return queryset
         else:
-            return queryset.filter(stagiaire__semaines=self.value()).distinct()
+            sem_stag = queryset.filter(
+                pk = models.OuterRef('pk'),
+                stagiaire__semaines=self.value()
+            )
+            return queryset.filter(models.Exists(sem_stag))
 
 
 class StagiaireInline(admin.TabularInline):
@@ -533,7 +537,11 @@ class SwagSemaineFilter(admin.SimpleListFilter):
         if self.value() is None:
             return queryset
         else:
-            return queryset.filter(dossier__stagiaire__semaines=self.value()).distinct()
+            sem_stag = queryset.filter(
+                pk = models.OuterRef('pk'),
+                dossier__stagiaire__semaines=self.value()
+            )
+            return queryset.filter(models.Exists(sem_stag))
 
 @admin.register(Backpack, site=site)
 class SwagAdmin(ExportMixin, admin.ModelAdmin):
