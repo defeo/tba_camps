@@ -588,11 +588,8 @@ class SemaineColumn():
         self.__name__ = 'S%d' % semaine.ord()
 
     def __call__(self, reversible):
-        stags = self.semaine.stagiaire_set.filter(dossier__etat__in=(PREINSCRIPTION, VALID, COMPLETE),
-                                                      reversible=reversible)
-        # Seems hard to do this in the db, let's use some python
-        stags = list(filter(lambda s: s.first_semaine() == self.semaine, stags))
-        return len(stags)
+        return self.semaine.stagiaire_set.filter(dossier__etat__in=(PREINSCRIPTION, VALID, COMPLETE),
+                                                      reversible=reversible).count()
 
 @admin.register(Reversible, site=site)
 class ReversibleAdmin(admin.ModelAdmin):
