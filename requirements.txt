@@ -49,7 +49,9 @@ django-tinymce==3.5.0
 et-xmlfile==1.1.0
     # via openpyxl
 fonttools[woff]==4.38.0
-    # via weasyprint
+    # via
+    #   fonttools
+    #   weasyprint
 gunicorn==20.1.0
     # via -r requirements.in
 html5lib==1.1
@@ -66,7 +68,7 @@ odfpy==1.4.1
     # via tablib
 openpyxl==3.0.10
     # via tablib
-pillow==9.3.0
+pillow==10.0.1
     # via weasyprint
 psycopg2==2.9.5
     # via -r requirements.in
@@ -95,7 +97,9 @@ sqlparse==0.4.3
 static3==0.7.0
     # via dj-static
 tablib[html,ods,xls,xlsx,yaml]==3.2.1
-    # via django-import-export
+    # via
+    #   django-import-export
+    #   tablib
 tinycss2==1.2.1
     # via
     #   cssselect2
