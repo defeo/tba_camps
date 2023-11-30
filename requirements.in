@@ -3,13 +3,13 @@ django>=4.0
 # Dependencies
 django-ordered-model
 django-import-export
-pycrypto
 markdown
 django-downloadview
 WeasyPrint
 unidecode
 django-tinymce
-django-constance[database]
+django-constance
+
 django-admin-logs
 
 # For production
