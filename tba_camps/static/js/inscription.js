@@ -42,11 +42,14 @@ $(function() {
 	});
 
     $('#id_licencie').on('change', 'input:checked', function() {
-	$('#id_licence, #id_club').trigger($(this).val() == 'O'
-					   ? 'show.licence'
-					   : 'hide.licence');
+	$('#licencie-oui').trigger($(this).val() == 'O'
+				   ? 'show.licence'
+				   : 'hide.licence');
+	$('#licencie-non').trigger($(this).val() == 'N'
+				   ? 'show.licence'
+				   : 'hide.licence');
     });
-    $('#id_licence, #id_club').parent()
+    $('#licencie-oui, #licencie-non')
 	.hide()
 	.on('show.licence hide.licence', function(e, speed) {
 	    $(this)[e.type]('slow');

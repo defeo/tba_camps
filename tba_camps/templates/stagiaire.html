@@ -42,14 +42,29 @@
       {{ form.taille | cgroup }}
       {{ form.reversible | cgroup }}
 
-      <div style="margin-bottom:1em;text-align:center;color:#d00"><strong>ATTENTION!</strong>
-	Bien remplir la taille. Si vous avez un doute, choisir plutôt
-	une taille plus grande.<br>  Taille demandée = Taille
-	donnée</div>
+      <div class="pure-control-group">
+	<label></label>
+	<div style="text-align:center;color:#d00"><strong>ATTENTION!</strong>
+	  Bien remplir la taille. Si vous avez un doute, choisir plutôt
+	  une taille plus grande.<br>  Taille demandée = Taille
+	  donnée</div>
+      </div>
 
       {{ form.licencie | cgroup }}
+      <div id="licencie-oui">
       {{ form.licence | cgroup }}
       {{ form.club | cgroup }}
+      </div>
+      <div id="licencie-non" class="pure-control-group">
+	<label></label>
+	<div style="text-align:justify"><strong>Vous n’êtes pas licencié basket FFBB ou licencié à
+	    l’étranger</strong>, vous devez fournir un certificat médical
+	  et vous devrez obligatoirement vous inscrire avant le début du
+	  stage au tournoi 3X3 OPEN START JUNIORLEAGUE organisé par TBA
+	  et qui est enregistré sur le site de la FFBB, rubrique 3x3,
+	  trouver un tournoi (coût de l’inscription au tournoi 2 €)</div>
+      </div>
+      
       {{ form.niveau | cgroup }}
       {{ form.venu | cgroup }}
     </fieldset>
