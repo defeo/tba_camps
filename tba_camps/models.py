@@ -473,6 +473,8 @@ class Stagiaire(ModelWFiles):
                                                ])
     licence = models.CharField('Numéro de licence', max_length=31, blank=True)
     club = models.CharField('Club', max_length=255, blank=True)
+    regime = models.CharField('Lequel?', max_length=1023, blank=True,
+                              help_text='Décrivez les allergies ou régime alimentaires du stagiaire.')
     ###
     semaines = models.ManyToManyField(Semaine, db_index=True)
     formule = models.ForeignKey(Formule, on_delete=models.PROTECT)

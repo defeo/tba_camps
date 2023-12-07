@@ -120,7 +120,7 @@ li.stagiaire .nom {
 
 /************* Forms **************/
 /* Also brittle */
-#id_sexe div, #id_licencie div, #id_venu div, 
+#id_sexe div, #id_licencie div, #id_venu div, #id_has_regime div,
 #id_navette_a div, #id_navette_r div, #id_caf div { display: inline; }
 
 #id_formule { font-weight: bold }
