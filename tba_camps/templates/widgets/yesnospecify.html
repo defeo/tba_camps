@@ -1,0 +1,7 @@
+<div class="yesnospecify" data-for="{{ widget.attrs.id }}">
+  <div class="yns_radio">
+    <label><input id="{{ widget.attrs.id }}_yes" class="yns_yes" type="radio" name="{{ widget.name }}_yesnospecify" required {% if widget.value %}checked{% endif %}> Oui</label>
+    <label><input id="{{ widget.attrs.id }}_no" class="yns_no" type="radio" name="{{ widget.name }}_yesnospecify" required {% if widget.value == '' %}checked{% endif %}> Non</label>
+  </div>
+  {% include "django/forms/widgets/text.html" %}
+</div>

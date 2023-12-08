@@ -55,18 +55,6 @@ $(function() {
 	    $(this)[e.type]('slow');
 	    $(this).find('input').prop('required', e.type == 'show');
 	});
-
-    $('#id_has_regime').on('change', 'input:checked', function() {
-	$('#id_regime').trigger($(this).val() == 'O'
-				? 'show.regime'
-				: 'hide.regime');
-    });
-    $('#id_regime').parent()
-	.hide()
-	.on('show.regime hide.regime', function(e, speed) {
-	    $(this)[e.type]('slow');
-	    $(this).find('input').prop('required', e.type == 'show');
-	});
 	
     $('#id_assurance').on('change', function() {
         $('#id_assurance_confirm').trigger('change.assurance');
@@ -114,7 +102,6 @@ $(function() {
     // Trigger events if dependee fields are checked
     $('#id_formule input:checked, #id_semaines input:checked, #id_hebergement input:checked').trigger('change');
     $('#id_licencie input:checked').trigger('change');
-    $('#id_has_regime input:checked').trigger('change');
     // Always trigger assurance
     $('#id_assurance_confirm').trigger('change.assurance');    
 

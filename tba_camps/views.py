@@ -259,9 +259,6 @@ class StagiaireForm(forms.ModelForm):
     taille = forms.Field(label='Taille (cm)', required=True, widget=widgets.NumberInput)
     reversible = my_widgets.ReversibleField(required=True,
                                             label="Taille de l'ensemble Réversible")
-    has_regime = forms.ChoiceField(label='Allergie ou régime alimentaire',
-                                   widget=widgets.RadioSelect,
-                                   choices=[('O','Oui'), ('N','Non')])
     assurance_confirm = forms.BooleanField(required=False)
 
     class Meta:
@@ -276,6 +273,7 @@ class StagiaireForm(forms.ModelForm):
         widgets = {
             'sexe' : widgets.RadioSelect,
             'naissance' : my_widgets.DatePicker,
+            'regime' : my_widgets.YesNoSpecify(attrs={'placeholder': 'lequel?'}),
             'assurance' :  widgets.RadioSelect,
             'navette_a' : widgets.RadioSelect,
             'navette_r' : widgets.RadioSelect,
@@ -295,9 +293,6 @@ class StagiaireForm(forms.ModelForm):
         lic = self.initial.get('licence')
         if lic is not None:
             self.initial['licencie'] = 'O' if lic else 'N'
-        reg = self.initial.get('regime')
-        if reg is not None:
-            self.initial['has_regime'] = 'O' if reg else 'N'
 
     def clean_formule(self):
         formule = self.cleaned_data['formule']
@@ -318,9 +313,6 @@ class StagiaireForm(forms.ModelForm):
             for f in ('licence', 'club'):
                 if not cleaned_data.get(f):
                     self.add_error(f, self.error_class([_('This field is required.')]))
-        if cleaned_data.get('has_regime') == 'O':
-            if not cleaned_data.get('regime'):
-                self.add_error('regime', self.error_class([_('This field is required.')]))
         formule = cleaned_data.get('formule')
         if formule:
             if not formule.affiche_train:

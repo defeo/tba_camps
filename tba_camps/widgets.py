@@ -229,3 +229,19 @@ class FileInput(forms.widgets.FileInput):
             text_s  = t and trunc(t, 30),
         )
 
+### Yes/No/specify widget
+
+class YesNoSpecify(forms.widgets.TextInput):
+    class Media:
+        js = ('js/jquery-ui.min.js',
+              'js/yesnospecify.js',)
+        css = { 'all' : ('css/jquery-ui.min.css',
+                         'css/yesnospecify.css',)}
+
+    template_name = "widgets/yesnospecify.html"
+
+    def format_value(self, value):
+        if value == "" or value is None:
+            return value
+        else:
+            return super().format_value(value)

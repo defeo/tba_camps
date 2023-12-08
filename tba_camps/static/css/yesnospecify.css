@@ -1,0 +1,11 @@
+.yesnospecify .yns_radio {
+    margin-bottom: 4px
+}
+
+.yesnospecify > input {
+    transition:	opacity 0.5s;
+}
+
+.yesnospecify > input:not([required]) {
+    opacity: 0;
+}
