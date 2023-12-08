@@ -117,6 +117,9 @@ li.stagiaire .links a {
 li.stagiaire .nom {
     font-weight: bold
 }
+li.stagiaire .t3X3 {
+    padding: 0 1em;
+}
 
 /************* Forms **************/
 /* Also brittle */

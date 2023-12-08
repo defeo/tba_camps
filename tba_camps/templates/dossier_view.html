@@ -47,6 +47,7 @@
       <div class="nom">{{ s.instance.prenom }} {{ s.instance.nom }}</div>
       <div class="formule"><em>Formule :</em> {{ s.instance.formule }}</div>
       <div class="semaines"><em>Semaines :</em> {{ s.instance.semaines_str }}</div>
+      <div class="t3X3">{% if not s.instance.licence %}<strong>Attention!</strong> {{ s.instance.prenom }} n'est pas licencié{% if s.instance.sexe == 'F' %}e{% endif %} FFBB, n'oubliez pas de l'inscrire au <a target="_blank" href="{{ config.url_3x3 }}">tournoi 3X3 OPEN START JUNIORLEAGUE organisé par TBA</a> (coût 2€).{% endif %}</div>
       <div class="pieces">
 	{% if object.accepts_uploads %}
 	<form action="{% url 'stagiaire_upload' s.instance.pk %}" method="post" class="pure-form pure-form-aligned uploads"

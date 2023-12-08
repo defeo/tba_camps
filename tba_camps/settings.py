@@ -167,6 +167,9 @@ CONSTANCE_CONFIG = OrderedDict([
     ('Commandes_swag', (date(2021, 5, 3),
                        "Date limite pour commander le swag (sacs à dos, etc.)",
                        date)),
+    ('url_3x3', ("https://www.3x3ffbb.com/championship/tournament",
+                 "URL pour s'inscrire au tournoi 3X3.",
+                 str)),
 ])
 
 def SWAG_ON():
