@@ -68,7 +68,7 @@ $(function() {
         var $this = $(this);
         var val = $('#id_assurance input:checked').val() !== '0.00';
         $this.prop('disabled', val);
-        //$this.prop('required', !val);
+        $this.prop('required', !val);
         $this.parent()[val ? 'hide' : 'show']('slow');
     }).parent().hide();
 
