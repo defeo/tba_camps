@@ -605,9 +605,13 @@ class ReversibleAdmin(admin.ModelAdmin):
 ####
 @admin.register(Transport, site=site)
 class TransportAdmin(admin.ModelAdmin):
-    list_display = ('description', 'depart', 'arrivee', 'prix')
+    list_display = ('description', 'depart', 'arrivee', 'prix', 'fs')
     list_editable = ('prix',)
 
     formfield_overrides = {
         models.ManyToManyField: {'widget': widgets.CheckboxSelectMultiple},
     }
+
+    def fs(self, obj):
+        return mark_safe('<br>'.join(str(f) for f in obj.formules.iterator()))
+    fs.short_description = 'Formules'
