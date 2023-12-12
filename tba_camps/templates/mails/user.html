@@ -35,7 +35,6 @@
   <li>{{ s.prenom }} {{ s.nom }} ({{ s.formule }} – {{ s.semaines_str }}){% if forloop.last %}.{% else %},{% endif %}</li>
 {% endfor %}
 </ul>
-{% endif %}
 
 {% if obj.hebergement %}
 <p>Et la réservation en <strong>{{ obj.hebergement }}</strong> pour les semaines suivantes :</p>
@@ -55,6 +54,8 @@
   <p>Pour commander votre swag,
     <a href="{{ obj.get_full_url }}">rendez-vous sur le site de TBA</a>.</p>
 </div>
+{% endif %}
+
 {% endif %}
 
 {% include "includes/messages.html" with object=obj host=settings.HOST %}
