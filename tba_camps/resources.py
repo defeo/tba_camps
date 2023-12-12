@@ -46,7 +46,7 @@ class StagiaireResource(resources.ModelResource):
         model = Stagiaire
         export_base = fields = [
             'nom', 'prenom', 'licence', 'email', 'tel', 'adresse', 'club', 'cp', 'ville', 'sexe', 'naissance', 'age', 'taille', 'regime',
-            'reversible', 'niveau', 'venu', 'lieu', 'formule', 'train', 'navette_a', 'navette_r',
+            'reversible', 'niveau', 'venu', 'lieu', 'formule', 'aller', 'retour',
             'chambre', 'type_chambre', 'num_chambre', 'accompagnateur',
             'pass_covid',
             'nom_parrain', 'noms_parraines', 'date', 'etat', 'lien',

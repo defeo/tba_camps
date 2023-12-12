@@ -14,7 +14,7 @@ from django.template.response import TemplateResponse
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from . import models
-from .models import Dossier, Stagiaire, Formule, Hebergement, Semaine, Swag, Backpack, Towel, Reversible
+from .models import Dossier, Stagiaire, Formule, Hebergement, Semaine, Swag, Backpack, Towel, Reversible, Transport, TransportRetour
 from . import widgets as my_widgets
 from django.utils.html import format_html
 from django.utils.text import format_lazy
@@ -267,18 +267,18 @@ class StagiaireForm(forms.ModelForm):
                       'reversible', 'niveau', 'licence', 'club', 'venu',
                       'regime',
                       'semaines', 'formule', 'assurance',
-                      'chambre', 'accompagnateur', 'train',
-                      'navette_a', 'navette_r',
+                      'chambre', 'accompagnateur',
+                      'aller', 'retour',
                       'nom_parrain', 'noms_parraines']
         widgets = {
             'sexe' : widgets.RadioSelect,
             'naissance' : my_widgets.DatePicker,
             'regime' : my_widgets.YesNoSpecify(attrs={'placeholder': 'lequel?'}),
             'assurance' :  widgets.RadioSelect,
-            'navette_a' : widgets.RadioSelect,
-            'navette_r' : widgets.RadioSelect,
             'venu' :  widgets.RadioSelect,
             'nom_parrain': widgets.TextInput(attrs={'autocomplete': 'other'}),
+            'aller': my_widgets.TransportWidget,
+            'retour': my_widgets.TransportWidget,
         }
         help_texts = {
             'licence': '<a target="_blank" href="http://www.ffbb.com/jouer/recherche-avancee">Chercher sur ffbb.com</a>',
@@ -290,6 +290,7 @@ class StagiaireForm(forms.ModelForm):
 
     def __init__(self, *args, **kwds):
         super().__init__(*args, **kwds)
+        self.fields['aller'].empty_label = self.fields['retour'].empty_label = 'mes propres moyens'
         lic = self.initial.get('licence')
         if lic is not None:
             self.initial['licencie'] = 'O' if lic else 'N'
@@ -315,11 +316,6 @@ class StagiaireForm(forms.ModelForm):
                     self.add_error(f, self.error_class([_('This field is required.')]))
         formule = cleaned_data.get('formule')
         if formule:
-            if not formule.affiche_train:
-                cleaned_data['train'] = 0
-            if not formule.affiche_navette:
-                cleaned_data['navette_a'] = cleaned_data['navette_r'] = 0
-                
             if not formule.affiche_accompagnateur:
                 cleaned_data['accompagnateur'] = ''
             elif not cleaned_data.get('accompagnateur'):
@@ -330,6 +326,10 @@ class StagiaireForm(forms.ModelForm):
                 cleaned_data['assurance_confirm'] = True
             elif not cleaned_data.get('assurance_confirm') and not cleaned_data.get('assurance'):
                 self.add_error('assurance_confirm', self.error_class(['Veuillez confirmer.']))
+
+            for way in ('aller', 'retour'):
+                if cleaned_data[way] and not cleaned_data[way].formules.contains(formule):
+                    self.add_error(way, self.error_class(["Ce transport n'est pas offert avec cette formule"]))
         return cleaned_data
 
 class DossierIsNotBlocked(HasSessionMixin):

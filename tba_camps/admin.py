@@ -3,7 +3,7 @@
 import logging
 from django.contrib import admin
 from ordered_model.admin import OrderedModelAdmin
-from .models import Manager, Semaine, Formule, Hebergement, Dossier, Stagiaire, Message, Backpack, Towel, Reversible
+from .models import Manager, Semaine, Formule, Hebergement, Dossier, Stagiaire, Message, Backpack, Towel, Reversible, Transport
 from .models import PREINSCRIPTION, VALID, COMPLETE
 from import_export.admin import ExportMixin
 from .resources import StagiaireResource, DossierResource, SwagResource, TowelResource
@@ -140,12 +140,12 @@ class FormuleAdmin(OrderedModelAdmin):
     list_display = ('groupe', 'nom', 'description', 'prix', 'acompte',
                     'weekend', 'taxe', 'taxe_gym', 'cotisation',
                     'has_hebergement',
-                    'affiche_train', 'affiche_chambre', 'affiche_navette',
+                    'affiche_chambre',
                     'affiche_accompagnateur', 'publique', 'adulte', 'move_up_down_links')
     list_display_links = ('nom',)
     list_editable = ('prix', 'acompte', 'weekend',
-                     'taxe', 'taxe_gym', 'cotisation', 'has_hebergement', 'affiche_train',
-                     'affiche_chambre', 'affiche_navette',
+                     'taxe', 'taxe_gym', 'cotisation', 'has_hebergement',
+                     'affiche_chambre',
                      'affiche_accompagnateur', 'publique', 'adulte')
     formfield_overrides = {
         models.DecimalField: {'widget': widgets.NumberInput(attrs={'style' : 'width: 6em'})},
@@ -393,8 +393,7 @@ class StagiaireAdmin(ExportMixin, admin.ModelAdmin):
         ('licence', 'club', 'certificat', 'certificat_snail'),
         ('taille', 'reversible'),
         ('niveau', 'lieu'),
-        ('train'),
-        ('navette_a', 'navette_r'),
+        ('aller', 'retour'),
         ('email', 'tel'),
         ('parrain', 'nom_parrain', 'noms_parraines'),
      )
@@ -602,3 +601,13 @@ class ReversibleAdmin(admin.ModelAdmin):
         for s in Semaine.objects.iterator():
             dp.append(SemaineColumn(s))
         return dp
+
+####
+@admin.register(Transport, site=site)
+class TransportAdmin(admin.ModelAdmin):
+    list_display = ('description', 'depart', 'arrivee', 'prix')
+    list_editable = ('prix',)
+
+    formfield_overrides = {
+        models.ManyToManyField: {'widget': widgets.CheckboxSelectMultiple},
+    }

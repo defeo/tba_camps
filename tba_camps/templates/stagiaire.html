@@ -81,9 +81,6 @@
       {{ form.formule | cgroup }}
       {{ form.chambre | cgroup }}
       {{ form.accompagnateur | cgroup }}
-      {{ form.train | cgroup }}
-      {{ form.navette_a | cgroup }}
-      {{ form.navette_r | cgroup }}
     </fieldset>
 
     <p class="note" id="note_cotisation">¹ Une cotisation de
@@ -98,6 +95,15 @@
       dû.</p>
   </div>
   
+  <div id="transport" class="fieldgroup">
+    <h3>Transport vers/de Superdévoluy</h3>
+
+    <fieldset>
+      {{ form.aller | cgroup }}
+      {{ form.retour | cgroup }}
+    </fieldset>
+  </div>
+
   <div id="assurance" class="fieldgroup">
     <h3>Assurance annulation</h3>
     

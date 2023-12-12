@@ -2,6 +2,7 @@
 
 from django.utils.html import format_html
 from django.forms.utils import flatatt
+from django.forms.models import ModelChoiceIteratorValue
 from django.utils.safestring import mark_safe
 from django import forms
 from django.utils.encoding import force_str
@@ -119,12 +120,8 @@ class FormuleField(forms.ModelChoiceField):
         attrs = {}
         if obj.affiche_accompagnateur:
             attrs['data-accompagnateur'] = '1'
-        if obj.affiche_train:
-            attrs['data-train'] = '1'
         if obj.affiche_chambre:
             attrs['data-chambre'] = '1'
-        if obj.affiche_navette:
-            attrs['data-navette'] = '1'
         if obj.needs_assurance:
             attrs['data-assurance'] = '1'
         for field, (val, _) in obj.costs(1).items():
@@ -139,6 +136,21 @@ class FormuleField(forms.ModelChoiceField):
                 description=force_str(obj.description)),
             'attrs': attrs,
             }
+
+### Transport
+
+class TransportWidget(forms.widgets.Select):
+    class Media:
+        js = ('js/inscription.js',)
+            
+    def create_option(self, name, value, *args, **kwds):
+        opt = super().create_option(name, value, *args, **kwds)
+        if (isinstance(value, ModelChoiceIteratorValue)):
+            opt['attrs']['data-formules'] = " ".join(str(f.pk) for f in value.instance.formules.all())
+            opt['attrs']['disabled'] = True
+        else:
+            opt['attrs']['class'] = 'default'
+        return opt
 
 ### Reversible
 

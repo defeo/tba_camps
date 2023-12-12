@@ -89,11 +89,8 @@ class Formule(OrderedModel):
     cotisation = models.DecimalField('Cotisation TBA', default=15, max_digits=10, decimal_places=2)
     weekend = models.DecimalField('Prix weekend', default=0, max_digits=10, decimal_places=2)
     has_hebergement = models.BooleanField("Résa Hébergement", default=False)
-    affiche_train = models.BooleanField("Opt. train", default=False)
     affiche_chambre = models.BooleanField("Opt. 'chambre avec'",
                                           default=False)
-    affiche_navette = models.BooleanField("Opt. navette",
-                                          default=True)
     affiche_accompagnateur = models.BooleanField("Opt. accompagnateur",
                                                  default=False)
     publique = models.BooleanField("Tout publique", default=True)
@@ -445,7 +442,32 @@ class Reversible(models.Model):
     def __str__(self):
         return '%s (%s)' % (self.taille, self.stature())
 
+#### Transport de/a Dévoluy
 
+class Transport(models.Model):
+    description = models.CharField('Description', max_length=255)
+    depart = models.CharField('Départ', max_length=255)
+    arrivee = models.CharField('Arrivée', max_length=255)
+    prix = models.DecimalField('Prix', max_digits=10, decimal_places=2)
+    formules = models.ManyToManyField(Formule)
+
+    def __str__(self):
+        return '%s (%d €)' % (self.verbose_name(), self.prix)
+
+    ## nasty hack to fit with cost computation
+    def verbose_name(self):
+        return '%s %s – %s' % (self.description, self.depart, self.arrivee)
+
+    def name(self):
+        return '%s aller' % self.description
+    
+class TransportRetour(Transport):
+    class Meta:
+        proxy = True
+
+    def name(self):
+        return '%s retour' % self.description
+    
 ### Stagiaire
 
 class Stagiaire(ModelWFiles):
@@ -478,30 +500,15 @@ class Stagiaire(ModelWFiles):
     semaines = models.ManyToManyField(Semaine, db_index=True)
     formule = models.ForeignKey(Formule, on_delete=models.PROTECT)
     accompagnateur = models.CharField("Nom de l'accompagnateur", max_length=255, blank=True)
-    train = models.DecimalField('Supplément train depuis Paris',
-                           max_digits=10, decimal_places=3, default=Decimal('0.000'),
-                           choices=[(Decimal('0.000'), "Pas de supplément"),
-                                    (Decimal('160.000'), 'Aller-retour tarif normal (160€)'),
-                                    (Decimal('80.000'), 'Aller-retour moins de 12 ans (80€)'),
-                                    (Decimal('80.001'), 'Aller tarif normal (80€)'),
-                                    (Decimal('40.000'), 'Aller moins de 12 ans (40€)'),
-                                    (Decimal('80.002'), 'Retour tarif normal (80€)'),
-                                    (Decimal('40.001'), 'Retour moins de 12 ans (40€)')])
     arrivee = models.TimeField('Horaire arrivée', null=True, blank=True)
+    aller = models.ForeignKey(Transport, related_name='aller', null=True, blank=True, on_delete=models.PROTECT)
+    retour = models.ForeignKey(TransportRetour, related_name='retour', null=True, blank=True, on_delete=models.PROTECT)
     chambre = models.CharField('En chambre avec', max_length=255,
                                default='', blank=True)
     type_chambre = models.CharField('Type chambre', max_length=20,
                                     choices=[('Chambre', 'Chambre'), ('Chalet', 'Châlet')],
                                     default='', blank=True)
     num_chambre = models.CharField('Numéro chambre', max_length=10, default='', blank=True)
-    navette_a = models.DecimalField('Navette aller', default=Decimal('0.00'),
-                                    max_digits=10, decimal_places=2,
-                                    choices=[(Decimal('0.00'), 'Non'),
-                                             (Decimal('6.00'), 'Oui (6€)')])
-    navette_r = models.DecimalField('Navette retour', default=Decimal('0.00'),
-                                    max_digits=10, decimal_places=2,
-                                    choices=[(Decimal('0.00'), 'Non'),
-                                             (Decimal('6.00'), 'Oui (6€)')])
     assurance = models.DecimalField('Assurance annulation', default=Decimal('0.00'),
                                     max_digits=10, decimal_places=2,
                                     choices=[(Decimal('0.00'), "Pas d'assurance"),
@@ -576,14 +583,15 @@ class Stagiaire(ModelWFiles):
         costs = OrderedDict((k, (val, ava))
                  for k, (val, ava) in self.formule.costs(sem, weekends).items())
         return costs
-    
+
     def costs(self):
         costs = self.costs_formule()
+        pa = self.aller.prix if self.aller else 0
+        pr = self.retour.prix if self.retour else 0
         costs.update(OrderedDict([
-            (Stagiaire._meta.get_field('assurance')  , (self.assurance, self.assurance)),
-            (Stagiaire._meta.get_field('train')      , (self.train.quantize(Decimal('0.00')), self.train.quantize(Decimal('0.00')) / 2)),
-            (Stagiaire._meta.get_field('navette_a')  , (self.navette_a, self.navette_a)),
-            (Stagiaire._meta.get_field('navette_r')  , (self.navette_r, self.navette_r)),
+            (Stagiaire._meta.get_field('assurance') , (self.assurance, self.assurance)),
+            (self.aller, (pa, pa)),
+            (self.retour, (pr, pr)),
             ]))
         return costs
 

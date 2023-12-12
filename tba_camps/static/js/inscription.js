@@ -8,12 +8,6 @@ $(function() {
 	$('#id_accompagnateur').trigger($this.data('accompagnateur')
 					? 'show.formule'
 					: 'hide.formule');
-	$('#id_train').trigger($this.data('train')
-			       ? 'show.formule'
-			       : 'hide.formule');
-	$('#id_navette_a, #id_navette_r').trigger($this.data('navette')
-						  ? 'show.formule'
-						  : 'hide.formule');
 	$('#assurance').trigger($this.data('assurance')
 				? 'show.formule'
 				: 'hide.formule');
@@ -29,17 +23,28 @@ $(function() {
 				  ? 'show.formule'
 				  : 'hide.formule',
 				  $this.data('taxe'));
+	$('#id_aller, #id_retour').trigger('formule.change', $this.val());
     });
-    $('#id_accompagnateur, #id_train, #id_chambre, #id_navette_a, #id_navette_r').parent()
+    $('#id_accompagnateur, #id_chambre').parent()
 	.add('#assurance, #note_cotisation, #note_taxe_gym, #note_menage')
 	.hide()
 	.on('show.formule hide.formule', function(e, amount) {
-	    $this = $(this);
+	    var $this = $(this);
 	    $this[e.type]('slow');
 	    if (amount) {
 		$this.find('.amount').text(amount.replace(/.00$/, ''));
 	    }
 	});
+    $('#id_aller, #id_retour').on('formule.change', function(e, formule) {
+	var $this = $(this);
+	$this.find('option:not(.default)').each(function(o) {
+	    var $opt = $(this);
+	    var disable = $opt.data('formules').split(' ').indexOf(formule) < 0;
+	    $opt.prop('disabled', disable);
+	    if (disable && $opt.prop('selected'))
+		$this.find('option.default').prop('selected', true);
+	});
+    });
 
     $('#id_licencie').on('change', 'input:checked', function() {
 	$('#licencie-oui').trigger($(this).val() == 'O'
@@ -71,7 +76,7 @@ $(function() {
     $('#id_semaines').on('change', function() {
 	// Function to disable options
 	var shutdown = function ($label, cond, clas) {
-	    $input = $label.find('input');
+	    var $input = $label.find('input');
 	    if (cond) $input.prop('checked', false);
 	    $label.toggleClass(clas || 'complet', cond);
 	    $input.prop('disabled', cond);
