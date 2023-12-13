@@ -110,9 +110,9 @@ class Formule(OrderedModel):
         '''
         Takes a number of weeks, gives back breakdown of costs as:
         
-        { field: (price, advance) }
+        [ field, (price, advance) ]
         '''
-        return OrderedDict([
+        return [
             (Formule._meta.get_field('prix')       , (self.prix * weeks, self.acompte * weeks)),
             (Formule._meta.get_field('weekend')    , (self.weekend * weekends,
                                                          (self.weekend * weekends) / 2)),
@@ -120,7 +120,7 @@ class Formule(OrderedModel):
             (Formule._meta.get_field('taxe_gym')   , (self.taxe_gym * weeks,
                                                          (self.taxe_gym * weeks) / 2 )),
             (Formule._meta.get_field('taxe')       , (self.taxe, self.taxe)),
-            ])
+            ]
 
 class Semaine(models.Model):
     debut = models.DateField('Début de la semaine', unique=True)
@@ -465,6 +465,10 @@ class TransportRetour(Transport):
     class Meta:
         proxy = True
 
+    ## nasty hack to fit with cost computation
+    def verbose_name(self):
+        return '%s %s – %s' % (self.description, self.arrivee, self.depart)
+    
     def name(self):
         return '%s retour' % self.description
     
@@ -580,23 +584,21 @@ class Stagiaire(ModelWFiles):
     def costs_formule(self):
         sem = self.semaines.count()
         weekends = self.semaines.weekend_count()
-        costs = OrderedDict((k, (val, ava))
-                 for k, (val, ava) in self.formule.costs(sem, weekends).items())
-        return costs
+        return self.formule.costs(sem, weekends)
 
     def costs(self):
         costs = self.costs_formule()
         pa = self.aller.prix if self.aller else 0
         pr = self.retour.prix if self.retour else 0
-        costs.update(OrderedDict([
+        costs += [
             (Stagiaire._meta.get_field('assurance') , (self.assurance, self.assurance)),
-            (self.aller, (pa, pa)),
-            (self.retour, (pr, pr)),
-            ]))
+            (self.aller, (pa, pa // 2)),
+            (self.retour, (pr, pr // 2)),
+            ]
         return costs
 
     def desc_costs(self):
-        for field, (val, _) in self.costs().items():
+        for field, (val, _) in self.costs():
             if val:
                 yield {
                     'desc' : field.verbose_name,
@@ -605,15 +607,15 @@ class Stagiaire(ModelWFiles):
                     }
     
     def prix_formule(self):
-        return sum(val for (val, _) in self.costs_formule().values())
+        return sum(val for _, (val, _) in self.costs_formule())
         
     def prix(self):
-        return sum(val for (val, _) in self.costs().values())
+        return sum(val for _, (val, _) in self.costs())
     prix.short_description = 'Total'
 
     def avance(self):
         return min(sum(ava
-                       for (_, ava) in self.costs().values()),
+                       for _, (_, ava) in self.costs()),
                     self.prix())
 
     def save(self, *args, **kwds):

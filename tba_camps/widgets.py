@@ -124,7 +124,7 @@ class FormuleField(forms.ModelChoiceField):
             attrs['data-chambre'] = '1'
         if obj.needs_assurance:
             attrs['data-assurance'] = '1'
-        for field, (val, _) in obj.costs(1).items():
+        for field, (val, _) in obj.costs(1):
             attrs['data-%s' % field.name] = val
 
         return {
