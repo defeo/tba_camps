@@ -42,6 +42,7 @@ EMAIL_PORT = os.environ.get('MAIL_PORT') or '25'
 EMAIL_USE_SSL = os.environ.get('MAIL_USE_SSL') in ['true', 'True', 'yes', 'Y']
 EMAIL_USE_TLS = os.environ.get('MAIL_USE_TLS') in ['true', 'True', 'yes', 'Y'] and not EMAIL_USE_SSL
 
+CONTACT_EMAIL = os.environ.get('MAIL_CONTACT') or 'tba@camps-basket.com'
 FROM_EMAIL = os.environ.get('MAIL_FROM') or 'Camps de basket TBA <tba@camps-basket.com>'
 
 # Pieces PDF, Word, etc.

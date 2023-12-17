@@ -133,6 +133,7 @@ from django.utils.safestring import mark_safe
 ANNEE = (datetime.datetime.now() + datetime.timedelta(60)).year
 ADRESSE = mark_safe("Laure SENEGAL — Camps TBA — 11 rue du verger<br>21200 Sainte Marie La Blanche")
 MAX_FILE_SIZE = 1
+CONTACT_EMAIL = 'tba@camps-basket.com'
 FROM_EMAIL = 'Camps de basket TBA <tba@camps-basket.com>'
 HOST = 'https://www.camps-basket.com'
 USE_CAPTCHA = False

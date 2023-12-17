@@ -341,7 +341,7 @@ class DossierIsNotBlocked(HasSessionMixin):
             messages.error(self.request, format_html(
                 '''Ce dossier ne peut plus être modifié.<br>
                 Veuillez contacter <a href="mailto:{email}">{email}</a> pour toute question.''',
-                email=settings.FROM_EMAIL
+                email=settings.CONTACT_EMAIL
                 ))
             return redirect('dossier_view')
         else:
