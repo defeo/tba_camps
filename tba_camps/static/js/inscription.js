@@ -66,7 +66,7 @@ $(function() {
     });
     $('#id_assurance_confirm').on('change.assurance', function(e) {
         var $this = $(this);
-        var val = $('#id_assurance input:checked').val() !== '0.00';
+        var val = $('#id_assurance input:checked').val() !== '0.00' || !$('#id_formule input:checked').data('assurance');
         $this.prop('disabled', val);
         $this.prop('required', !val);
         $this.parent()[val ? 'hide' : 'show']('slow');
