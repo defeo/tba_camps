@@ -85,10 +85,10 @@ class StagiaireResource(resources.ModelResource):
         return "Oui" if inscr.pass_covid else "Non"
 
     def dehydrate_aller(self, inscr):
-        return "%s – %s" % (inscr.aller.depart, inscr.aller.arrivee) if inscr.aller else None
+        return inscr.aller and inscr.aller.verbose_name()
     
     def dehydrate_retour(self, inscr):
-        return "%s – %s" % (inscr.retour.arrivee, inscr.retour.depart) if inscr.retour else None
+        return inscr.retour and inscr.retour.verbose_name()
     
     # def dehydrate_cp(self, inscr):
     #     return " %s" % inscr.cp
