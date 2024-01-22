@@ -70,7 +70,7 @@ openpyxl==3.1.2
     # via tablib
 packaging==23.2
     # via gunicorn
-pillow==10.1.0
+pillow==10.2.0
     # via weasyprint
 psycopg2==2.9.9
     # via -r requirements.in
