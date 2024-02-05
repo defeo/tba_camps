@@ -23,6 +23,27 @@
     
     <link rel="stylesheet" href="{% static "css/pure-forms+buttons.css" %}">
     <link rel="stylesheet" href="{% static "css/bootstrap.min.css" %}">
+
+    <style>
+      @font-face {
+	  font-family: 'Material Symbols Outlined';
+	  font-style: normal;
+	  src: url({% static "css/material_symbols.woff2" %}) format('woff2');
+      }
+      .symbols {
+	  font-family: 'Material Symbols Outlined';
+	  font-weight: normal;
+	  font-style: normal;
+	  font-size: 20px;  /* Preferred icon size */
+	  display: inline-block;
+	  line-height: 1;
+	  text-transform: none;
+	  letter-spacing: normal;
+	  word-wrap: normal;
+	  white-space: nowrap;
+	  direction: ltr;
+      }
+    </style>
     
     {{ form.media.css }}
     {% block extrahead %}{% endblock %}

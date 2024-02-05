@@ -14,7 +14,7 @@ from django.template.response import TemplateResponse
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from . import models
-from .models import Dossier, Stagiaire, Formule, Hebergement, Semaine, Swag, Backpack, Towel, Reversible, Transport, TransportRetour
+from .models import Dossier, Stagiaire, Formule, Hebergement, Semaine, Swag, Maillot, Short, Complet, Casquette, Reversible, Transport, TransportRetour
 from . import widgets as my_widgets
 from django.utils.html import format_html
 from django.utils.text import format_lazy
@@ -135,10 +135,17 @@ class DossierView(SessionDossierMixin, DetailView):
     
     def get_context_data(self, **kwds):
         stags = SimpleModelFormset(self.object.stagiaire_set, StagiaireUploadForm)
-        bp = SimpleModelFormset(self.object.backpack_set, BackpackFact.Form, extra=1)
-        tw = SimpleModelFormset(self.object.towel_set, TowelFact.Form, extra=1)
-        context = dict(stagiaires=stags, swag=[bp, tw], **kwds)
-        context['form'] = { 'media': stags.media + bp.media + tw.media }
+        #bp = SimpleModelFormset(self.object.backpack_set, BackpackFact.Form, extra=1)
+        #tw = SimpleModelFormset(self.object.towel_set, TowelFact.Form, extra=1)
+        ma = SimpleModelFormset(self.object.maillot_set, MaillotFact.Form, extra=1)
+        for b in ma:
+            for f in b:
+                print(f.field.__dict__)
+        sh = SimpleModelFormset(self.object.short_set, ShortFact.Form, extra=1)
+        co = SimpleModelFormset(self.object.complet_set, CompletFact.Form, extra=1)
+        ca = SimpleModelFormset(self.object.casquette_set, CasquetteFact.Form, extra=1)
+        context = dict(stagiaires=stags, swag=[ma, sh, co, ca], **kwds)
+        context['form'] = { 'media': stags.media + ma.media + sh.media + co.media + ca.media }
         return super().get_context_data(**context)
         
     def get(self, *args, **kwds):
@@ -491,16 +498,16 @@ class SwagForm(forms.ModelForm):
     class Media:
         js = ('js/backpack.js',)
 
-    prenom = forms.CharField(label='Prénom', required=False, widget=forms.TextInput(attrs={
-        'placeholder' : 'sans nom',
-        'size' : Swag.prenom.field.max_length,
-        'maxlength': Swag.prenom.field.max_length,
-        }))
-    numero = forms.CharField(label='Numéro', required=False, widget=forms.TextInput(attrs={
-        'placeholder' : '–',
-        'size' : Swag.numero.field.max_length,
-        'maxlength': Swag.numero.field.max_length,
-        }))
+    # prenom = forms.CharField(label='Prénom', required=False, widget=forms.TextInput(attrs={
+    #     'placeholder' : 'sans nom',
+    #     'size' : Swag.prenom.field.max_length,
+    #     'maxlength': Swag.prenom.field.max_length,
+    #     }))
+    # numero = forms.CharField(label='Numéro', required=False, widget=forms.TextInput(attrs={
+    #     'placeholder' : '–',
+    #     'size' : Swag.numero.field.max_length,
+    #     'maxlength': Swag.numero.field.max_length,
+    #     }))
 
     def clean(self, *args, **kwds):
         if not (settings.SWAG_ON() and settings.SACS_A_DOS_OUVERT()):
@@ -638,8 +645,12 @@ class SwagFactory():
             ]))
         ]
 
-BackpackFact = SwagFactory(Backpack)
-TowelFact = SwagFactory(Towel)
+#BackpackFact = SwagFactory(Backpack)
+#TowelFact = SwagFactory(Towel)
+MaillotFact = SwagFactory(Maillot)
+ShortFact = SwagFactory(Short)
+CompletFact = SwagFactory(Complet)
+CasquetteFact = SwagFactory(Casquette)
 
 ### Handle hebergement
 

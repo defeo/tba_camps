@@ -1,6 +1,6 @@
 import functools
 from import_export import resources, fields, widgets
-from .models import Semaine, Stagiaire, Dossier, Swag, Towel, Reversible
+from .models import Semaine, Stagiaire, Dossier, Swag, Backpack, Towel, Uniform, Short, Casquette,  Reversible
 from django.conf import settings
 from django.urls import reverse
 
@@ -188,7 +188,6 @@ class SwagResource(resources.ModelResource):
     
     class Meta:
         model = Swag
-        export_base = fields = ('prenom', 'numero')
 
     def dehydrate_parent(self, bp):
         return '%s %s' % (bp.dossier.nom, bp.dossier.prenom)
@@ -199,7 +198,30 @@ class SwagResource(resources.ModelResource):
     def dehydrate_stagiaires(self, bp):
         return bp.stagiaires()
 
+    def dehydrate_equipe(self, bp):
+        return bp.get_equipe_display();
+
+class BackpackResource(SwagResource):
+    class Meta:
+        model = Backpack
+        export_base = fields = ('prenom', 'numero')
+
 class TowelResource(SwagResource):
     class Meta:
         model = Towel
         export_base = fields = ('prenom', 'numero', 'color')
+
+class ShortResource(SwagResource):
+    class Meta:
+        model = Short
+        export_base = fields = ('equipe', 'taille')
+
+class UniformResource(SwagResource):
+    class Meta:
+        model = Uniform
+        export_base = fields = ('equipe', 'taille', 'prenom', 'numero')
+
+class CasquetteResource(SwagResource):
+    class Meta:
+        model = Casquette
+        export_base = fields = ('equipe',)

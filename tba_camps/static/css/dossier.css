@@ -202,42 +202,87 @@ li.stagiaire .t3X3 {
     padding: 1ex;
 }
 
+#backpacks .bp-header {
+    margin: 1em 1% 0 1%;
+}
+#backpacks .bp-header * {
+    display: inline-block;
+}
+
 #backpacks .bp-table {
     display: table;
-    margin: 1em;
+    margin: 0 1%;
     padding: 1ex 0;
     border-bottom: solid thin #cc6600;
+    border-collapse: collapse;
+    width: 98%;
 }
-#backpacks .col { display: table-column; }
-#backpacks .last-col { width: 100%; }
-#backpacks .bp-count { text-align: right; }
 #backpacks .bp-row {
     display: table-row;
 }
 #backpacks .bp-row > span {
     display: table-cell;
 }
+#backpacks .bp-row > span input,
+#backpacks .bp-row > span select {
+    width: 100%;
+}
+#backpacks span.bp-buttons {
+    width: max-content;
+    white-space: nowrap;
+}
 #backpacks .header {
     font-weight: bold;
+    color: #666;
+}
+#backpacks .header span {
+    padding-top: 3px;
 }
 
-#backpacks form.inactive select { width: 6.5em; }
-#backpacks form.inactive input[type="text"],
-#backpacks form.inactive select {
+/*#backpacks form:not(.active) select { width: 6.5em; }*/
+#backpacks form.has_original:not(.active) input,
+#backpacks form.has_original:not(.active) select {
     background-color: transparent;
     border-color: transparent;
     box-shadow: none;
     pointer-events: none;
     appearance: none;
 }
-#backpacks form.inactive:not(.has_original) input[type="text"],
-#backpacks form.inactive:not(.has_original) select {
+#backpacks form.empty:not(.active) input,
+#backpacks form.empty:not(.active) select {
+    background-color: transparent;
+    border-color: transparent;
+    box-shadow: none;
+    pointer-events: none;
     color: transparent;
 }
-#backpacks form button { padding: .5em .5em; }
-#backpacks form.inactive button:not(.toggle) { display: none; }
-#backpacks form.inactive button.toggle :nth-child(2) { display: none; }
-#backpacks form.active button.toggle :nth-child(1) { display: none; }
+
+#backpacks button { padding: 1px; }
+#backpacks button.bp-delete {
+    background-color: red;
+    color: white;
+}
+#backpacks form.empty:not(.active) * {
+    height: 0;
+    margin: 0;
+}
+#backpacks form:not(.active) button.bp-cancel,
+#backpacks form:not(.active) button.bp-save,
+#backpacks form:not(.active) button.bp-delete,
+#backpacks form.active button.bp-modify {
+    visibility: hidden;
+}
+
+#backpacks .bp-alt-button {
+    position: relative;
+}
+#backpacks .bp-alt-button button:first-child {
+    position: relative;
+}
+#backpacks .bp-alt-button button {
+    position: absolute;
+    left: 0;
+}
 
 /************* Reversibles **************/
 [for="id_reversible"] {

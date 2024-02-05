@@ -3,10 +3,10 @@
 import logging
 from django.contrib import admin
 from ordered_model.admin import OrderedModelAdmin
-from .models import Manager, Semaine, Formule, Hebergement, Dossier, Stagiaire, Message, Backpack, Towel, Reversible, Transport
-from .models import PREINSCRIPTION, VALID, COMPLETE
+from .models import Manager, Semaine, Formule, Hebergement, Dossier, Stagiaire, Message, Backpack, Towel, Maillot, Short, Complet, Casquette, Reversible, Transport
+from .models import Swag, PREINSCRIPTION, VALID, COMPLETE
 from import_export.admin import ExportMixin
-from .resources import StagiaireResource, DossierResource, SwagResource, TowelResource
+from .resources import StagiaireResource, DossierResource, SwagResource, TowelResource, UniformResource, ShortResource, CasquetteResource
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User, Group
@@ -30,51 +30,16 @@ from django.conf import settings
 from . import grammar
 
 class MyAdmin(admin.AdminSite):
-    def get_urls(self):
-        return super().get_urls() + [path('complet/', self.complet, name='complet')]
+    def get_app_list(self, *args, **kwds):
+        app_list = super().get_app_list(*args, **kwds)
 
-    def complet(self, req):
-        context = self.each_context(req)
+        for app in app_list:
+            app['models'].sort(key = lambda m :
+                               (getattr(m['model'], 'sort_key', float('-inf')), m['name']))
         
-        @staff_member_required
-        @permission_required('tba_camps.change_semaine', raise_exception=True)
-        @ensure_csrf_cookie
-        def handler(req):
-            if not req.method == 'POST':
-                context['title'] = 'Gestion des accomodations'
-                sem = Semaine.objects.all()
-                heb = Hebergement.objects.all()
-                context['semaines'] = sem
-                context['hebergements'] = [{
-                    'heb' : h,
-                    'count' : [{ 'sem': s,
-                                    'complet': h in s.complet.iterator(),
-                                    'inscr': s.inscrits(h),
-                                    'preinscr': s.preinscrits(h),
-                                     } for s in sem]
-                    } for h in heb]
-                
-                return TemplateResponse(req, 'admin/complet.html', context)
-            else:
-                import json
-                try:
-                    j = json.loads(req.body.decode())
-                    heb = Hebergement.objects.get(pk=j['hebergement'])
-                    sem = Semaine.objects.get(pk=j['semaine'])
-                    on = j['on']
-                except:
-                    return HttpResponseBadRequest('Cannot parse')
+        return (app_list)
 
-                if on:
-                    sem.complet.add(heb)
-                else:
-                    sem.complet.remove(heb)
-                return JsonResponse({ 'semaine': sem.pk,
-                                          'complet': [h.pk for h in sem.complet.iterator()] })
-
-        return handler(req)
-
-site = admin.AdminSite()
+site = MyAdmin()
 site.register(Group)
 site.register([Config], ConstanceAdmin)
 site.register(LogEntry, LogEntryAdmin)
@@ -211,19 +176,34 @@ class StagiaireInline(admin.TabularInline):
 
 class SwagInline(admin.TabularInline):
     show_change_link = True
-    fields = ('prenom', 'numero')
     can_delete = True
     extra = 0
     classes = ['swag-set']
-#    template = 'admin/edit_inline/backpacks.html'
 
 class BackpackInline(SwagInline):
+    fields = ('prenom', 'numero')
     model = Backpack
     
 class TowelInline(SwagInline):
     model = Towel
     fields = ('prenom', 'numero', 'color')
 
+class MaillotInline(SwagInline):
+    model = Maillot
+    fields = ('equipe', 'taille', 'prenom', 'numero')
+    
+class ShortInline(SwagInline):
+    model = Short
+    fields = ('equipe', 'taille')
+    
+class CompletInline(SwagInline):
+    model = Complet
+    fields = ('equipe', 'taille', 'prenom', 'numero')
+    
+class CasquetteInline(SwagInline):
+    model = Casquette
+    fields = ('equipe',)
+    
 @admin.register(Dossier, site=site)
 class DossierAdmin(ExportMixin, admin.ModelAdmin):
     class Media:
@@ -237,7 +217,7 @@ class DossierAdmin(ExportMixin, admin.ModelAdmin):
     readonly_fields = ('stagiaires', 'desc_swag', 'prix_swag', 'prix_total', 'reste', 'num', 'acompte_total', 'acompte_stagiaires')
     actions = ( 'bulk_email', )
     save_on_top = True
-    inlines = ( StagiaireInline, BackpackInline, TowelInline )
+    inlines = ( StagiaireInline, MaillotInline, ShortInline, CompletInline, CasquetteInline )
     fieldsets  = (
         (None, {
             'fields' : (
@@ -543,9 +523,8 @@ class SwagSemaineFilter(admin.SimpleListFilter):
             )
             return queryset.filter(models.Exists(sem_stag))
 
-@admin.register(Backpack, site=site)
 class SwagAdmin(ExportMixin, admin.ModelAdmin):
-    list_display = ('prenom', 'numero', 'dossier_link', 'semaines_str', 'stagiaires')
+    list_display = ('dossier_link', 'semaines_str', 'stagiaires')
     list_display_links = None
     list_filter = (SwagSemaineFilter, SwagDossierFilter)
     resource_class = SwagResource
@@ -575,11 +554,28 @@ class SwagAdmin(ExportMixin, admin.ModelAdmin):
         else:
             return super().add_view(request, form_url, extra_context)
 
-@admin.register(Towel, site=site)
 class TowelAdmin(SwagAdmin):
     list_display = ('prenom', 'numero', 'color', 'dossier_link', 'semaines_str', 'stagiaires')
     list_filter = SwagAdmin.list_filter + ('color',)
     resource_class = TowelResource
+
+@admin.register(Short, site=site)
+class ShortAdmin(SwagAdmin):
+    list_display = ('equipe', 'taille', 'dossier_link', 'semaines_str', 'stagiaires')
+    list_filter = SwagAdmin.list_filter + ('equipe',)
+    resource_class = ShortResource
+
+@admin.register(Maillot, Complet, site=site)
+class UniformAdmin(ShortAdmin):
+    list_display = ('equipe', 'taille', 'prenom', 'numero', 'dossier_link', 'semaines_str', 'stagiaires')
+    list_filter = SwagAdmin.list_filter + ('equipe',)
+    resource_class = UniformResource
+
+@admin.register(Casquette, site=site)
+class CasquetteAdmin(SwagAdmin):
+    list_display = ('equipe', 'dossier_link', 'semaines_str', 'stagiaires')
+    list_filter = SwagAdmin.list_filter + ('equipe',)
+    resource_class = CasquetteResource
 
 ####
 class SemaineColumn():

@@ -1,24 +1,32 @@
 <figure>
-  <a href="{{ host }}/tba/backpack.jpg" target="_blank"><img src="{{ host }}/tba/backpack.jpg" alt="photo sac à dos" height="300"></a>
-  <!--a href="{{ host }}/tba/backpack2.jpg" target="_blank"><img src="{{ host }}/tba/backpack2.jpg" alt="photo sac à dos" height="300"></a-->
-  <a href="{{ host }}/tba/towel-w.jpg" target="_blank"><img src="{{ host }}/tba/towel-w.jpg" alt="photo serviette blanche" height="300"></a>
-  <a href="{{ host }}/tba/towel-b.jpg" target="_blank"><img src="{{ host }}/tba/towel-b.jpg" alt="photo serviette bleu ciel" height="300"></a>
+  <a><img src="{{ host }}/tba/sas.png" alt="San Antonio Spurs noir" height="300"></a>
+  <a><img src="{{ host }}/tba/lal.png" alt="Los Angeles Lakers violet" height="300"></a>
+  <a><img src="{{ host }}/tba/gsw.png" alt="Golden State Warriors blanc" height="300"></a>
 </figure>
 
-<p>Gros succès en 2019 et 2020, on renouvelle l'opération sac à dos
-  avec prénom (ou diminutif) et numéro. Deux lignes de texte sont
-  possibles. En plus, cette année il y a possibilité de commander la
-  serviette de bain (dimension 140 × 60) avec les mêmes
-  inscriptions.</p>
+<p>TBA sera encore aux couleurs Américaines en
+  {{ settings.ANNEE }}&hellip; avec la possibilité d’acheter un maillot
+  TBA/NBA à ton NOM et à ton numéro.<p>
 
-<p>Si vous êtes intéressés, vous avez donc la possibilité de commander
-  soit le sac à dos avec votre prénom (ou diminutif) et un numéro,
-  soit la serviette de bain avec votre prénom (ou diminutif) et un
-  numéro.</p>
+<p>On a maintenant 9 maillots avec 6 équipes représentées pour nos
+  maillots TBA/NBA. Consultez
+  <a target="_blank"
+     href="{{ settings.PIECES.catalogue_maillots }}">le catalogue</a>.</p>
 
-<p>Ces articles vous seront remis à votre arrivée au camp mais il
-  faudra commander à l'inscription ou en tout cas avant le
-  {{ config.Commandes_swag | date:"j F"}}.</p>
+<p>Les tarifs sont les suivants (à noter un prix en baisse par rapport
+  à l’année passée):</p>
+  
+<ul style="display: grid; grid-template-columns: 2fr 2fr;">
+  <li>Maillot: 35 €</li>
+  <li>Short: 30 €</li>
+  <li>Ensemble maillot + Short: 59 €</li>
+  <li>Casquette: 10 €</li>
+</ul>
 
-<p>Le prix du sac nominatif ou de la serviette nominative est de
-  29 €.</p>
+<p>Le marquage du prénom (ou du texte de ton choix) se fait uniquement
+  au dos du maillot.  Le numéro sera quant à lui inscrit sur l’avant
+  et l’arrière du maillot ainsi que sur le short.</p>
+
+<p>La commande est possible jusqu’au {{ config.Commandes_swag | date:"j F"}},
+  alors si tu es intéressé(e) , ne tarde pas à passer
+  commande avant qu’il ne soit trop tard&hellip;</p>

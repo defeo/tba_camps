@@ -305,7 +305,7 @@ class Dossier(ModelWFiles):
         return sum((s.avance() for s in self.stagiaire_set.iterator()), Decimal('0.00'))
 
     def get_swag(self):
-        return [self.backpack_set, self.towel_set]
+        return [self.maillot_set, self.short_set, self.complet_set, self.casquette_set]
     
     def prix_swag(self):
         return sum(s.prix() for s in self.get_swag())
@@ -632,12 +632,12 @@ class SwagQuerySet(models.QuerySet):
         return grammar.count(self.model, self.count())
     
     def prix(self):
-        return sum((b.cost() for b in self.iterator()), Decimal('0.00'))
+        return sum((b.cost for b in self.iterator()), Decimal('0.00'))
 
 class Swag(models.Model):
+    sort_key = 100
     dossier = models.ForeignKey(Dossier, on_delete=models.CASCADE)
-    prenom = models.CharField('Prénom', max_length=15, blank=True)
-    numero = models.CharField('Numéro', max_length=5, blank=True)
+    cost = Decimal('29.00')
 
     objects = SwagQuerySet.as_manager()
     
@@ -651,12 +651,9 @@ class Swag(models.Model):
     @classmethod
     def describes(cls):
         return cls._meta.verbose_name_plural
-
-    def cost(self):
-        return Decimal('29.00')
     
     def __str__(self):
-        return self.prenom + (' (%s)' % self.numero) * bool(self.numero)
+        return self.__class__.describe()
 
     def semaines(self):
         return Semaine.objects.filter(stagiaire__dossier=self.dossier).distinct()
@@ -670,14 +667,88 @@ class Swag(models.Model):
 
 class Backpack(Swag):
     masculine = True
+    prenom = models.CharField('Prénom', max_length=15, blank=True)
+    numero = models.CharField('Numéro', max_length=5, blank=True)
     class Meta:
         verbose_name = 'sac à dos'
         verbose_name_plural = 'sacs à dos'
 
 class Towel(Swag):
     masculine = False
+    prenom = models.CharField('Prénom', max_length=15, blank=True)
+    numero = models.CharField('Numéro', max_length=5, blank=True)
     color = models.CharField('Couleur', max_length=20,
                              choices=[('ciel', 'Bleu ciel'), ('blanc', 'Blanc')])
     class Meta:
         verbose_name = 'serviette'
         verbose_name_plural = 'serviettes'
+
+class Uniform(Swag):
+    equipe = models.CharField('Équipe', max_length=40,
+                              choices=[
+                                  ('sanb', 'San Antonio Spurs noir'),
+                                  ('sanw', 'San Antonio Spurs blanc'),
+                                  ('chir', 'Chicago Bulls rouge'),
+                                  ('lalp', 'Los Angeles Lakers violet'),
+                                  ('laly', 'Los Angeles Lakers jaune'),
+                                  ('gsww', 'Golden State Warrios blanc'),
+                                  ('bscg', 'Boston Celtics vert'),
+                                  ('bscw', 'Boston Celtics blanc'),
+                                  ('nykb', 'New York Knicks bleu'),
+                                  ])
+    taille = models.CharField('Taille', max_length=4,
+                              choices=[(x,x) for x in ('4XS', '3XS', '2XS', 'XS', 'S',
+                                                       'M', 'L', 'XL', '2XL', '3XL')])
+    prenom = models.CharField('Prénom', max_length=15, blank=True)
+    numero = models.CharField('Numéro', max_length=2, blank=True)
+    
+    class Meta:
+        abstract = True
+
+class Maillot(Uniform):
+    masculine = True
+    cost = Decimal('35.00')
+    
+    class Meta:
+        verbose_name = 'maillot'
+        verbose_name_plural = 'maillots'
+
+class Short(Uniform):
+    masculine = True
+    prenom = None
+    cost = Decimal('30.00')
+    
+    class Meta:
+        verbose_name = 'short'
+        verbose_name_plural = 'shorts'
+
+class Complet(Uniform):
+    masculine = True
+    cost = Decimal('59.00')
+    
+    class Meta:
+        verbose_name = 'ensemble maillot + short'
+        verbose_name_plural = 'ensembles maillot + short'
+
+class Casquette(Swag):
+    masculine = False
+    equipe = models.CharField('Équipe', max_length=40,
+                              choices=[
+                                  ('sanb', 'San Antonio Spurs noir'),
+                                  ('sanw', 'San Antonio Spurs blanc'),
+                                  ('sano', 'San Antonio Spurs orange'),
+                                  ('chir', 'Chicago Bulls rouge'),
+                                  ('chib', 'Chicago Bulls noir'),
+                                  ('laly', 'Los Angeles Lakers jaune'),
+                                  ('gswb', 'Golden State Warrios bleu'),
+                                  ('gswy', 'Golden State Warrios jaune'),
+                                  ('bscg', 'Boston Celtics vert'),
+                                  ('bscw', 'Boston Celtics blanc'),
+                                  ('nykb', 'New York Knicks bleu'),
+                                  ('nyko', 'New York Knicks orange'),
+                                  ])
+    cost = Decimal('10.00')
+
+    class Meta:
+        verbose_name = 'casquette'
+        verbose_name_plural = 'casquettes'

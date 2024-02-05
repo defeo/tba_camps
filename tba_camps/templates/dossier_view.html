@@ -221,57 +221,67 @@
 {% else %}
   {% if settings.SWAG_ON %}
   <div class="dossier-block" id="backpacks">
-    <h3>Swag personnalisé
+    <h3>Maillots TBA/NBA
       {% if settings.SACS_A_DOS_OUVERT %}
       <small>(à commander avant le {{ config.Commandes_swag | date:"j F"}})</small>
       {% else %}
-      <small>(les commandes de swags sont fermées)</small>
+      <small>(les commandes de maillots sont fermées)</small>
       {% endif %}
     </h3>
 
     {% for s in swag %}
-    <div class="bp-table">
-      {% for k, f in s.base_fields.items %}<div class="col"></div>{% endfor %}
-      <div class="last-col col"></div>
-      <div class="bp-row header">
-	{% for k, f in s.base_fields.items %}
-	<span>{{ f.label }}</span>
-	{% endfor %}
-	<span class="bp-count">{{ s.queryset.describe }}
-	  commandé{{ s.queryset.model.masculine | yesno:",e" }}{{ s | length_is:"2" | yesno:",s" }}</span>
+    <div class="bp-swag">
+      <div class="bp-header">
+	<h4>{{ s.queryset.model.describes.capitalize }}
+	  <small>({{ s.queryset.model.cost }}€)</small>
+	</h4>
+	{% if settings.SACS_A_DOS_OUVERT %}
+	<button class="pure-button bp-create symbols"
+		title="ajouter" type="button">&#xE147;</button>
+	{% endif %}
       </div>
-      {% for b in s %}
-      <form method="post"
-	    action="{{ b.url_modify | default:b.url_create }}"
-	    class="pure-form bp-row {% if b.instance.pk %}has_original{% endif %} inactive">
-	{% for f in b %}
-	<span class="{{ f.name }}">{{ f }}</span>
+      
+      <div class="bp-table">
+	{% for b in s %}
+	<form method="post"
+	      action="{{ b.url_modify | default:b.url_create }}"
+	      class="pure-form bp-row {% if b.instance.pk %}has_original{% else %}empty{% endif %}">
+	  {% for f in b %}
+	  <span class="{{ f.name }}"
+		{% if f.field.max_length %}
+		style="max-width: {{ f.field.max_length }}ex"
+		{% endif %}>{{ f }}</span>
+	  {% endfor %}
+	  <span class="bp-buttons">
+	    {% if settings.SACS_A_DOS_OUVERT %}
+	    <button class="pure-button bp-save pure-button-primary symbols"
+		    title="sauvegarder">&#xE161;</button>
+	    {% if b.instance.pk %}
+	    <button class="pure-button bp-delete symbols"
+		    formaction="{{ b.url_delete }}" title="supprimer">&#xE872;</button>
+	    {% endif %}
+	    <span class="bp-alt-button">
+	      <button class="pure-button bp-cancel symbols"
+		      type="button" title="annuler">&#xE5C9;</button>
+	      {% if b.instance.pk %}
+	      <button class="pure-button bp-modify symbols"
+		      type="button" title="modifier">&#xE3C9;</button>
+	      {% endif %}
+	    </span>
+	    {% endif %}
+	    {% csrf_token %}
+	  </span>
+	</form>
 	{% endfor %}
-	<span>
-	  {% if settings.SACS_A_DOS_OUVERT %}
-	  {% if b.instance.pk %}
-	  <button class="pure-button toggle" type="button">
-	    <span>changer</span>
-	    <span>annuler</span>
-	  </button>
-	  <button class="pure-button pure-button-primary">sauvegarder</button>
-	  <button class="pure-button pure-button-primary"
-		  formaction="{{ b.url_delete }}">supprimer</button>
-	  {% else %}
-	  <button class="pure-button toggle" type="button">
-	    <span><strong>ajouter {{ s.queryset.model.describe }}</strong></span>
-	    <span>annuler</span>
-	  </button>
-	  <button class="pure-button pure-button-primary">sauvegarder</button>
-	  {% endif %}
-	  {% endif %}
-	  {% csrf_token %}
-	</span>
-      </form>
-      {% endfor %}
+	<div class="bp-row header">
+	  {% for k, f in s.base_fields.items %}
+	  <span>{{ f.label }}</span>
+	  {% endfor %}
+	</div>
+      </div>
     </div>
     {% endfor %}
-
+      
     {% include "includes/backpacks.html" %}
   </div>
   {% endif %}
