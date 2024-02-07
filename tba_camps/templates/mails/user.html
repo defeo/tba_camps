@@ -46,7 +46,11 @@
 <p>Votre location commence <u>le samedi</u>, le stage de basket commence le <u>dimanche</u>.</p>
 {% endif %}
 
-{% if settings.SWAG_ON %}
+{% endif %}
+
+{% include "includes/messages.html" with object=obj host=settings.HOST %}
+
+{% if not obj.is_empty and settings.SWAG_ON %}
 <div class="dossier-block">
   <h3>Maillots TBA/NBA</h3>
   {% include "includes/backpacks.html" with host=settings.HOST %}
@@ -55,11 +59,6 @@
     <a href="{{ obj.get_full_url }}#backpacks">rendez-vous sur le site de TBA</a>.</p>
 </div>
 {% endif %}
-
-{% endif %}
-
-{% include "includes/messages.html" with object=obj host=settings.HOST %}
-
 
 <p>Sportivement,</p>
 <h3>Team Basket Association</h3>
