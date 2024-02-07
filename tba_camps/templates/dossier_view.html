@@ -219,6 +219,8 @@
     Confirmer les demandes d'inscription</a>
 </div>
 {% else %}
+  {% include "includes/messages.html" %}
+
   {% if settings.SWAG_ON %}
   <div class="dossier-block" id="backpacks">
     <h3>Maillots TBA/NBA
@@ -285,8 +287,6 @@
     {% include "includes/backpacks.html" %}
   </div>
   {% endif %}
-
-  {% include "includes/messages.html" %}
 {% endif %}
 
 {% endblock %}
