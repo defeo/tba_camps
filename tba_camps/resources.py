@@ -214,7 +214,7 @@ class TowelResource(SwagResource):
 class ShortResource(SwagResource):
     class Meta:
         model = Short
-        export_base = fields = ('equipe', 'taille')
+        export_base = fields = ('equipe', 'taille', 'numero')
 
 class UniformResource(SwagResource):
     class Meta:

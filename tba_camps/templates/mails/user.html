@@ -50,7 +50,7 @@
 
 {% include "includes/messages.html" with object=obj host=settings.HOST %}
 
-{% if not obj.is_empty and settings.SWAG_ON %}
+{% if not obj.is_empty and obj.can_order_swag %}
 <div class="dossier-block">
   <h3>Maillots TBA/NBA</h3>
   {% include "includes/backpacks.html" with host=settings.HOST %}

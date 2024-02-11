@@ -181,28 +181,22 @@ class SwagInline(admin.TabularInline):
     classes = ['swag-set']
 
 class BackpackInline(SwagInline):
-    fields = ('prenom', 'numero')
     model = Backpack
     
 class TowelInline(SwagInline):
     model = Towel
-    fields = ('prenom', 'numero', 'color')
 
 class MaillotInline(SwagInline):
     model = Maillot
-    fields = ('equipe', 'taille', 'prenom', 'numero')
     
 class ShortInline(SwagInline):
     model = Short
-    fields = ('equipe', 'taille')
     
 class CompletInline(SwagInline):
     model = Complet
-    fields = ('equipe', 'taille', 'prenom', 'numero')
     
 class CasquetteInline(SwagInline):
     model = Casquette
-    fields = ('equipe',)
     
 @admin.register(Dossier, site=site)
 class DossierAdmin(ExportMixin, admin.ModelAdmin):
@@ -561,7 +555,7 @@ class TowelAdmin(SwagAdmin):
 
 @admin.register(Short, site=site)
 class ShortAdmin(SwagAdmin):
-    list_display = ('equipe', 'taille', 'dossier_link', 'semaines_str', 'stagiaires')
+    list_display = ('equipe', 'taille', 'numero', 'dossier_link', 'semaines_str', 'stagiaires')
     list_filter = SwagAdmin.list_filter + ('equipe',)
     resource_class = ShortResource
 

@@ -304,9 +304,14 @@ class Dossier(ModelWFiles):
     def avance_stagiaires(self):
         return sum((s.avance() for s in self.stagiaire_set.iterator()), Decimal('0.00'))
 
+    def can_order_swag(self):
+        return (settings.SWAG_ON
+                and settings.SACS_A_DOS_OUVERT
+                and self.etat in (PREINSCRIPTION, VALID))
+
     def get_swag(self):
-        return [self.maillot_set, self.short_set, self.complet_set, self.casquette_set]
-    
+        return [model.objects.filter(dossier=self) for model in Swag._active_swags]
+
     def prix_swag(self):
         return sum(s.prix() for s in self.get_swag())
     
@@ -752,3 +757,5 @@ class Casquette(Swag):
     class Meta:
         verbose_name = 'casquette'
         verbose_name_plural = 'casquettes'
+
+Swag._active_swags = [Maillot, Short, Complet, Casquette]

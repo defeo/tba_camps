@@ -135,17 +135,10 @@ class DossierView(SessionDossierMixin, DetailView):
     
     def get_context_data(self, **kwds):
         stags = SimpleModelFormset(self.object.stagiaire_set, StagiaireUploadForm)
-        #bp = SimpleModelFormset(self.object.backpack_set, BackpackFact.Form, extra=1)
-        #tw = SimpleModelFormset(self.object.towel_set, TowelFact.Form, extra=1)
-        ma = SimpleModelFormset(self.object.maillot_set, MaillotFact.Form, extra=1)
-        for b in ma:
-            for f in b:
-                print(f.field.__dict__)
-        sh = SimpleModelFormset(self.object.short_set, ShortFact.Form, extra=1)
-        co = SimpleModelFormset(self.object.complet_set, CompletFact.Form, extra=1)
-        ca = SimpleModelFormset(self.object.casquette_set, CasquetteFact.Form, extra=1)
-        context = dict(stagiaires=stags, swag=[ma, sh, co, ca], **kwds)
-        context['form'] = { 'media': stags.media + ma.media + sh.media + co.media + ca.media }
+        swag = [SimpleModelFormset(s, SwagFactory._active_swags[s.model].Form, extra=1)
+                for s in self.object.get_swag()]
+        context = dict(stagiaires=stags, swag=swag, **kwds)
+        context['form'] = { 'media': sum((s.media for s in swag), stags.media) }
         return super().get_context_data(**context)
         
     def get(self, *args, **kwds):
@@ -645,12 +638,7 @@ class SwagFactory():
             ]))
         ]
 
-#BackpackFact = SwagFactory(Backpack)
-#TowelFact = SwagFactory(Towel)
-MaillotFact = SwagFactory(Maillot)
-ShortFact = SwagFactory(Short)
-CompletFact = SwagFactory(Complet)
-CasquetteFact = SwagFactory(Casquette)
+SwagFactory._active_swags = { model: SwagFactory(model) for model in Swag._active_swags }
 
 ### Handle hebergement
 
