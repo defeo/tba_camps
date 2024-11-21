@@ -47,8 +47,8 @@ FROM_EMAIL = os.environ.get('MAIL_FROM') or 'Camps de basket TBA <tba@camps-bask
 
 # Pieces PDF, Word, etc.
 PIECES = {
-    'inscription':           '/tba/pdf/Bulletin-inscription-2023.pdf',
-    'TBA':                   '/tba/pdf/TBA-2023.pdf',
+    'inscription':           '/tba/pdf/Bulletin-inscription-2024.pdf',
+    'TBA':                   '/tba/pdf/TBA-2024.pdf',
     'renseignements_doc':    '/tba/pdf/Renseignements-pour-le-camp-2017.doc',
     'renseignements_pdf':    '/tba/pdf/Renseignements-pour-le-camp-2017.pdf',
     'sanitaire_doc':         '/tba/pdf/Fiche-sanitaire-2019.docx',
@@ -56,12 +56,13 @@ PIECES = {
     'autorisation_doc':      '/tba/pdf/2016-autorisation-parentale.doc',
     'autorisation_pdf':      '/tba/pdf/2016-autorisation-parentale.pdf',
     'margot':                '/tba/pdf/TARIFS-CHALETS-ET-APT-HOTEL-ETE-2023.pdf',
-    'hameau_resa':           '/tba/pdf/Fiche-de-reservation-Hameau-du-Puy-2023.doc',
-    'hameau_resa_pdf':       '/tba/pdf/Fiche-de-reservation-Hameau-du-Puy-2023.pdf',
+    'hameau_resa':           '/tba/pdf/Fiche-de-reservation-Hameau-du-Puy-2024.doc',
+    'hameau_resa_pdf':       '/tba/pdf/Fiche-de-reservation-Hameau-du-Puy-2024.pdf',
     'hameau_tarif':          '/tba/pdf/tarif-hameau-du-puy-TBA-2017.docx',
-    'hameau_tarif_pdf':      '/tba/pdf/renseignements-locations-hameau-du-puy-2023.pdf',
-    'devoluy' :              '/tba/pdf/2023-RESERVATION-EN-DEVOLUY-TARIFS-PUBLICS-ETE.pdf',
+    'hameau_tarif_pdf':      '/tba/pdf/renseignements-locations-hameau-du-puy-2024.pdf',
+    'devoluy' :              '/tba/pdf/2024-RESERVATION-EN-DEVOLUY-TARIFS-PUBLICS-ETE.pdf',
     'info_pratiques' :       '/tba/pdf/INFOS-PRATIQUES-INSCRIPTION.pdf',
+    'catalogue_maillots':    '/tba/pdf/maillots_tba_nba.pdf',
 }
 IMAGES = {
     'Plan Dévoluy':          '/tba/images/plan_devoluy.jpg',
