@@ -177,3 +177,8 @@ def SWAG_ON():
     return config.Swag_active
 def SACS_A_DOS_OUVERT():
     return date.today() <= config.Commandes_swag
+
+# Import-export configuration
+from import_export.formats.base_formats import XLSX, CSV
+IMPORT_EXPORT_FORMATS = [XLSX, CSV]
+IMPORT_EXPORT_SKIP_ADMIN_EXPORT_UI = True

@@ -1,8 +1,8 @@
-django>=4.0
+django>=5.0
 
 # Dependencies
 django-ordered-model
-django-import-export
+django-import-export[xlsx]
 markdown
 django-downloadview
 WeasyPrint

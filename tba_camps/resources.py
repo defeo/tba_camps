@@ -5,7 +5,7 @@ from django.conf import settings
 from django.urls import reverse
 
 class ChoiceWidget(widgets.Widget):
-    def __init__(self, choices):
+    def __init__(self, choices, **kwds):
         self.choices = dict(choices)
 
     def render(self, value, obj=None):
@@ -32,7 +32,7 @@ class StagiaireResource(resources.ModelResource):
     date = fields.Field('dossier__date')
     etat = fields.Field('dossier__etat')
     
-    def __new__(cls):
+    def __new__(cls, **kwds):
         newclass = super().__new__(cls)
         export_order = []
         for i, s in enumerate(Semaine.objects.all().order_by('debut')):
@@ -188,6 +188,7 @@ class SwagResource(resources.ModelResource):
     
     class Meta:
         model = Swag
+        fields = ('parent', 'email', 'semaines', 'stagiaires')
 
     def dehydrate_parent(self, bp):
         return '%s %s' % (bp.dossier.nom, bp.dossier.prenom)
@@ -204,24 +205,24 @@ class SwagResource(resources.ModelResource):
 class BackpackResource(SwagResource):
     class Meta:
         model = Backpack
-        export_base = fields = ('prenom', 'numero')
+        fields = SwagResource.Meta.fields + ('prenom', 'numero')
 
 class TowelResource(SwagResource):
     class Meta:
         model = Towel
-        export_base = fields = ('prenom', 'numero', 'color')
+        fields = SwagResource.Meta.fields + ('prenom', 'numero', 'color')
 
 class ShortResource(SwagResource):
     class Meta:
         model = Short
-        export_base = fields = ('equipe', 'taille', 'numero')
+        fields = SwagResource.Meta.fields + ('equipe', 'taille', 'numero')
 
 class UniformResource(SwagResource):
     class Meta:
         model = Uniform
-        export_base = fields = ('equipe', 'taille', 'prenom', 'numero')
+        fields = SwagResource.Meta.fields + ('equipe', 'taille', 'prenom', 'numero')
 
 class CasquetteResource(SwagResource):
     class Meta:
         model = Casquette
-        export_base = fields = ('equipe',)
+        fields = SwagResource.Meta.fields + ('equipe',)
