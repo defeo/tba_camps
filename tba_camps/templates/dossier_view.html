@@ -158,7 +158,7 @@
     <tbody>
       <tr>
 	<td>Réservation <strong>{{ object.hebergement }}</strong> ({{ object.semaines_str }})</td>
-	<td class="price">{% if object.prix_hebergement %}{{ object.prix_hebergement }}€{% else %}<em>en attente</em>{% endif %}</td>
+	<td class="price">{% if object.prix_hebergement %}{{ object.prix_hebergement }}€{% else %}<em>en attente <small>(tarif sous 24h)</small></em>{% endif %}</td>
       </tr>
     </tbody>
     {% endif %}
