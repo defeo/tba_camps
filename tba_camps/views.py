@@ -28,6 +28,7 @@ from django_downloadview import ObjectDownloadView
 from django.urls import include, path
 from .forms import SimpleModelFormset
 from django.views.static import serve
+from constance import config
 
 ### Register email
 
@@ -281,7 +282,8 @@ class StagiaireForm(forms.ModelForm):
             'retour': my_widgets.TransportWidget,
         }
         help_texts = {
-            'licence': '<a target="_blank" href="http://www.ffbb.com/jouer/recherche-avancee">Chercher sur ffbb.com</a>',
+            'licence': format_lazy('<a target="_blank" href="{}">Chercher sur ffbb.com</a>',
+                                   config.licence_search),
             'assurance': format_lazy('<a href="{}" target="_blank">Voir conditions</a>',
                                          reverse_lazy('static_pages',
                                                           args=['assurance-desistement'])),

@@ -171,6 +171,9 @@ CONSTANCE_CONFIG = OrderedDict([
     ('url_3x3', ("https://www.3x3ffbb.com/championship/tournament",
                  "URL pour s'inscrire au tournoi 3X3.",
                  str)),
+    ('licence_search', ("https://ancien.ffbb.com/jouer/recherche-avancee",
+                        "URL pour faire une recherche de licencié",
+                        str)),
 ])
 
 def SWAG_ON():
