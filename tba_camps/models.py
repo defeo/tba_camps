@@ -305,8 +305,8 @@ class Dossier(ModelWFiles):
         return sum((s.avance() for s in self.stagiaire_set.iterator()), Decimal('0.00'))
 
     def can_order_swag(self):
-        return (settings.SWAG_ON
-                and settings.SACS_A_DOS_OUVERT
+        return (settings.SWAG_ON()
+                and settings.SACS_A_DOS_OUVERT()
                 and self.etat in (PREINSCRIPTION, VALID))
 
     def get_swag(self):
