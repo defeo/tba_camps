@@ -3,18 +3,16 @@
   <a><img src="{{ host }}/tba/lal.png" alt="Los Angeles Lakers violet" height="200"></a>
   <a><img src="{{ host }}/tba/gsw.png" alt="Golden State Warriors blanc" height="200"></a>
 </figure>
+<p>TBA sera encore aux couleurs des équipes NBA en
+  {{settings.ANNEE}}&hellip; avec la possibilité d’acheter un maillot
+  TBA/NBA à ton NOM et avec le numéro de ton choix.</p>
 
-<p>TBA sera encore aux couleurs Américaines en
-  {{ settings.ANNEE }}&hellip; avec la possibilité d’acheter un maillot
-  TBA/NBA à ton NOM et à ton numéro.<p>
-
-<p>On a maintenant 9 maillots avec 6 équipes représentées pour nos
+<p>On a maintenant 10 maillots avec 7 équipes représentées pour nos
   maillots TBA/NBA. Consultez
-  <a target="_blank"
-     href="{{ host }}{{ settings.PIECES.catalogue_maillots }}">le catalogue</a>.</p>
+  <a target="_blank" href="{{ host }}{{ settings.PIECES.catalogue_maillots }}">le catalogue</a>.</p>
 
-<p>Les tarifs sont les suivants (à noter un prix en baisse par rapport
-  à l’année passée):</p>
+<p>Les tarifs sont les suivants (à noter que ce sont les mêmes tarifs
+  qu’en {{ settings.ANNEE | add:"-1" }}) :</p>
   
 <ul style="display: grid; grid-template-columns: 2fr 2fr;">
   <li>Maillot: 35 €</li>
@@ -30,3 +28,6 @@
 <p>La commande est possible jusqu’au {{ config.Commandes_swag | date:"j F"}},
   alors si tu es intéressé(e) , ne tarde pas à passer
   commande avant qu’il ne soit trop tard&hellip;</p>
+
+<p>Le règlement se fait avec le solde de ton camp (possible jusqu’au
+  jour d’arrivée).</p>

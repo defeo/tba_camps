@@ -694,12 +694,13 @@ class Uniform(Swag):
                                   ('sanb', 'San Antonio Spurs noir'),
                                   ('sanw', 'San Antonio Spurs blanc'),
                                   ('chir', 'Chicago Bulls rouge'),
+                                  ('gsww', 'Golden State Warrios blanc'),
+                                  ('nykb', 'New York Knicks bleu'),
+                                  ('dalb', 'Dallas Mavericks bleu'),
                                   ('lalp', 'Los Angeles Lakers violet'),
                                   ('laly', 'Los Angeles Lakers jaune'),
-                                  ('gsww', 'Golden State Warrios blanc'),
                                   ('bscg', 'Boston Celtics vert'),
                                   ('bscw', 'Boston Celtics blanc'),
-                                  ('nykb', 'New York Knicks bleu'),
                                   ])
     taille = models.CharField('Taille', max_length=4,
                               choices=[(x,x) for x in ('4XS', '3XS', '2XS', 'XS', 'S',
@@ -741,16 +742,15 @@ class Casquette(Swag):
                               choices=[
                                   ('sanb', 'San Antonio Spurs noir'),
                                   ('sanw', 'San Antonio Spurs blanc'),
-                                  ('sano', 'San Antonio Spurs orange'),
                                   ('chir', 'Chicago Bulls rouge'),
                                   ('chib', 'Chicago Bulls noir'),
-                                  ('laly', 'Los Angeles Lakers jaune'),
                                   ('gswb', 'Golden State Warrios bleu'),
                                   ('gswy', 'Golden State Warrios jaune'),
+                                  ('nykb', 'New York Knicks bleu'),
+                                  ('dalb', 'Dallas Mavericks bleu'),
+                                  ('laly', 'Los Angeles Lakers jaune'),
                                   ('bscg', 'Boston Celtics vert'),
                                   ('bscw', 'Boston Celtics blanc'),
-                                  ('nykb', 'New York Knicks bleu'),
-                                  ('nyko', 'New York Knicks orange'),
                                   ])
     cost = Decimal('10.00')
 
