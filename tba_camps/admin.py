@@ -6,7 +6,7 @@ from ordered_model.admin import OrderedModelAdmin
 from .models import Manager, Semaine, Formule, Hebergement, Dossier, Stagiaire, Message, Backpack, Towel, Maillot, Short, Complet, Casquette, Reversible, Transport
 from .models import Swag, PREINSCRIPTION, VALID, COMPLETE
 from import_export.admin import ExportMixin
-from .resources import StagiaireResource, DossierResource, SwagResource, TowelResource, UniformResource, ShortResource, CasquetteResource
+from .resources import StagiaireResource, DossierResource, SwagResource, TowelResource, UniformResource, ShortResource, CasquetteResource, BackpackResource
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User, Group
@@ -570,6 +570,11 @@ class CasquetteAdmin(SwagAdmin):
     list_display = ('equipe', 'dossier_link', 'semaines_str', 'stagiaires')
     list_filter = SwagAdmin.list_filter + ('equipe',)
     resource_class = CasquetteResource
+
+@admin.register(Backpack, site=site)
+class BackpackAdmin(SwagAdmin):
+    list_display = ('prenom', 'numero', 'dossier_link', 'semaines_str', 'stagiaires')
+    resource_class = BackpackResource
 
 ####
 class SemaineColumn():
