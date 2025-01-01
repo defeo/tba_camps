@@ -243,7 +243,7 @@ class Dossier(ModelWFiles):
     ville = models.CharField(max_length=255, null=True)
     pays = models.CharField(max_length=255, default='France', null=True)
     tel = models.CharField('Téléphone', max_length=20, validators=[
-        RegexValidator(regex='^\+?[\d -\.]{10,}$', message='Numéro invalide')], null=True)
+        RegexValidator(regex=r'^\+?[\d -\.]{10,}$', message='Numéro invalide')], null=True)
     ###
     mode = models.CharField('Mode de règlement', max_length=1023, default='', blank=True)
     mode_solde = models.CharField('Règlement solde', max_length=1023, default='', blank=True)    
