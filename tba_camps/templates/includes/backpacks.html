@@ -1,7 +1,7 @@
 <figure>
   <a><img src="{{ host }}/tba/sas.png" alt="San Antonio Spurs noir" height="200"></a>
+  <a><img src="{{ host }}/tba/images/sac-a-dos.jpg" alt="Sac à dos" height="200"></a>
   <a><img src="{{ host }}/tba/lal.png" alt="Los Angeles Lakers violet" height="200"></a>
-  <a><img src="{{ host }}/tba/gsw.png" alt="Golden State Warriors blanc" height="200"></a>
 </figure>
 <p>TBA sera encore aux couleurs des équipes NBA en
   {{settings.ANNEE}}&hellip; avec la possibilité d’acheter un maillot
@@ -11,6 +11,14 @@
   maillots TBA/NBA. Consultez
   <a target="_blank" href="{{ host }}{{ settings.PIECES.catalogue_maillots }}">le catalogue</a>.</p>
 
+<p>Le marquage du prénom (ou du texte de ton choix) se fait uniquement
+  au dos du maillot.  Le numéro sera quant à lui inscrit sur l’avant
+  et l’arrière du maillot ainsi que sur le short.</p>
+
+<p>En plus, revient en {{settings.ANNEE}} la possibilité de commander
+  un sac à dos TBA personnalisé avec ton prénom (ou le texte de ton
+  choix) et ton numéro.</p>
+
 <p>Les tarifs sont les suivants (à noter que ce sont les mêmes tarifs
   qu’en {{ settings.ANNEE | add:"-1" }}) :</p>
   
@@ -19,11 +27,8 @@
   <li>Short: 30 €</li>
   <li>Ensemble maillot + Short: 59 €</li>
   <li>Casquette: 10 €</li>
+  <li>Sac à dos: 26 €</li>
 </ul>
-
-<p>Le marquage du prénom (ou du texte de ton choix) se fait uniquement
-  au dos du maillot.  Le numéro sera quant à lui inscrit sur l’avant
-  et l’arrière du maillot ainsi que sur le short.</p>
 
 <p>La commande est possible jusqu’au {{ config.Commandes_swag | date:"j F"}},
   alors si tu es intéressé(e) , ne tarde pas à passer

@@ -672,8 +672,10 @@ class Swag(models.Model):
 
 class Backpack(Swag):
     masculine = True
+    cost = Decimal('26.00')
     prenom = models.CharField('Prénom', max_length=15, blank=True)
     numero = models.CharField('Numéro', max_length=5, blank=True)
+
     class Meta:
         verbose_name = 'sac à dos'
         verbose_name_plural = 'sacs à dos'
@@ -758,4 +760,4 @@ class Casquette(Swag):
         verbose_name = 'casquette'
         verbose_name_plural = 'casquettes'
 
-Swag._active_swags = [Maillot, Short, Complet, Casquette]
+Swag._active_swags = [Maillot, Short, Complet, Casquette, Backpack]
