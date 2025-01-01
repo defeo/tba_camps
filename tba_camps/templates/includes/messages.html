@@ -2,64 +2,63 @@
 
 <div class="dossier-block">
   <h3>Merci de votre demande d'inscription</h3>
-
-  {% if object.misses %}
-  <p>Pour valider votre inscription vous devez:
-    {% if object.avance_total %}envoyer un acompte,{% endif %}
-    imprimer, remplir et
-    <a href="{{ host }}{% url 'dossier_view' %}#stagiaires">téléverser</a>
-    l’autorisation parentale et la fiche sanitaire, remplir votre numéro de
-    licence.</p>
-  {% endif %}
-
+  
   {% if object.avance_total and object.acompte_total < object.avance_total %}
-  <p><strong>Merci d’envoyer, avant 8 jours, votre règlement à l’ordre
-      de TBA par courrier à l’adresse suivante, ou faire un
-      virement.</strong></p>
+  <p>Pour valider votre inscription vous devez nous envoyer un acompte
+    avant 8 jours.</p>
 
+  <p><strong>Merci de faire un virement ou d’envoyer, avant 8 jours,
+    votre règlement par chèque à l’ordre de TBA, ou par Chèques
+    Vacances, par courrier à l’adresse suivante.</strong></p>
+  
   <blockquote class="address">{{ settings.ADRESSE }}</blockquote>
 
-  <p>
-    {% if object.avance_total > 50 %}
-    Il peut être réglé avec plusieurs chèques que nous encaissons à un
-    mois d’intervalle.
-    {% endif %}
-    
-    Veuillez noter au verso du ou des chèques le nom du stagiaire,
-    le(s) numéro(s) de
-    semaine(s), et la date d’encaissement désirée.</p>
-
-  <p><strong>Vous pouvez faire un virement, c'est rapide et plus
-      sûr!</strong> Trouvez ici notre
-    <a href="{{ host }}{% url 'protected' settings.PROTECTED.RIB %}"><strong>RIB</strong></a>.
-
+  <p><strong>Voici notre
+      <a href="{{ host }}{% url 'protected' settings.PROTECTED.RIB %}">RIB</a></strong>
+      pour les virements.
     Vous pouvez prévoir plusieurs virements à 1 mois d’intervalle.
-      Vous pourrez régler votre solde de la même façon.</p>
+    <strong>L’important est qu’un premier virement valide votre
+      inscription.</strong>
+  </p>
   
-  {% if object.avance_total > 50 %}
-   <p>TBA accepte les Chèques Vacances, coupons sports ANCV, et vous
-     envoie toute facture pour les Comités d’Entreprise. TBA n’accepte
-     plus les bons CAF et le dispositif VACAF, notre structure
-     administrative ayant changé, nos camps sont maintenant des stages
-     de préparation avec compétition officielle FFBB.</p>
+  <p>Si vous réglez par chèque, vous pouvez aussi régler avec
+    plusieurs chèques que nous encaissons à un mois d’intervalle.
+    Veuillez noter au verso du ou des chèques le nom du stagiaire,
+    le(s) numéro(s) de semaine(s), et la date d’encaissement.</p>
   {% endif %}
-
+  
   {% if object.misses %}
-  <p>Merci de joindre, si vous ne les avez pas téléversées par
-    internet : les autorisations parentales, les fiches sanitaires,
-    et votre numéro de licence FFBB. Si vous n’êtes pas licencié(e)
-    FFBB, ils nous faut un certificat de non contre-indication à la
-    pratique du basket-ball.</p>
-  {% endif %}
+  <p>Vous devez maintenant imprimer, remplir et
+    <a href="{{ host }}{% url 'dossier_view' %}#stagiaires">téléverser</a>
+    l’autorisation parentale et la fiche sanitaire.</p>
   
+  {% if object.misses_certificat %}
+  <p>Vous avez indiqué que un ou plusieurs des stagiaires ne sont pas
+    licencié(e)s FFBB. Merci de 
+    <a href="{{ host }}{% url 'dossier_view' %}#stagiaires">téléverser</a>
+    un certificat de non contre-indication à la pratique du basket-ball pour eux.
+  </p>
   {% endif %}
 
+  <p>Si vous avez un problème pour téléverser les pièces, faites nous les
+    parvenir par mail ou par courrier.</p>
+  {% endif %}
+  
   {% if object.hebergement and object.hebergement.managed == modes_h.EXTERNAL %}
   <hr>
   <p>N’oubliez pas de réserver votre hebergement en
       <strong>{{ object.hebergement }}</strong>&nbsp;!</p>
     {{ object.hebergement.md_commentaire }}
   {% endif %}
+
+  {% if object.avance_total > 50 %}
+   <p>TBA accepte les Chèques Vacances, coupons sports ANCV, et vous
+     envoie toute facture pour les Comités d’Entreprise. TBA n’accepte
+     plus les bons CAF et le dispositif VACAF, notre structure
+     administrative ayant changé, nos camps sont maintenant des stages
+     de préparation avec compétition officielle FFBB (Tournoi 3x3
+     Juniorleague).</p>
+   {% endif %}
 
 </div>
 

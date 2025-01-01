@@ -298,6 +298,9 @@ class Dossier(ModelWFiles):
     def misses(self):
         return any(s.misses() for s in self.stagiaire_set.iterator())
 
+    def misses_certificat(self):
+        return any(s.misses_certificat() for s in self.stagiaire_set.iterator())
+
     def prix_stagiaires(self):
         return sum((s.prix() for s in self.stagiaire_set.iterator()), Decimal('0.00'))
 
