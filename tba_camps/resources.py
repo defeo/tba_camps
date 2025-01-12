@@ -112,7 +112,7 @@ class DossierResource(resources.ModelResource):
     acompte_total = fields.Field()
     reste = fields.Field()
     
-    def __new__(cls):
+    def __new__(cls, **kwds):
         newclass = super().__new__(cls)
         export_order = []
         for i, s in enumerate(Semaine.objects.all().order_by('debut')):
