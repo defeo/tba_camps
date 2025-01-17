@@ -8,7 +8,7 @@ class ChoiceWidget(widgets.Widget):
     def __init__(self, choices, **kwds):
         self.choices = dict(choices)
 
-    def render(self, value, obj=None):
+    def render(self, value, obj=None, **kwargs):
         if value is None:
             return ''
         return self.choices.get(value)
