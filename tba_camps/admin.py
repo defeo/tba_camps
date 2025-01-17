@@ -211,7 +211,7 @@ class DossierAdmin(ExportMixin, admin.ModelAdmin):
     readonly_fields = ('stagiaires', 'desc_swag', 'prix_swag', 'prix_total', 'reste', 'num', 'acompte_total', 'acompte_stagiaires')
     actions = ( 'bulk_email', )
     save_on_top = True
-    inlines = ( StagiaireInline, MaillotInline, ShortInline, CompletInline, CasquetteInline )
+    inlines = ( StagiaireInline, MaillotInline, ShortInline, CompletInline, CasquetteInline, BackpackInline )
     fieldsets  = (
         (None, {
             'fields' : (
