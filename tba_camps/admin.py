@@ -4,7 +4,7 @@ import logging
 from django.contrib import admin
 from ordered_model.admin import OrderedModelAdmin
 from .models import Manager, Semaine, Formule, Hebergement, Dossier, Stagiaire, Message, Backpack, Towel, Maillot, Short, Complet, Casquette, Reversible, Transport
-from .models import Swag, PREINSCRIPTION, VALID, COMPLETE
+from .models import Swag, CONFIRME, PREINSCRIPTION, VALID, COMPLETE, CANCELED
 from import_export.admin import ExportMixin
 from .resources import StagiaireResource, DossierResource, SwagResource, TowelResource, UniformResource, ShortResource, CasquetteResource, BackpackResource
 from django.contrib.admin.models import LogEntry
@@ -122,12 +122,12 @@ class HebergementAdmin(OrderedModelAdmin):
     list_editable = ('managed',)
 
 class DossierFilter(admin.SimpleListFilter):
-    title = 'Montrer dossiers annulées ou incomplets'
+    title = 'Montrer dossiers:'
     parameter_name = 'canceled'
     template = 'filter_no_by.html'
     
     def lookups(self, req, model):
-        return ( (None, 'Non',), ('y', 'Oui') )
+        return ( (None, 'Affichage par défaut',), ('p', 'Préinscriptions incomplètes'), ('c', 'Annulés'), ('a', 'Tous') )
 
     # http://stackoverflow.com/questions/851636/default-filter-in-django-admin/3783930#3783930
     def choices(self, cl):
@@ -141,8 +141,12 @@ class DossierFilter(admin.SimpleListFilter):
             }
     
     def queryset(self, req, queryset):
-        if self.value() == 'y':
+        if self.value() == 'a':
             return queryset
+        elif self.value() == 'p':
+            return queryset.filter(etat=CONFIRME)
+        elif self.value() == 'c':
+            return queryset.filter(etat=CANCELED)
         else:
             return queryset.filter(etat__in=(PREINSCRIPTION, VALID, COMPLETE))
 
@@ -206,7 +210,7 @@ class DossierAdmin(ExportMixin, admin.ModelAdmin):
     list_display   = ('nom', 'prenom', 'stagiaires_short', 'semaines_str', 'hebergement', 'prix_hebergement', 'prix_total', 'acompte', 'acompte_total', 'reste', 'etat', 'date', 'date_valid')
     list_display_links = ('nom', 'prenom')
     list_editable  = ('prix_hebergement', 'acompte', 'etat')
-    list_filter    = ('date', 'etat', DossierFilter, DossierSemaineFilter)
+    list_filter    = ('date', DossierFilter, DossierSemaineFilter)
     search_fields  = ('nom', 'prenom', 'email', 'stagiaire__nom', 'stagiaire__prenom')
     readonly_fields = ('stagiaires', 'desc_swag', 'prix_swag', 'prix_total', 'reste', 'num', 'acompte_total', 'acompte_stagiaires')
     actions = ( 'bulk_email', )
@@ -314,12 +318,12 @@ class DossierAdmin(ExportMixin, admin.ModelAdmin):
 ####
 
 class StagiaireFilter(admin.SimpleListFilter):
-    title = 'Montrer dossiers annulées ou incomplets'
+    title = 'Montrer dossiers:'
     parameter_name = 'canceled'
     template = 'filter_no_by.html'
     
     def lookups(self, req, model):
-        return ( (None, 'Non',), ('y', 'Oui') )
+        return ( (None, 'Affichage par défaut',), ('p', 'Préinscriptions incomplètes'), ('c', 'Annulés'), ('a', 'Tous') )
 
     # http://stackoverflow.com/questions/851636/default-filter-in-django-admin/3783930#3783930
     def choices(self, cl):
@@ -333,8 +337,12 @@ class StagiaireFilter(admin.SimpleListFilter):
             }
     
     def queryset(self, req, queryset):
-        if self.value() == 'y':
+        if self.value() == 'a':
             return queryset
+        elif self.value() == 'p':
+            return queryset.filter(dossier__etat=CONFIRME)
+        elif self.value() == 'c':
+            return queryset.filter(dossier__etat=CANCELED)
         else:
             return queryset.filter(dossier__etat__in=(PREINSCRIPTION, VALID, COMPLETE))
         
