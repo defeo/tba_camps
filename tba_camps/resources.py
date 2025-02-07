@@ -23,14 +23,14 @@ class SemaineField(fields.Field):
 
 class StagiaireResource(resources.ModelResource):
     email = fields.Field('dossier__email')
-    tel = fields.Field()
+    tel = fields.Field('dossier__tel')
     adresse = fields.Field('dossier__adresse')
     cp = fields.Field('dossier__cp')
     ville = fields.Field('dossier__ville')
     age = fields.Field()
-    lien = fields.Field()
     date = fields.Field('dossier__date')
     etat = fields.Field('dossier__etat')
+    lien = fields.Field()
     
     def __new__(cls, **kwds):
         newclass = super().__new__(cls)
@@ -51,10 +51,6 @@ class StagiaireResource(resources.ModelResource):
             'pass_covid',
             'nom_parrain', 'noms_parraines', 'date', 'etat', 'lien',
             ]
-        widgets = {
-            'naissance' : { 'format' : '%x'},
-            'date' : { 'format' : '%x %X'},
-        }
         
     @classmethod
     def widget_from_django_field(cls, f, default=widgets.Widget):
@@ -63,13 +59,15 @@ class StagiaireResource(resources.ModelResource):
             result = functools.partial(ChoiceWidget, choices=f.choices)
         return result
 
-    # Hack around bad xlsx export
-    def dehydrate_tel(self, inscr):
-        return " %s" % inscr.dossier.tel
+    def dehydrate_naissance(self, inscr):
+        return inscr.naissance.strftime('%x')
 
     def dehydrate_age(self, inscr):
         return inscr.age()
     
+    def dehydrate_date(self, inscr):
+        return inscr.dossier.date.strftime('%x %X')
+
     def dehydrate_formule(self, inscr):
         if inscr.formule is None:
             return ''
@@ -133,9 +131,6 @@ class DossierResource(resources.ModelResource):
             'email', 'tel', 'adresse', 'cp', 'ville',
             'date', 'etat', 'lien',
             ]
-        widgets = {
-            'date' : { 'format' : '%x %X'},
-        }
         
     @classmethod
     def widget_from_django_field(cls, f, default=widgets.Widget):
@@ -144,10 +139,9 @@ class DossierResource(resources.ModelResource):
             result = functools.partial(ChoiceWidget, choices=f.choices)
         return result
 
-    # Hack around bad xlsx export
-    def dehydrate_tel(self, inscr):
-        return " %s" % inscr.tel
-
+    def dehydrate_date(self, inscr):
+        return inscr.date.strftime('%x %X')
+    
     def dehydrate_stagiaires(self, inscr):
         return ",\n".join("%s %s" % (s.nom, s.prenom) for s in inscr.stagiaire_set.iterator())
     
