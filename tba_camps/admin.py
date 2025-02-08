@@ -121,34 +121,34 @@ class HebergementAdmin(OrderedModelAdmin):
     list_display = ('nom', 'md_commentaire', 'managed', 'move_up_down_links')
     list_editable = ('managed',)
 
-class DossierFilter(admin.SimpleListFilter):
-    title = 'Montrer dossiers:'
-    parameter_name = 'canceled'
-    template = 'filter_no_by.html'
-    
-    def lookups(self, req, model):
-        return ( (None, 'Affichage par défaut',), ('p', 'Préinscriptions incomplètes'), ('c', 'Annulés'), ('a', 'Tous') )
+class EtatFilter(admin.FieldListFilter):
+    lookup_choices = [
+        (None, 'Affichage par défaut', [PREINSCRIPTION, VALID, COMPLETE]),
+        ([PREINSCRIPTION], Dossier._etat_dict[PREINSCRIPTION], None),
+        ([CONFIRME], Dossier._etat_dict[CONFIRME], None),
+        ([CANCELED], Dossier._etat_dict[CANCELED], None),
+        (list(Dossier._etat_dict.keys()), 'Tous', None),
+    ]
+            
+    def __init__(self, field, request, params, model, model_admin, field_path):
+        self.lookup_kwarg = "%s__exact" % field_path
+        self.lookup_val = params.get(self.lookup_kwarg)
+        super().__init__(field, request, params, model, model_admin, field_path)
+        if not self.used_parameters:
+            self.used_parameters[self.lookup_kwarg] = self.lookup_choices[0][2]
 
-    # http://stackoverflow.com/questions/851636/default-filter-in-django-admin/3783930#3783930
-    def choices(self, cl):
-        for lookup, title in self.lookup_choices:
+    def expected_parameters(self):
+        return [self.lookup_kwarg]
+
+    def choices(self, changelist):
+        for lookup, title, query in self.lookup_choices:
             yield {
-                'selected': self.value() == lookup,
-                'query_string': cl.get_query_string({
-                    self.parameter_name: lookup,
-                }, []),
-                'display': title,
+                "selected": lookup == self.lookup_val,
+                "query_string": changelist.get_query_string(
+                    {self.lookup_kwarg: lookup}, []
+                ),
+                "display": title,
             }
-    
-    def queryset(self, req, queryset):
-        if self.value() == 'a':
-            return queryset
-        elif self.value() == 'p':
-            return queryset.filter(etat=CONFIRME)
-        elif self.value() == 'c':
-            return queryset.filter(etat=CANCELED)
-        else:
-            return queryset.filter(etat__in=(PREINSCRIPTION, VALID, COMPLETE))
 
 class DossierSemaineFilter(admin.SimpleListFilter):
     title = 'semaines'
@@ -210,7 +210,7 @@ class DossierAdmin(ExportMixin, admin.ModelAdmin):
     list_display   = ('nom', 'prenom', 'stagiaires_short', 'semaines_str', 'hebergement', 'prix_hebergement', 'prix_total', 'acompte', 'acompte_total', 'reste', 'etat', 'date', 'date_valid')
     list_display_links = ('nom', 'prenom')
     list_editable  = ('prix_hebergement', 'acompte', 'etat')
-    list_filter    = ('date', DossierFilter, DossierSemaineFilter)
+    list_filter    = ('date', ('etat', EtatFilter), DossierSemaineFilter)
     search_fields  = ('nom', 'prenom', 'email', 'stagiaire__nom', 'stagiaire__prenom')
     readonly_fields = ('stagiaires', 'desc_swag', 'prix_swag', 'prix_total', 'reste', 'num', 'acompte_total', 'acompte_stagiaires')
     actions = ( 'bulk_email', )
@@ -317,35 +317,6 @@ class DossierAdmin(ExportMixin, admin.ModelAdmin):
 
 ####
 
-class StagiaireFilter(admin.SimpleListFilter):
-    title = 'Montrer dossiers:'
-    parameter_name = 'canceled'
-    template = 'filter_no_by.html'
-    
-    def lookups(self, req, model):
-        return ( (None, 'Affichage par défaut',), ('p', 'Préinscriptions incomplètes'), ('c', 'Annulés'), ('a', 'Tous') )
-
-    # http://stackoverflow.com/questions/851636/default-filter-in-django-admin/3783930#3783930
-    def choices(self, cl):
-        for lookup, title in self.lookup_choices:
-            yield {
-                'selected': self.value() == lookup,
-                'query_string': cl.get_query_string({
-                    self.parameter_name: lookup,
-                }, []),
-                'display': title,
-            }
-    
-    def queryset(self, req, queryset):
-        if self.value() == 'a':
-            return queryset
-        elif self.value() == 'p':
-            return queryset.filter(dossier__etat=CONFIRME)
-        elif self.value() == 'c':
-            return queryset.filter(dossier__etat=CANCELED)
-        else:
-            return queryset.filter(dossier__etat__in=(PREINSCRIPTION, VALID, COMPLETE))
-        
 @admin.register(Stagiaire, site=site)
 class StagiaireAdmin(ExportMixin, admin.ModelAdmin):
     class Media:
@@ -354,7 +325,7 @@ class StagiaireAdmin(ExportMixin, admin.ModelAdmin):
     list_display   = ('nom', 'prenom', 'dossier_link', 'semaines_str', 'formule', 'type_chambre', 'num_chambre', 'prix', 'parrain', 'pieces', 'etat')
     list_display_links = ('nom', 'prenom')
     list_editable  = ('type_chambre', 'num_chambre', 'parrain',)
-    list_filter    = (StagiaireFilter, 'semaines')
+    list_filter    = (('dossier__etat', EtatFilter), 'semaines')
     search_fields  = ('nom', 'prenom', 'dossier__nom', 'dossier__prenom')
     readonly_fields = ('age', 'prix', 'prix_formule', 'email', 'etat', 'tel', 'dossier_link', 'acompte')
     save_on_top = True
