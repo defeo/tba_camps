@@ -20,8 +20,6 @@ diff-match-patch==20241021
     # via django-import-export
 dj-database-url==3.0.1
     # via -r requirements.in
-dj-static==0.0.6
-    # via -r requirements.in
 django==6.0
     # via
     #   -r requirements.in
@@ -78,8 +76,6 @@ sendgrid-django==4.2.0
     # via -r requirements.in
 sqlparse==0.5.5
     # via django
-static3==0.7.0
-    # via dj-static
 tablib[xlsx]==3.9.0
     # via django-import-export
 tinycss2==1.5.1

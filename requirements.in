@@ -15,7 +15,6 @@ django-admin-logs
 # For production
 gunicorn
 mysqlclient
-dj-static
 dj-database-url
 
 # For Heroku
