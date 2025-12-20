@@ -109,6 +109,7 @@ class DossierResource(resources.ModelResource):
     prix_total = fields.Field()
     acompte_total = fields.Field()
     reste = fields.Field()
+    no_dossier = fields.Field(attribute='id', column_name='N° de dossier')
     
     def __new__(cls, **kwds):
         newclass = super().__new__(cls)
@@ -123,7 +124,7 @@ class DossierResource(resources.ModelResource):
     class Meta:
         model = Dossier
         export_base = fields = [
-            'nom', 'prenom', 'stagiaires',
+            'nom', 'prenom', 'no_dossier', 'stagiaires',
             'hebergement', 'prix_hebergement',
             'supplement', 'motif', 'prix_swag',
             'prix_total', 'acompte_total', 'reste',

@@ -18,13 +18,17 @@
       pour les virements.
     Vous pouvez prévoir plusieurs virements à 1 mois d’intervalle.
     <strong>L’important est qu’un premier virement valide votre
-      inscription.</strong>
+      inscription.</strong>  Pensez à mettre votre numéro de dossier
+      (<strong>N° {{ object.id }}</strong>) et le nom et prénom du
+      stagiaire lors du virement.
   </p>
   
   <p>Si vous réglez par chèque, vous pouvez aussi régler avec
     plusieurs chèques que nous encaissons à un mois d’intervalle.
-    Veuillez noter au verso du ou des chèques le nom du stagiaire,
+    Veuillez noter au verso du ou des chèques votre numéro de dossier
+    (<strong>N° {{ object.id }}</strong>), le nom du stagiaire,
     le(s) numéro(s) de semaine(s), et la date d’encaissement.</p>
+  
   {% endif %}
   
   {% if object.misses %}

@@ -18,6 +18,7 @@
     <a href="{% url 'dossier_modify' %}">éditer</a>
   </h3>
   <p><strong>{% if object.titre == 'M' %}M. {% elif object.titre == 'F' %}Mme. {% endif %}{{ object.prenom }} {{ object.nom }}</strong></p>
+  <p><em>N° de dossier:</em> {{ object.id }}</p>
   <p><em>email:</em> {{ object.email }}</p>
   <p><em>Adresse:</em> {{ object.adresse }}, {{ object.cp }} {{ object.ville }}, {{ object.pays }}</p>
   <p><em>Tél:</em> {{ object.tel }}</p>
