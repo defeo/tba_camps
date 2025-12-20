@@ -21,7 +21,7 @@ git clone git@github.com:defeo/tba_camps.git
 # On entre dans le dossier, on installe un environnement virtuel
 # python, et les dépendances du projet
 cd tba_camps
-virtualenv -p python3 ve
+python3 -m venv ve
 . ve/bin/activate
 pip install -r requirements.txt
 
