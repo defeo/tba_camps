@@ -61,7 +61,7 @@ $(function() {
 	    $(this).find('input').prop('required', e.type == 'show');
 	});
 	
-    $('#id_assurance').on('change', function() {
+    $('#assurance').on('change show.formule', function() {
         $('#id_assurance_confirm').trigger('change.assurance');
     });
     $('#id_assurance_confirm').on('change.assurance', function(e) {
