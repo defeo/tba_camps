@@ -763,4 +763,4 @@ class Casquette(Swag):
         verbose_name = 'casquette'
         verbose_name_plural = 'casquettes'
 
-Swag._active_swags = [Maillot, Short, Complet, Casquette], #Backpack]
+Swag._active_swags = [Maillot, Short, Complet, Casquette] #Backpack]
