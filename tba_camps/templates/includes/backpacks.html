@@ -1,7 +1,8 @@
+{% load static %}
 <figure>
-  <a><img src="{{ host }}/tba/sas.png" alt="San Antonio Spurs noir" height="200"></a>
-  <a><img src="{{ host }}/tba/images/sac-a-dos.jpg" alt="Sac à dos" height="200"></a>
-  <a><img src="{{ host }}/tba/lal.png" alt="Los Angeles Lakers violet" height="200"></a>
+  <a><img src="{{ host }}{% static "/images/sas.webp" %}" alt="San Antonio Spurs noir" height="200"></a>
+  <a><img src="{{ host }}{% static "/images/gsw.webp" %}" alt="Golden State Warriors blanc" height="200"></a>
+  <a><img src="{{ host }}{% static "/images/lal.webp" %}" alt="Los Angeles Lakers violet" height="200"></a>
 </figure>
 <p>TBA sera encore aux couleurs des équipes NBA en
   {{settings.ANNEE}}&hellip; avec la possibilité d’acheter un maillot
