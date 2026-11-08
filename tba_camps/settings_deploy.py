@@ -57,12 +57,12 @@ PIECES = {
     'autorisation_pdf':      '/tba/pdf/2016-autorisation-parentale.pdf',
     'margot':                '/tba/pdf/TARIFS-CHALETS-ET-APT-HOTEL-ETE-2023.pdf',
     'hameau_resa':           '/tba/pdf/Fiche-de-reservation-Hameau-du-Puy-2024.doc',
-    'hameau_resa_pdf':       '/tba/pdf/Fiche-de-reservation-Hameau-du-Puy-2025.pdf',
+    'hameau_resa_pdf':       '/tba/pdf/Fiche-de-reservation-Hameau-du-Puy-2026.pdf',
     'hameau_tarif':          '/tba/pdf/tarif-hameau-du-puy-TBA-2017.docx',
     'hameau_tarif_pdf':      '/tba/pdf/renseignements-locations-hameau-du-puy-2024.pdf',
-    'devoluy' :              '/tba/pdf/2025-RESERVATION-EN-DEVOLUY-TARIFS-PUBLICS-ETE.pdf',
+    'devoluy' :              '/tba/pdf/2026-RESERVATION-EN-DEVOLUY.pdf',
     'info_pratiques' :       '/tba/pdf/INFOS-PRATIQUES-INSCRIPTION.pdf',
-    'catalogue_maillots':    '/tba/pdf/maillots_tba_nba-2025.pdf',
+    'catalogue_maillots':    '/tba/pdf/maillots_tba_nba-2026.pdf',
 }
 IMAGES = {
     'Plan Dévoluy':          '/tba/images/plan_devoluy.webp',
