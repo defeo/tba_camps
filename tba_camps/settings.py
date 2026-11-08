@@ -120,8 +120,11 @@ TEMPLATES = [
 
 
 # Mail configuration
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
+MAILERS = {
+    'default': {
+        'BACKEND': 'django.core.mail.backends.console.EmailBackend'
+    }
+}
 
 # Django-recaptcha
 RECAPTCHA_PUBLIC_KEY = 'dummy'

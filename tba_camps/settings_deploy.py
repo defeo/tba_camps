@@ -33,14 +33,19 @@ STATIC_URL = '/django/'
 MAX_FILE_SIZE = 3
 
 # Mail settings
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-
-EMAIL_HOST_USER = os.environ.get('MAIL_USER') or ''
-EMAIL_HOST_PASSWORD = os.environ.get('MAIL_PASSWORD') or ''
-EMAIL_HOST = os.environ.get('MAIL_HOST') or 'localhost'
-EMAIL_PORT = os.environ.get('MAIL_PORT') or '25'
-EMAIL_USE_SSL = os.environ.get('MAIL_USE_SSL') in ['true', 'True', 'yes', 'Y']
-EMAIL_USE_TLS = os.environ.get('MAIL_USE_TLS') in ['true', 'True', 'yes', 'Y'] and not EMAIL_USE_SSL
+MAILERS = {
+    'default': {
+        'BACKEND': 'django.core.mail.backends.smtp.EmailBackend',
+        'OPTIONS': {
+            'host': os.environ.get('MAIL_HOST') or 'localhost',
+            'port': os.environ.get('MAIL_PORT') or '25',
+            'username': os.environ.get('MAIL_USER') or '',
+            'password': os.environ.get('MAIL_PASSWORD') or '',
+            'use_ssl': os.environ.get('MAIL_USE_SSL') in ['true', 'True', 'yes', 'Y'],
+            'use_tls': not(os.environ.get('MAIL_USE_SSL') in ['true', 'True', 'yes', 'Y']),
+        }
+    }
+}
 
 CONTACT_EMAIL = os.environ.get('MAIL_CONTACT') or 'tba@camps-basket.com'
 FROM_EMAIL = os.environ.get('MAIL_FROM') or 'Camps de basket TBA <tba@camps-basket.com>'
