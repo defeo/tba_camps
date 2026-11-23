@@ -705,10 +705,12 @@ class Uniform(Swag):
                                   ('chir', 'Chicago Bulls rouge'),
                                   ('gsww', 'Golden State Warrios blanc'),
                                   ('nykb', 'New York Knicks bleu'),
+                                  ('nykw', 'New York Knicks blanc'),
 #                                  ('dalb', 'Dallas Mavericks bleu'),
                                   ('lalp', 'Los Angeles Lakers violet'),
                                   ('laly', 'Los Angeles Lakers jaune'),
-                                  ('bscg', 'Boston Celtics vert'),
+                                  ('okco', 'Oklahoma City Thunders orange'),
+#                                  ('bscg', 'Boston Celtics vert'),
                                   ('bscw', 'Boston Celtics blanc'),
                                   ])
     taille = models.CharField('Taille', max_length=4,
