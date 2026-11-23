@@ -758,8 +758,10 @@ class Casquette(Swag):
                                   ('gswb', 'Golden State Warrios bleu'),
                                   ('gswy', 'Golden State Warrios jaune'),
                                   ('nykb', 'New York Knicks bleu'),
+                                  ('nykw', 'New York Knicks blanc'),
 #                                  ('dalb', 'Dallas Mavericks bleu'),
                                   ('laly', 'Los Angeles Lakers jaune'),
+                                  ('okco', 'Oklahoma City Thunders orange'),
                                   ('bscg', 'Boston Celtics vert'),
                                   ('bscw', 'Boston Celtics blanc'),
                                   ])
