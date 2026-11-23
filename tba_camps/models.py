@@ -231,7 +231,7 @@ class Dossier(ModelWFiles):
         (CREATION, 'Email non confirmée'),
         (CONFIRME, 'Pré-inscription incomplète'),
         (PREINSCRIPTION, 'Pré-inscription'),
-        (VALID, 'Validé'),
+        (VALID, 'Acompte enregistré'),
         (COMPLETE, 'Complet'),
         (CANCELED, 'Annulé'),
         ])
@@ -259,7 +259,7 @@ class Dossier(ModelWFiles):
     supplement = models.DecimalField('Supplément', default=0, max_digits=10, decimal_places=2)
     motif = models.CharField('Motif du supplément', max_length=255, default='', blank=True)
     date = models.DateTimeField('Date inscription', auto_now_add=True, db_index=True)
-    date_valid = models.DateField('Date validation', null=True, blank=True)
+    date_valid = models.DateField('Date acompte', null=True, blank=True)
     ###
     semaines = models.ManyToManyField(Semaine, blank=True, db_index=True)
     hebergement = models.ForeignKey(Hebergement, null=True, blank=True,
@@ -366,7 +366,7 @@ class Dossier(ModelWFiles):
 
         # S'il s'agit d'une mise à jour
         if self.pk is not None:
-            # Si l'inscription a été validée, enregistre la date
+            # Si l'acompte a été enregistré, enregistre la date
             if self.etat in (VALID, COMPLETE) and self.date_valid is None:
                 self.date_valid = datetime.datetime.now()
             
