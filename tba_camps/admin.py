@@ -63,7 +63,7 @@ class MyUserAdmin(UserAdmin):
 # Model Admins
 @admin.register(Semaine, site=site)
 class SemaineAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'commentaire', 'places', 'preinscrits',
+    list_display = ('code', 'range', 'commentaire', 'places', 'preinscrits',
                     'inscrits', 'get_inscr_formule', 'get_inscr_hbgt',
                     'restantes', 'fermer',
                     'get_hbgt_complet', 'get_formule_complet')
@@ -559,7 +559,7 @@ class BackpackAdmin(SwagAdmin):
 class SemaineColumn():
     def __init__(self, semaine):
         self.semaine = semaine
-        self.__name__ = 'S%d' % semaine.ord()
+        self.__name__ = semaine.short()
 
     def __call__(self, reversible):
         return self.semaine.stagiaire_set.filter(dossier__etat__in=(PREINSCRIPTION, VALID, COMPLETE),

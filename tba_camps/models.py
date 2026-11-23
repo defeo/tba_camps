@@ -123,7 +123,9 @@ class Formule(OrderedModel):
             ]
 
 class Semaine(models.Model):
-    debut = models.DateField('Début de la semaine', unique=True)
+    code = models.CharField('Identifiant de la semaine', max_length=10, unique=True,
+                            validators=[RegexValidator('^[A-Za-z0-9]+$', 'Utiliser uniquement des chiffres et des lettres')])
+    debut = models.DateField('Début de la semaine')
     commentaire = models.CharField('Commentaire affiché', max_length=255, blank=True)
     places = models.IntegerField('Nombre de places', default=0)
     fermer = models.BooleanField('Inscriptions fermées', default=False)
@@ -135,20 +137,22 @@ class Semaine(models.Model):
     objects = SemaineQuerySet.as_manager()
 
     class Meta:
-        ordering = ('debut',)
-    
-    def __str__(self):
-        from datetime import timedelta
-        return 'S%d:  %s – %s' % (self.ord(),
-                                   self.debut.strftime('%d %b'),
-                                   self.fin().strftime('%d %b %Y'))
+        ordering = ('debut','code')
 
-    def ord(self):
-        return list(Semaine.objects.order_by('debut')).index(self) + 1
-    
+    def short(self):
+        return f'S{self.code}'
+
     def fin(self):
         return datetime.timedelta(6) + self.debut
 
+    def range(self):
+        from datetime import timedelta
+        return f"{self.debut.strftime('%d %b')} – {self.fin().strftime('%d %b %Y')}"
+        
+    def long(self):
+        return f'Semaine {self.code} : {self.range()}' 
+    __str__ = long
+    
     def inscrits(self, hebergement=None):
         if hebergement is None:
             return self.stagiaire_set.filter(dossier__etat__in=[VALID, COMPLETE]).count()
@@ -341,7 +345,7 @@ class Dossier(ModelWFiles):
         return self.etat in (PREINSCRIPTION, VALID)
     
     def semaines_str(self):
-        return ', '.join('S%d' % s.ord() for s in self.semaines.iterator())
+        return ', '.join(s.short() for s in self.semaines.iterator())
     semaines_str.short_description = 'Semaines'
 
     @cached_property
@@ -583,7 +587,7 @@ class Stagiaire(ModelWFiles):
         return self.semaines.first()
     
     def semaines_str(self):
-        return ', '.join('S%d' % s.ord() for s in self.semaines.iterator())
+        return ', '.join(s.short() for s in self.semaines.iterator())
     semaines_str.short_description = 'Semaines'
 
     def etat(self):
@@ -667,7 +671,7 @@ class Swag(models.Model):
         return Semaine.objects.filter(stagiaire__dossier=self.dossier).distinct()
 
     def semaines_str(self):
-        return ', '.join('S%d' % s.ord() for s in self.semaines().iterator())
+        return ', '.join(s.short() for s in self.semaines().iterator())
     semaines_str.short_description = 'Semaines'
 
     def stagiaires(self):
